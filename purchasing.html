@@ -105,6 +105,31 @@
   .rows-trigger span { font-size: 13px; font-weight: 600; color: #384352; }
 
   .backdrop { position: fixed; inset: 0; z-index: 25; }
+
+  /* modal (Create Purchase Order) */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
+  .modal-wrap { position: fixed; inset: 0; z-index: 71; display: none; align-items: center; justify-content: center; pointer-events: none; }
+  .modal-card { pointer-events: auto; width: 440px; max-width: calc(100vw - 32px); background: #ffffff; border-radius: 16px; box-shadow: 0 24px 64px rgba(21,27,35,0.24); display: flex; flex-direction: column; max-height: calc(100vh - 48px); }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; }
+  .modal-title { font-size: 18px; font-weight: 800; margin: 0; }
+  .modal-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
+  .modal-close { width: 32px; height: 32px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #f4f7fa; color: #384352; }
+  .modal-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .modal-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; font-weight: 700; color: #384352; }
+  .field input, .field select, .field textarea { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; width: 100%; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: #1960bd; }
+  .field textarea { resize: vertical; min-height: 64px; font-family: inherit; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field .amount-wrap { position: relative; }
+  .field .amount-wrap span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 600; color: #8da4be; pointer-events: none; }
+  .field .amount-wrap input { padding-left: 26px; }
+
+  .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
+  .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -190,6 +215,35 @@
   </main>
 </div>
 
+<div class="modal-backdrop" id="poBackdrop"></div>
+<div class="modal-wrap" id="poWrap">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><p class="modal-title">Create Purchase Order</p><p class="modal-sub">Place a new order with a supplier.</p></div>
+      <button class="modal-close" id="closePo" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Vendor</label><select id="poVendor"></select></div>
+      <div class="field-row">
+        <div class="field"><label>Number of items</label><input id="poItemsCount" type="number" placeholder="0"></div>
+        <div class="field"><label>Order value</label>
+          <div class="amount-wrap"><span>₹</span><input id="poValue" type="number" placeholder="0"></div>
+        </div>
+      </div>
+      <div class="field"><label>Expected delivery date</label><input id="poExpectedDate" type="date"></div>
+      <div class="field"><label>Notes (optional)</label><textarea id="poNotes" placeholder="Add any extra context…" rows="2"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="cancelPo" type="button">Cancel</button>
+      <button class="btn primary" id="submitPo" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Create PO</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="poToastWrap">
+  <div class="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="poToastText"></span></div>
+</div>
+
 <script>
 (function () {
   var pos = [
@@ -211,6 +265,9 @@
   };
 
   var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false, checked: {} };
+
+  var vendorNames = ['Hanover Works', 'Verado Mills', 'Pergola Goods', 'Kestrel Supply Co.', 'Northline Textile', 'Solano Freight & Textiles', 'Ridgeview Apparel Co.', 'Meridian Leather Works'];
+  var nextPoNumber = 3089;
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
@@ -325,6 +382,85 @@
 
   document.getElementById('search').addEventListener('input', function (e) {
     state.search = e.target.value; render();
+  });
+
+  // ---- Create Purchase Order modal ----
+  function fillSelect(sel, options, selectedVal) {
+    sel.innerHTML = options.map(function (o) {
+      return '<option value="' + esc(o) + '"' + (o === selectedVal ? ' selected' : '') + '>' + esc(o) + '</option>';
+    }).join('');
+  }
+
+  function checkPoValid() {
+    var vendor = document.getElementById('poVendor').value;
+    var value = document.getElementById('poValue').value;
+    var valid = !!vendor && !!value;
+    document.getElementById('submitPo').disabled = !valid;
+    document.getElementById('submitPo').style.opacity = valid ? '1' : '0.55';
+    document.getElementById('submitPo').style.cursor = valid ? 'pointer' : 'not-allowed';
+  }
+
+  function resetPoForm() {
+    fillSelect(document.getElementById('poVendor'), vendorNames, vendorNames[0]);
+    document.getElementById('poItemsCount').value = '';
+    document.getElementById('poValue').value = '';
+    document.getElementById('poExpectedDate').value = '';
+    document.getElementById('poNotes').value = '';
+    checkPoValid();
+  }
+
+  function openPoModal() {
+    resetPoForm();
+    document.getElementById('poBackdrop').style.display = 'block';
+    document.getElementById('poWrap').style.display = 'flex';
+  }
+  function closePoModal() {
+    document.getElementById('poBackdrop').style.display = 'none';
+    document.getElementById('poWrap').style.display = 'none';
+  }
+  function showToast(wrapId, textId, msg) {
+    document.getElementById(textId).textContent = msg;
+    document.getElementById(wrapId).style.display = 'block';
+    setTimeout(function () { document.getElementById(wrapId).style.display = 'none'; }, 2600);
+  }
+
+  document.getElementById('openPo').addEventListener('click', openPoModal);
+  document.getElementById('closePo').addEventListener('click', closePoModal);
+  document.getElementById('cancelPo').addEventListener('click', closePoModal);
+  document.getElementById('poBackdrop').addEventListener('click', closePoModal);
+  document.getElementById('poVendor').addEventListener('change', checkPoValid);
+  document.getElementById('poValue').addEventListener('input', checkPoValid);
+
+  document.getElementById('submitPo').addEventListener('click', function () {
+    var vendor = document.getElementById('poVendor').value;
+    var value = parseFloat(document.getElementById('poValue').value);
+    if (!vendor || !value) return;
+
+    var itemsCount = parseInt(document.getElementById('poItemsCount').value, 10) || 0;
+    var expectedRaw = document.getElementById('poExpectedDate').value;
+    var formattedExpected = '—';
+    if (expectedRaw) {
+      var d = new Date(expectedRaw + 'T00:00:00');
+      if (!isNaN(d)) {
+        formattedExpected = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+    }
+
+    var poId = 'PO-' + (nextPoNumber++);
+    pos.unshift({
+      id: Date.now(),
+      poId: poId,
+      vendor: vendor,
+      itemsCount: itemsCount,
+      value: '₹' + value.toLocaleString('en-IN'),
+      status: 'pending',
+      orderDate: 'Sep 16, 2026',
+      expectedDate: formattedExpected
+    });
+
+    closePoModal();
+    render();
+    showToast('poToastWrap', 'poToastText', poId + ' created and awaiting approval');
   });
 
   render();
