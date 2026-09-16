@@ -121,6 +121,58 @@
   .tl-meta { font-size: 12px; font-weight: 500; color: #8da4be; }
 
   [data-tabview="audit"] { display: none; }
+
+  /* drawer (Edit Item) */
+  .drawer-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: calc(100vw - 24px); background: #ffffff; z-index: 71; box-shadow: -12px 0 32px rgba(21,27,35,0.12); display: none; flex-direction: column; }
+  .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; }
+  .drawer-title { font-size: 18px; font-weight: 800; margin: 0; }
+  .drawer-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
+  .drawer-close { width: 32px; height: 32px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .drawer-close:hover { background: #f4f7fa; color: #384352; }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .drawer-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+
+  /* form fields (shared by drawer & modal) */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; font-weight: 700; color: #384352; }
+  .field input, .field select, .field textarea { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; width: 100%; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: #1960bd; }
+  .field textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+  .field.disabled input { background: #f4f7fa; color: #8da4be; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-row.arrow { grid-template-columns: 1fr 20px 1fr; align-items: end; }
+  .field-arrow { display: flex; align-items: center; justify-content: center; padding-bottom: 11px; color: #8da4be; }
+  .field-prefix { position: relative; }
+  .field-prefix span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 600; color: #8da4be; pointer-events: none; }
+  .field-prefix input { padding-left: 24px; }
+
+  /* modal (Adjust Stock / Create Stock Transfer) */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
+  .modal-wrap { position: fixed; inset: 0; z-index: 71; display: none; align-items: center; justify-content: center; pointer-events: none; padding: 20px; }
+  .modal-card { pointer-events: auto; width: 480px; max-width: 100%; background: #ffffff; border-radius: 16px; box-shadow: 0 24px 48px rgba(21,27,35,0.18); max-height: calc(100vh - 60px); overflow-y: auto; }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px 16px; }
+  .modal-title { font-size: 18px; font-weight: 800; margin: 0; }
+  .modal-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
+  .modal-close { width: 30px; height: 30px; border-radius: 9px; border: 0; background: #f4f7fa; color: #8da4be; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #eef1f5; color: #384352; }
+  .modal-body { padding: 0 24px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .modal-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+
+  /* segmented toggle */
+  .seg { display: flex; border: 1px solid #cbd6e6; border-radius: 10px; overflow: hidden; }
+  .seg button { flex: 1; padding: 10px; border: 0; background: #ffffff; font-size: 13px; font-weight: 700; color: #576a84; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .seg button.active.inc { background: #ecfdf1; color: #047857; }
+  .seg button.active.dec { background: #feecec; color: #b91c1c; }
+
+  .warn-banner { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #fff7ed; border: 1px solid #ffe9cc; color: #b84509; font-size: 12px; font-weight: 600; }
+
+  .readout { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: #f4f7fa; font-size: 13px; font-weight: 600; color: #384352; }
+  .readout .v { font-size: 14px; font-weight: 800; }
+
+  /* toast */
+  .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
+  .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -153,13 +205,13 @@
 
     <div class="page-head">
       <div>
-        <div class="title-row"><h1>Boxy Knit Vest</h1><span class="status-pill"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Healthy</span></div>
-        <div class="meta-line"><span>TOP-1096</span><span class="dot">·</span><span class="cat-pill">Tops</span><span class="dot">·</span><span>Hanover Works</span></div>
+        <div class="title-row"><h1 id="itemTitle">Boxy Knit Vest</h1><span class="status-pill"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Healthy</span></div>
+        <div class="meta-line"><span id="metaSku">TOP-1096</span><span class="dot">·</span><span class="cat-pill" id="metaCategory">Tops</span><span class="dot">·</span><span id="metaVendor">Hanover Works</span></div>
       </div>
       <div class="head-actions">
-        <button class="btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/></svg>Adjust Stock</button>
-        <button class="btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg>Move Stock</button>
-        <button class="btn primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Edit Item</button>
+        <button class="btn" id="openAdjustStock" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/></svg>Adjust Stock</button>
+        <button class="btn" id="openMoveStock" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg>Move Stock</button>
+        <button class="btn primary" id="openEditItem" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Edit Item</button>
       </div>
     </div>
 
@@ -170,10 +222,10 @@
 
     <div data-tabview="overview">
       <div class="stat-grid" style="margin-bottom:16px;">
-        <div class="card stat"><span class="lbl">On hand</span><span class="val">444<span class="unit">units</span></span></div>
-        <div class="card stat"><span class="lbl">Reorder point</span><span class="val">126<span class="unit">units</span></span></div>
-        <div class="card stat"><span class="lbl">Stock cover</span><span class="val">3.5x<span class="unit">reorder</span></span></div>
-        <div class="card stat"><span class="lbl">Unit cost</span><span class="val">₹1,240</span></div>
+        <div class="card stat"><span class="lbl">On hand</span><span class="val" id="statOnHand">444<span class="unit">units</span></span></div>
+        <div class="card stat"><span class="lbl">Reorder point</span><span class="val" id="statReorder">126<span class="unit">units</span></span></div>
+        <div class="card stat"><span class="lbl">Stock cover</span><span class="val" id="statCover">3.5x<span class="unit">reorder</span></span></div>
+        <div class="card stat"><span class="lbl">Unit cost</span><span class="val" id="statCost">₹1,240</span></div>
       </div>
 
       <div class="two-col">
@@ -188,14 +240,14 @@
           <div class="card card-pad">
             <p class="card-title">Item information</p>
             <div class="info-grid" style="margin-top:14px;">
-              <div class="info-item"><div class="lbl">SKU</div><div class="val">TOP-1096</div></div>
-              <div class="info-item"><div class="lbl">Category</div><div class="val">Tops</div></div>
-              <div class="info-item"><div class="lbl">Primary vendor</div><div class="val">Hanover Works</div></div>
-              <div class="info-item"><div class="lbl">Unit of measure</div><div class="val">Piece</div></div>
-              <div class="info-item"><div class="lbl">Lead time</div><div class="val">12 days</div></div>
+              <div class="info-item"><div class="lbl">SKU</div><div class="val" id="infoSku">TOP-1096</div></div>
+              <div class="info-item"><div class="lbl">Category</div><div class="val" id="infoCategory">Tops</div></div>
+              <div class="info-item"><div class="lbl">Primary vendor</div><div class="val" id="infoVendor">Hanover Works</div></div>
+              <div class="info-item"><div class="lbl">Unit of measure</div><div class="val" id="infoUom">Piece</div></div>
+              <div class="info-item"><div class="lbl">Lead time</div><div class="val" id="infoLeadTime">12 days</div></div>
               <div class="info-item"><div class="lbl">Created</div><div class="val">Aug 12, 2026</div></div>
               <div class="info-sep"></div>
-              <div class="info-item full"><div class="lbl">Description</div><div class="desc">Ribbed knit vest, mid-weight cotton-wool blend. Sold as a core layering piece across the Tops range — restocked seasonally from Hanover Works.</div></div>
+              <div class="info-item full"><div class="lbl">Description</div><div class="desc" id="infoDescription">Ribbed knit vest, mid-weight cotton-wool blend. Sold as a core layering piece across the Tops range — restocked seasonally from Hanover Works.</div></div>
             </div>
           </div>
         </div>
@@ -263,6 +315,101 @@
   </main>
 </div>
 
+<!-- Edit Item drawer -->
+<div class="drawer-backdrop" id="editItemBackdrop"></div>
+<div class="drawer" id="editItemDrawer">
+  <div class="drawer-head">
+    <div><p class="drawer-title">Edit Item</p><p class="drawer-sub">Update details for Boxy Knit Vest.</p></div>
+    <button class="drawer-close" id="closeEditItem" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <div class="field"><label>Item name</label><input id="eiName" type="text"></div>
+    <div class="field-row">
+      <div class="field disabled"><label>SKU</label><input id="eiSku" type="text" disabled></div>
+      <div class="field"><label>Category</label><select id="eiCategory"></select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Primary vendor</label><input id="eiVendor" type="text"></div>
+      <div class="field"><label>Unit of measure</label><select id="eiUom"></select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Reorder point</label><input id="eiReorder" type="number"></div>
+      <div class="field"><label>Unit cost</label><div class="field-prefix"><span>₹</span><input id="eiCost" type="number"></div></div>
+    </div>
+    <div class="field"><label>Lead time in days</label><input id="eiLeadTime" type="number"></div>
+    <div class="field"><label>Description</label><textarea id="eiDescription"></textarea></div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn" id="cancelEditItem" type="button">Cancel</button>
+    <button class="btn primary" id="submitEditItem" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Save Changes</button>
+  </div>
+</div>
+
+<!-- Adjust Stock modal -->
+<div class="modal-backdrop" id="adjustStockBackdrop"></div>
+<div class="modal-wrap" id="adjustStockWrap">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><p class="modal-title">Adjust Stock</p><p class="modal-sub">Boxy Knit Vest · TOP-1096</p></div>
+      <button class="modal-close" id="closeAdjustStock" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Adjustment type</label>
+        <div class="seg">
+          <button type="button" id="adjIncreaseBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>Increase</button>
+          <button type="button" id="adjDecreaseBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>Decrease</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Quantity</label><input id="adjQty" type="number" placeholder="0"></div>
+        <div class="field"><label>Plant</label><select id="adjPlant"></select></div>
+      </div>
+      <div class="field"><label>Reason</label><select id="adjReason"></select></div>
+      <div class="field"><label>Notes (optional)</label><textarea id="adjNotes" placeholder="Add any extra context…"></textarea></div>
+      <div class="readout"><span>On hand after adjustment</span><span class="v" id="adjResult">444 units</span></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="cancelAdjustStock" type="button">Cancel</button>
+      <button class="btn primary" id="submitAdjustStock" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Save Adjustment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Stock Transfer modal -->
+<div class="modal-backdrop" id="moveStockBackdrop"></div>
+<div class="modal-wrap" id="moveStockWrap">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><p class="modal-title">Create Stock Transfer</p><p class="modal-sub">Boxy Knit Vest · TOP-1096</p></div>
+      <button class="modal-close" id="closeMoveStock" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row arrow">
+        <div class="field"><label>From plant</label><select id="mvFrom"></select></div>
+        <div class="field-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></div>
+        <div class="field"><label>To plant</label><select id="mvTo"></select></div>
+      </div>
+      <div class="warn-banner" id="mvWarning" style="display:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16" r="0.9" fill="currentColor" stroke="none"/></svg>From and To plant can't be the same.</div>
+      <div class="field-row">
+        <div class="field"><label>Quantity</label><input id="mvQty" type="number" placeholder="0"></div>
+        <div class="field"><label>Expected date</label><input id="mvDate" type="date"></div>
+      </div>
+      <div class="readout"><span id="mvAvailableLabel">Available at Plant A · Gurgaon</span><span class="v">260 units</span></div>
+      <div class="field"><label>Reason</label><select id="mvReason"></select></div>
+      <div class="field"><label>Notes (optional)</label><textarea id="mvNotes" placeholder="Add any extra context…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="cancelMoveStock" type="button">Cancel</button>
+      <button class="btn primary" id="submitMoveStock" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg>Create Transfer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="flowToastWrap">
+  <div class="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="flowToastText"></span></div>
+</div>
+
 <script>
 (function () {
   function setTab(tab) {
@@ -275,6 +422,171 @@
   document.getElementById('tabAudit').addEventListener('click', function () { setTab('audit'); });
   document.getElementById('viewAllLink').addEventListener('click', function () { setTab('audit'); });
   if (window.location.hash === '#audit') { setTab('audit'); }
+
+  // ---- shared item state ----
+  var plantNames = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai'];
+  var categoryNames = ['Tops', 'Footwear', 'Accessories', 'Bottoms', 'Home'];
+  var uomNames = ['Piece', 'Pair', 'Set', 'Kg'];
+  var adjustReasons = ['Cycle count correction', 'Damaged in transit', 'Returned to stock', 'Quality hold released', 'Other'];
+  var transferReasons = ['Rebalance stock ahead of regional demand', 'Fulfil purchase order', 'Consolidate slow-moving stock', 'Other'];
+  var plantStock = { 'Plant A · Gurgaon': 260, 'Plant B · Pune': 104, 'Plant C · Chennai': 80 };
+
+  var item = {
+    name: 'Boxy Knit Vest', sku: 'TOP-1096', category: 'Tops', vendor: 'Hanover Works',
+    uom: 'Piece', onHand: 444, reorder: 126, cost: 1240, leadTime: 12,
+    description: 'Ribbed knit vest, mid-weight cotton-wool blend. Sold as a core layering piece across the Tops range — restocked seasonally from Hanover Works.'
+  };
+
+  function fmtMoney(n) { return '₹' + n.toLocaleString('en-IN'); }
+  function fillSelect(sel, options, selectedVal) {
+    sel.innerHTML = options.map(function (o) {
+      return '<option value="' + o.replace(/"/g, '&quot;') + '"' + (o === selectedVal ? ' selected' : '') + '>' + o + '</option>';
+    }).join('');
+  }
+  function showFlowToast(msg) {
+    document.getElementById('flowToastText').textContent = msg;
+    document.getElementById('flowToastWrap').style.display = 'block';
+    setTimeout(function () { document.getElementById('flowToastWrap').style.display = 'none'; }, 2600);
+  }
+  function renderItemHeader() {
+    document.getElementById('itemTitle').textContent = item.name;
+    document.getElementById('metaSku').textContent = item.sku;
+    document.getElementById('metaCategory').textContent = item.category;
+    document.getElementById('metaVendor').textContent = item.vendor;
+    document.getElementById('statOnHand').innerHTML = item.onHand + '<span class="unit">units</span>';
+    document.getElementById('statReorder').innerHTML = item.reorder + '<span class="unit">units</span>';
+    var cover = item.reorder > 0 ? (item.onHand / item.reorder).toFixed(1) + 'x' : '—';
+    document.getElementById('statCover').innerHTML = cover + '<span class="unit">reorder</span>';
+    document.getElementById('statCost').textContent = fmtMoney(item.cost);
+    document.getElementById('infoSku').textContent = item.sku;
+    document.getElementById('infoCategory').textContent = item.category;
+    document.getElementById('infoVendor').textContent = item.vendor;
+    document.getElementById('infoUom').textContent = item.uom;
+    document.getElementById('infoLeadTime').textContent = item.leadTime + ' days';
+    document.getElementById('infoDescription').textContent = item.description;
+  }
+
+  // ---- Edit Item drawer ----
+  function openEditItemDrawer() {
+    document.getElementById('eiName').value = item.name;
+    document.getElementById('eiSku').value = item.sku;
+    fillSelect(document.getElementById('eiCategory'), categoryNames, item.category);
+    document.getElementById('eiVendor').value = item.vendor;
+    fillSelect(document.getElementById('eiUom'), uomNames, item.uom);
+    document.getElementById('eiReorder').value = item.reorder;
+    document.getElementById('eiCost').value = item.cost;
+    document.getElementById('eiLeadTime').value = item.leadTime;
+    document.getElementById('eiDescription').value = item.description;
+    document.getElementById('editItemBackdrop').style.display = 'block';
+    document.getElementById('editItemDrawer').style.display = 'flex';
+  }
+  function closeEditItemDrawer() {
+    document.getElementById('editItemBackdrop').style.display = 'none';
+    document.getElementById('editItemDrawer').style.display = 'none';
+  }
+  document.getElementById('openEditItem').addEventListener('click', openEditItemDrawer);
+  document.getElementById('closeEditItem').addEventListener('click', closeEditItemDrawer);
+  document.getElementById('cancelEditItem').addEventListener('click', closeEditItemDrawer);
+  document.getElementById('editItemBackdrop').addEventListener('click', closeEditItemDrawer);
+  document.getElementById('submitEditItem').addEventListener('click', function () {
+    var name = document.getElementById('eiName').value.trim();
+    if (!name) { document.getElementById('eiName').focus(); return; }
+    item.name = name;
+    item.category = document.getElementById('eiCategory').value;
+    item.vendor = document.getElementById('eiVendor').value.trim() || item.vendor;
+    item.uom = document.getElementById('eiUom').value;
+    item.reorder = parseInt(document.getElementById('eiReorder').value, 10) || 0;
+    item.cost = parseInt(document.getElementById('eiCost').value, 10) || 0;
+    item.leadTime = parseInt(document.getElementById('eiLeadTime').value, 10) || 0;
+    item.description = document.getElementById('eiDescription').value.trim();
+    renderItemHeader();
+    closeEditItemDrawer();
+    showFlowToast('Item changes saved');
+  });
+
+  // ---- Adjust Stock modal ----
+  var adjDirection = 'increase';
+  function renderAdjustResult() {
+    var qty = parseInt(document.getElementById('adjQty').value, 10) || 0;
+    var delta = adjDirection === 'increase' ? qty : -qty;
+    var result = item.onHand + delta;
+    var el = document.getElementById('adjResult');
+    el.textContent = result + ' units';
+    el.style.color = qty === 0 ? '#384352' : (adjDirection === 'increase' ? '#059e6f' : '#b91c1c');
+    var incBtn = document.getElementById('adjIncreaseBtn'), decBtn = document.getElementById('adjDecreaseBtn');
+    incBtn.className = adjDirection === 'increase' ? 'active inc' : '';
+    decBtn.className = adjDirection === 'decrease' ? 'active dec' : '';
+  }
+  function openAdjustStockModal() {
+    adjDirection = 'increase';
+    document.getElementById('adjQty').value = '';
+    fillSelect(document.getElementById('adjPlant'), plantNames, plantNames[0]);
+    fillSelect(document.getElementById('adjReason'), adjustReasons, adjustReasons[0]);
+    document.getElementById('adjNotes').value = '';
+    renderAdjustResult();
+    document.getElementById('adjustStockBackdrop').style.display = 'block';
+    document.getElementById('adjustStockWrap').style.display = 'flex';
+  }
+  function closeAdjustStockModal() {
+    document.getElementById('adjustStockBackdrop').style.display = 'none';
+    document.getElementById('adjustStockWrap').style.display = 'none';
+  }
+  document.getElementById('openAdjustStock').addEventListener('click', openAdjustStockModal);
+  document.getElementById('closeAdjustStock').addEventListener('click', closeAdjustStockModal);
+  document.getElementById('cancelAdjustStock').addEventListener('click', closeAdjustStockModal);
+  document.getElementById('adjustStockBackdrop').addEventListener('click', closeAdjustStockModal);
+  document.getElementById('adjIncreaseBtn').addEventListener('click', function () { adjDirection = 'increase'; renderAdjustResult(); });
+  document.getElementById('adjDecreaseBtn').addEventListener('click', function () { adjDirection = 'decrease'; renderAdjustResult(); });
+  document.getElementById('adjQty').addEventListener('input', renderAdjustResult);
+  document.getElementById('submitAdjustStock').addEventListener('click', function () {
+    var qty = parseInt(document.getElementById('adjQty').value, 10) || 0;
+    var delta = adjDirection === 'increase' ? qty : -qty;
+    item.onHand = Math.max(0, item.onHand + delta);
+    renderItemHeader();
+    closeAdjustStockModal();
+    showFlowToast('Stock adjustment saved');
+  });
+
+  // ---- Create Stock Transfer modal ----
+  function renderMoveStockState() {
+    var from = document.getElementById('mvFrom').value;
+    var to = document.getElementById('mvTo').value;
+    var same = from === to;
+    document.getElementById('mvWarning').style.display = same ? 'flex' : 'none';
+    document.getElementById('mvAvailableLabel').textContent = 'Available at ' + from;
+    var submitBtn = document.getElementById('submitMoveStock');
+    submitBtn.disabled = same;
+    submitBtn.style.opacity = same ? '0.55' : '1';
+    submitBtn.style.cursor = same ? 'not-allowed' : 'pointer';
+  }
+  function openMoveStockModal() {
+    fillSelect(document.getElementById('mvFrom'), plantNames, plantNames[0]);
+    fillSelect(document.getElementById('mvTo'), plantNames, plantNames[1]);
+    document.getElementById('mvQty').value = '';
+    document.getElementById('mvDate').value = '';
+    fillSelect(document.getElementById('mvReason'), transferReasons, transferReasons[0]);
+    document.getElementById('mvNotes').value = '';
+    renderMoveStockState();
+    document.getElementById('moveStockBackdrop').style.display = 'block';
+    document.getElementById('moveStockWrap').style.display = 'flex';
+  }
+  function closeMoveStockModal() {
+    document.getElementById('moveStockBackdrop').style.display = 'none';
+    document.getElementById('moveStockWrap').style.display = 'none';
+  }
+  document.getElementById('openMoveStock').addEventListener('click', openMoveStockModal);
+  document.getElementById('closeMoveStock').addEventListener('click', closeMoveStockModal);
+  document.getElementById('cancelMoveStock').addEventListener('click', closeMoveStockModal);
+  document.getElementById('moveStockBackdrop').addEventListener('click', closeMoveStockModal);
+  document.getElementById('mvFrom').addEventListener('change', renderMoveStockState);
+  document.getElementById('mvTo').addEventListener('change', renderMoveStockState);
+  document.getElementById('submitMoveStock').addEventListener('click', function () {
+    var from = document.getElementById('mvFrom').value;
+    var to = document.getElementById('mvTo').value;
+    if (from === to) return;
+    closeMoveStockModal();
+    showFlowToast('Stock transfer created');
+  });
 })();
 </script>
 </body>

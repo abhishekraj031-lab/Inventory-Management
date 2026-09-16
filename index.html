@@ -129,6 +129,33 @@
   .rows-trigger span { font-size: 13px; font-weight: 600; color: #384352; }
 
   .backdrop { position: fixed; inset: 0; z-index: 25; }
+
+  /* drawer (Add Item) */
+  .drawer-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: calc(100vw - 24px); background: #ffffff; z-index: 71; box-shadow: -12px 0 32px rgba(21,27,35,0.12); display: none; flex-direction: column; }
+  .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; }
+  .drawer-title { font-size: 18px; font-weight: 800; margin: 0; }
+  .drawer-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
+  .drawer-close { width: 32px; height: 32px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .drawer-close:hover { background: #f4f7fa; color: #384352; }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .drawer-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+
+  /* form fields (shared by drawer & modal) */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; font-weight: 700; color: #384352; }
+  .field input, .field select, .field textarea { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; width: 100%; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: #1960bd; }
+  .field textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+  .field.disabled input { background: #f4f7fa; color: #8da4be; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-prefix { position: relative; }
+  .field-prefix span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 600; color: #8da4be; pointer-events: none; }
+  .field-prefix input { padding-left: 24px; }
+
+  /* toast */
+  .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
+  .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -163,7 +190,7 @@
       <div><h1>Item List</h1><p>Track stock levels, reorder points and locations for every SKU.</p></div>
       <div class="head-actions">
         <button class="btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>Import</button>
-        <button class="btn primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Item</button>
+        <button class="btn primary" id="openAddItem" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Item</button>
       </div>
     </div>
 
@@ -225,6 +252,40 @@
   </main>
 </div>
 
+<div class="drawer-backdrop" id="addItemBackdrop"></div>
+<div class="drawer" id="addItemDrawer">
+  <div class="drawer-head">
+    <div><p class="drawer-title">Add New Item</p><p class="drawer-sub">Create a new SKU in your catalog.</p></div>
+    <button class="drawer-close" id="closeAddItem" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <div class="field"><label>Item name</label><input id="aiName" type="text" placeholder="e.g. Boxy Knit Vest"></div>
+    <div class="field-row">
+      <div class="field"><label>SKU</label><input id="aiSku" type="text" placeholder="e.g. TOP-1097"></div>
+      <div class="field"><label>Category</label><select id="aiCategory"></select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Primary vendor</label><input id="aiVendor" type="text" placeholder="e.g. Hanover Works"></div>
+      <div class="field"><label>Unit of measure</label><select id="aiUom"></select></div>
+    </div>
+    <div class="field"><label>Plant</label><select id="aiPlant"></select></div>
+    <div class="field-row">
+      <div class="field"><label>Opening stock</label><input id="aiOpening" type="number" placeholder="0"></div>
+      <div class="field"><label>Reorder point</label><input id="aiReorder" type="number" placeholder="0"></div>
+    </div>
+    <div class="field"><label>Unit cost</label><div class="field-prefix"><span>₹</span><input id="aiCost" type="number" placeholder="0"></div></div>
+    <div class="field"><label>Description</label><textarea id="aiDescription" placeholder="Short description of this item…"></textarea></div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn" id="cancelAddItem" type="button">Cancel</button>
+    <button class="btn primary" id="submitAddItem" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Item</button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="addItemToastWrap">
+  <div class="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="addItemToastText"></span></div>
+</div>
+
 <script>
 (function () {
   var items = [
@@ -239,6 +300,9 @@
   ];
 
   var plantNames = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai', 'Plant D · Bhiwandi'];
+  var categoryNames = ['Tops', 'Footwear', 'Accessories', 'Bottoms', 'Home'];
+  var uomNames = ['Piece', 'Pair', 'Set', 'Kg'];
+  var nextItemId = 9;
 
   var statusMeta = {
     healthy: { label: 'Healthy', bg: '#ecfdf1', color: '#047857', dot: '#10bc83', bar: '#1960bd' },
@@ -281,7 +345,6 @@
     }).join('');
 
     // category dropdown
-    var categoryNames = ['Tops', 'Footwear', 'Accessories', 'Bottoms', 'Home'];
     var catOptions = [{ key: 'all', label: 'All categories' }].concat(categoryNames.map(function (c) { return { key: c, label: c }; }));
     document.getElementById('categoryMenu').innerHTML = catOptions.map(function (c) {
       return '<div class="opt' + (state.category === c.key ? ' active' : '') + '" data-action="category" data-key="' + c.key + '">' + c.label + '</div>';
@@ -402,6 +465,72 @@
 
   document.getElementById('search').addEventListener('input', function (e) {
     state.search = e.target.value; render();
+  });
+
+  // ---- Add Item drawer ----
+  function fillSelect(sel, options, selectedVal) {
+    sel.innerHTML = options.map(function (o) {
+      return '<option value="' + esc(o) + '"' + (o === selectedVal ? ' selected' : '') + '>' + esc(o) + '</option>';
+    }).join('');
+  }
+
+  function resetAddItemForm() {
+    document.getElementById('aiName').value = '';
+    document.getElementById('aiSku').value = '';
+    fillSelect(document.getElementById('aiCategory'), categoryNames, 'Tops');
+    document.getElementById('aiVendor').value = '';
+    fillSelect(document.getElementById('aiUom'), uomNames, 'Piece');
+    fillSelect(document.getElementById('aiPlant'), plantNames, plantNames[0]);
+    document.getElementById('aiOpening').value = '';
+    document.getElementById('aiReorder').value = '';
+    document.getElementById('aiCost').value = '';
+    document.getElementById('aiDescription').value = '';
+  }
+
+  function openAddItemDrawer() {
+    resetAddItemForm();
+    document.getElementById('addItemBackdrop').style.display = 'block';
+    document.getElementById('addItemDrawer').style.display = 'flex';
+  }
+  function closeAddItemDrawer() {
+    document.getElementById('addItemBackdrop').style.display = 'none';
+    document.getElementById('addItemDrawer').style.display = 'none';
+  }
+  function showToast(wrapId, textId, msg) {
+    document.getElementById(textId).textContent = msg;
+    document.getElementById(wrapId).style.display = 'block';
+    setTimeout(function () { document.getElementById(wrapId).style.display = 'none'; }, 2600);
+  }
+
+  document.getElementById('openAddItem').addEventListener('click', openAddItemDrawer);
+  document.getElementById('closeAddItem').addEventListener('click', closeAddItemDrawer);
+  document.getElementById('cancelAddItem').addEventListener('click', closeAddItemDrawer);
+  document.getElementById('addItemBackdrop').addEventListener('click', closeAddItemDrawer);
+
+  document.getElementById('submitAddItem').addEventListener('click', function () {
+    var name = document.getElementById('aiName').value.trim();
+    if (!name) { document.getElementById('aiName').focus(); return; }
+    var reorder = parseInt(document.getElementById('aiReorder').value, 10) || 0;
+    var opening = parseInt(document.getElementById('aiOpening').value, 10) || 0;
+    var status = opening === 0 ? 'stockout' : (reorder > 0 && opening < reorder ? 'belowReorder' : 'healthy');
+    var coverPct = reorder > 0 ? Math.max(4, Math.min(100, Math.round((opening / reorder) * 35))) : (opening > 0 ? 70 : 4);
+    var coverRatio = reorder > 0 ? (opening / reorder).toFixed(1) + 'x' : '—';
+    items.push({
+      id: nextItemId++,
+      name: name,
+      sku: document.getElementById('aiSku').value.trim() || 'SKU-' + nextItemId,
+      vendor: document.getElementById('aiVendor').value.trim() || '—',
+      category: document.getElementById('aiCategory').value,
+      plant: document.getElementById('aiPlant').value,
+      onHand: opening,
+      reorder: reorder,
+      status: status,
+      cover: coverRatio,
+      coverPct: coverPct
+    });
+    closeAddItemDrawer();
+    render();
+    showToast('addItemToastWrap', 'addItemToastText', name + ' added to your catalog');
   });
 
   render();
