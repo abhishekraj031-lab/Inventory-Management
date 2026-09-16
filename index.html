@@ -100,6 +100,10 @@
   .item-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .item-cell .nm { font-size: 14px; font-weight: 700; }
   .item-cell .meta { font-size: 12px; font-weight: 500; color: #8da4be; }
+  .item-cell .risk { display: inline-flex; align-items: center; gap: 4px; width: fit-content; font-size: 11px; font-weight: 700; }
+  .item-cell .risk.red { color: #b91c1c; }
+  .item-cell .risk.amber { color: #b84509; }
+  .item-cell .risk .rd { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
   .cat-pill { display: inline-flex; width: fit-content; padding: 4px 10px; border-radius: 999px; background: #eef1f5; color: #384352; font-size: 12px; font-weight: 600; }
   .onhand { font-size: 14px; font-weight: 700; }
   .reorder { font-size: 14px; font-weight: 600; color: #576a84; }
@@ -167,7 +171,7 @@
     </div>
     <span class="sb-label">Menu</span>
     <nav class="sb-nav">
-      <div class="sb-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></div>
+      <a class="sb-item" href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></a>
       <div class="sb-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg><span>Inventory</span></div>
       <a class="sb-item" href="transfers.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l3 4 3-4h6"/><path d="M4 17h4l3-4 3 4h6"/><path d="M17 4l3 3-3 3"/><path d="M17 14l3 3-3 3"/></svg><span>Transfers</span></a>
       <a class="sb-item" href="purchasing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"/></svg><span>Purchasing</span></a>
@@ -289,15 +293,23 @@
 <script>
 (function () {
   var items = [
-    { id: 1, name: 'Boxy Knit Vest', sku: 'TOP-1096', vendor: 'Hanover Works', category: 'Tops', plant: 'Plant A · Gurgaon', onHand: 444, reorder: 126, status: 'healthy', cover: '3.5x', coverPct: 70 },
-    { id: 2, name: 'Canvas Low Top', sku: 'FTW-1215', vendor: 'Verado Mills', category: 'Footwear', plant: 'Plant B · Pune', onHand: 259, reorder: 66, status: 'healthy', cover: '3.9x', coverPct: 78 },
-    { id: 3, name: 'Canvas Tote', sku: 'ACC-1285', vendor: 'Pergola Goods', category: 'Accessories', plant: 'Plant A · Gurgaon', onHand: 470, reorder: 150, status: 'healthy', cover: '3.1x', coverPct: 62 },
-    { id: 4, name: 'Card Holder', sku: 'ACC-1292', vendor: 'Hanover Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 98, reorder: 120, status: 'belowReorder', cover: '1.6x', coverPct: 33 },
-    { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', vendor: 'Kestrel Supply Co.', category: 'Bottoms', plant: 'Plant B · Pune', onHand: 0, reorder: 126, status: 'stockout', cover: '0x', coverPct: 4 },
-    { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', vendor: 'Northline Textile', category: 'Accessories', plant: 'Plant D · Bhiwandi', onHand: 272, reorder: 78, status: 'healthy', cover: '3.5x', coverPct: 70 },
-    { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, status: 'overstock', cover: '4.1x', coverPct: 100 },
-    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66 }
+    { id: 1, name: 'Boxy Knit Vest', sku: 'TOP-1096', vendor: 'Hanover Works', category: 'Tops', plant: 'Plant A · Gurgaon', onHand: 444, reorder: 126, status: 'healthy', cover: '3.5x', coverPct: 70, dailyDemand: 16 },
+    { id: 2, name: 'Canvas Low Top', sku: 'FTW-1215', vendor: 'Verado Mills', category: 'Footwear', plant: 'Plant B · Pune', onHand: 259, reorder: 66, status: 'healthy', cover: '3.9x', coverPct: 78, dailyDemand: 42 },
+    { id: 3, name: 'Canvas Tote', sku: 'ACC-1285', vendor: 'Pergola Goods', category: 'Accessories', plant: 'Plant A · Gurgaon', onHand: 470, reorder: 150, status: 'healthy', cover: '3.1x', coverPct: 62, dailyDemand: 20 },
+    { id: 4, name: 'Card Holder', sku: 'ACC-1292', vendor: 'Hanover Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 98, reorder: 120, status: 'belowReorder', cover: '1.6x', coverPct: 33, dailyDemand: 22 },
+    { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', vendor: 'Kestrel Supply Co.', category: 'Bottoms', plant: 'Plant B · Pune', onHand: 0, reorder: 126, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 15 },
+    { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', vendor: 'Northline Textile', category: 'Accessories', plant: 'Plant D · Bhiwandi', onHand: 272, reorder: 78, status: 'healthy', cover: '3.5x', coverPct: 70, dailyDemand: 9 },
+    { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, status: 'overstock', cover: '4.1x', coverPct: 100, dailyDemand: 6 },
+    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24 }
   ];
+
+  function stockoutRisk(it) {
+    var days = it.dailyDemand > 0 ? Math.round(it.onHand / it.dailyDemand) : (it.onHand > 0 ? 999 : 0);
+    if (it.onHand === 0) return { tier: 'red', label: 'Out of stock' };
+    if (days <= 7) return { tier: 'red', label: '~' + days + ' days of stock left' };
+    if (days <= 14) return { tier: 'amber', label: '~' + days + ' days of stock left' };
+    return null;
+  }
 
   var plantNames = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai', 'Plant D · Bhiwandi'];
   var categoryNames = ['Tops', 'Footwear', 'Accessories', 'Bottoms', 'Home'];
@@ -391,10 +403,12 @@
         var meta = statusMeta[it.status];
         var isChecked = !!state.checked[it.id];
         var menuOpen = state.openMenuId === it.id;
+        var risk = stockoutRisk(it);
+        var riskHtml = risk ? '<span class="risk ' + risk.tier + '"><span class="rd" style="background:' + (risk.tier === 'red' ? '#dc2626' : '#e56106') + ';"></span>' + esc(risk.label) + '</span>' : '';
         return '' +
           '<div class="row' + (it.status === 'stockout' ? ' stockout' : '') + '">' +
             '<button class="cb' + (isChecked ? ' checked' : '') + '" type="button" data-action="check" data-key="' + it.id + '"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
-            '<div class="item-cell"><a class="nm" href="item-detail.html" style="color:#151b23;">' + esc(it.name) + '</a><span class="meta">' + esc(it.sku) + ' · ' + esc(it.vendor) + '</span></div>' +
+            '<div class="item-cell"><a class="nm" href="item-detail.html" style="color:#151b23;">' + esc(it.name) + '</a><span class="meta">' + esc(it.sku) + ' · ' + esc(it.vendor) + '</span>' + riskHtml + '</div>' +
             '<span class="cat-pill">' + esc(it.category) + '</span>' +
             '<span class="onhand">' + it.onHand + '</span>' +
             '<span class="reorder">' + it.reorder + '</span>' +

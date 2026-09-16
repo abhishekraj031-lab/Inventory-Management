@@ -99,6 +99,16 @@
   .activity-body .t { font-size: 13px; font-weight: 700; }
   .activity-body .s { font-size: 12px; font-weight: 500; color: #8da4be; margin-top: 1px; }
 
+  .health-top { display: flex; align-items: center; gap: 16px; padding-bottom: 14px; margin-bottom: 4px; border-bottom: 1px solid #f2f4f7; }
+  .health-score-circle { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: #ecfdf1; color: #047857; font-size: 20px; font-weight: 800; flex-shrink: 0; border: 3px solid #10bc83; }
+  .health-top-text .t { font-size: 14px; font-weight: 700; }
+  .health-top-text .s { font-size: 12px; font-weight: 500; color: #8da4be; margin-top: 2px; }
+  .health-signal-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-top: 1px solid #f2f4f7; }
+  .health-signal-row:first-of-type { border-top: 0; }
+  .health-signal-row .lbl { font-size: 13px; font-weight: 600; color: #384352; }
+  .health-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+  .health-insight { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: #e8f0fc; font-size: 12.5px; font-weight: 500; color: #1c3f66; line-height: 1.5; display: flex; gap: 8px; align-items: flex-start; }
+
   .vendor-row { display: flex; align-items: center; gap: 10px; }
   .vendor-badge { width: 34px; height: 34px; border-radius: 9px; background: #eef1f5; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #384352; }
   .vendor-info .nm { font-size: 13px; font-weight: 700; }
@@ -184,7 +194,7 @@
     </div>
     <span class="sb-label">Menu</span>
     <nav class="sb-nav">
-      <div class="sb-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></div>
+      <a class="sb-item" href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></a>
       <a class="sb-item active" href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg><span>Inventory</span></a>
       <a class="sb-item" href="transfers.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l3 4 3-4h6"/><path d="M4 17h4l3-4 3 4h6"/><path d="M17 4l3 3-3 3"/><path d="M17 14l3 3-3 3"/></svg><span>Transfers</span></a>
       <a class="sb-item" href="purchasing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"/></svg><span>Purchasing</span></a>
@@ -235,6 +245,24 @@
             <div class="plant-row"><span class="dot" style="background:#1960bd;"></span><span class="nm">Plant A · Gurgaon</span><span class="units">260 units</span><div class="track"><div class="fill" style="width:59%; background:#1960bd;"></div></div><span class="pct">59%</span></div>
             <div class="plant-row"><span class="dot" style="background:#2577e5;"></span><span class="nm">Plant B · Pune</span><span class="units">104 units</span><div class="track"><div class="fill" style="width:23%; background:#2577e5;"></div></div><span class="pct">23%</span></div>
             <div class="plant-row"><span class="dot" style="background:#77abee;"></span><span class="nm">Plant C · Chennai</span><span class="units">80 units</span><div class="track"><div class="fill" style="width:18%; background:#77abee;"></div></div><span class="pct">18%</span></div>
+          </div>
+
+          <div class="card card-pad">
+            <p class="card-title">Inventory health score</p>
+            <p class="card-sub">Signals behind this SKU's overall health.</p>
+            <div class="health-top">
+              <div class="health-score-circle">88</div>
+              <div class="health-top-text"><div class="t">Healthy — above target</div><div class="s">+3 pts vs. last week</div></div>
+            </div>
+            <div class="health-signal-row"><span class="lbl">Current stock</span><span class="health-pill" style="background:#ecfdf1; color:#047857;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Healthy</span></div>
+            <div class="health-signal-row"><span class="lbl">Demand trend</span><span class="health-pill" style="background:#ecfdf1; color:#047857;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Stable</span></div>
+            <div class="health-signal-row"><span class="lbl">Supplier reliability</span><span class="health-pill" style="background:#ecfdf1; color:#047857;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Reliable</span></div>
+            <div class="health-signal-row"><span class="lbl">Days of inventory</span><span class="health-pill" style="background:#fff7ed; color:#b84509;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#e56106"/></svg>28 days</span></div>
+            <div class="health-signal-row"><span class="lbl">Dead stock risk</span><span class="health-pill" style="background:#ecfdf1; color:#047857;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Low</span></div>
+            <div class="health-insight">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
+              <span>Demand has stayed within 5% of forecast for 8 weeks. At current velocity, on-hand stock covers ~28 days — comfortably above Hanover Works' 12-day lead time.</span>
+            </div>
           </div>
 
           <div class="card card-pad">

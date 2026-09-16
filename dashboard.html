@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockhouse — Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #f4f7fa; font-family: 'Albert Sans', system-ui, sans-serif; color: #151b23; }
+  a { color: #1960bd; text-decoration: none; }
+  a:hover { color: #124287; }
+  ::placeholder { color: #8da4be; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .app { display: flex; min-height: 100vh; width: 100%; }
+
+  /* sidebar */
+  aside.sb { display: flex; flex-direction: column; width: 248px; flex-shrink: 0; background: #ffffff; border-right: 1px solid #e5eaf1; padding: 24px 16px; }
+  .sb-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 24px; border-bottom: 1px solid #eef1f5; margin-bottom: 20px; }
+  .sb-mark { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #1960bd; flex-shrink: 0; }
+  .sb-brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+  .sb-brand-text .name { font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
+  .sb-brand-text .sub { font-size: 11px; font-weight: 500; color: #6e8aab; }
+  .sb-label { font-size: 11px; font-weight: 600; color: #8da4be; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 10px; margin-bottom: 6px; display: block; }
+  .sb-nav { display: flex; flex-direction: column; gap: 2px; }
+  .sb-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; color: #576a84; }
+  .sb-item span { font-size: 14px; font-weight: 500; }
+  .sb-item.active { background: #e8f0fc; color: #1960bd; }
+  .sb-item.active span { font-weight: 700; }
+  .sb-spacer { flex: 1; }
+  .sb-profile { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; background: #f4f7fa; border: 1px solid #eef1f5; }
+  .sb-avatar { position: relative; width: 34px; height: 34px; flex-shrink: 0; }
+  .sb-avatar .disc { width: 34px; height: 34px; border-radius: 9px; background: #d1e3fa; color: #124287; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .sb-avatar .dot { position: absolute; right: -2px; bottom: -2px; width: 9px; height: 9px; border-radius: 50%; background: #10bc83; border: 2px solid #f4f7fa; }
+  .sb-profile-text { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+  .sb-profile-text .name { font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .sb-profile-text .role { font-size: 11px; font-weight: 500; color: #6e8aab; }
+
+  /* main */
+  main { position: relative; display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 28px 36px 48px; gap: 20px; }
+  .crumb { display: flex; align-items: center; gap: 8px; align-self: flex-start; padding: 6px 12px; border-radius: 8px; background: #ffffff; border: 1px solid #eef1f5; }
+  .crumb span { font-size: 13px; font-weight: 600; color: #576a84; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .page-head h1 { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.1; }
+  .page-head p { margin: 0; font-size: 14px; font-weight: 500; color: #6e8aab; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .kpi { display: flex; flex-direction: column; gap: 14px; background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); }
+  .kpi.warn { border-color: #fed8d8; }
+  .kpi.caution { border-color: #ffe9cc; }
+  .kpi-top { display: flex; align-items: center; justify-content: space-between; }
+  .kpi-icon { width: 34px; height: 34px; border-radius: 9px; background: #e8f0fc; display: flex; align-items: center; justify-content: center; }
+  .kpi-icon.warn { background: #feecec; }
+  .kpi-icon.caution { background: #fff7ed; }
+  .kpi-delta { display: flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 700; color: #047857; background: #ecfdf1; padding: 3px 7px; border-radius: 999px; }
+  .kpi-delta.warn { color: #b84509; background: #fff7ed; }
+  .kpi-body { display: flex; flex-direction: column; gap: 2px; }
+  .kpi-num { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+  .kpi-num.warn { color: #b91c1c; }
+  .kpi-num.caution { color: #b84509; }
+  .kpi-label { font-size: 12px; font-weight: 600; color: #6e8aab; }
+
+  .two-col { display: grid; grid-template-columns: 1.55fr 1fr; gap: 16px; align-items: start; }
+  .col { display: flex; flex-direction: column; gap: 16px; }
+
+  .card { background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); }
+  .card-pad { padding: 18px 20px; }
+  .card-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .card-title { font-size: 15px; font-weight: 800; margin: 0 0 4px; }
+  .card-sub { font-size: 12px; font-weight: 500; color: #8da4be; margin: 0 0 14px; }
+  .view-all { font-size: 13px; font-weight: 700; color: #1960bd; }
+
+  /* segmented health / cash-locked rows */
+  .seg-bar { display: flex; width: 100%; height: 10px; border-radius: 999px; overflow: hidden; margin: 14px 0 16px; }
+  .seg-bar span { height: 100%; }
+  .signal-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-top: 1px solid #f2f4f7; }
+  .signal-row:first-of-type { border-top: none; padding-top: 0; }
+  .signal-row .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .signal-row .nm { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; }
+  .signal-row .val { flex-shrink: 0; font-size: 13px; font-weight: 700; color: #384352; }
+  .signal-row .pct { flex-shrink: 0; width: 38px; text-align: right; font-size: 12px; font-weight: 700; color: #576a84; }
+
+  /* critical actions */
+  .issue-row { display: flex; align-items: flex-start; gap: 12px; padding: 13px 0; border-top: 1px solid #f2f4f7; }
+  .issue-row:first-of-type { border-top: none; padding-top: 2px; }
+  .issue-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .issue-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .issue-body .t { font-size: 13.5px; font-weight: 700; line-height: 1.4; }
+  .issue-body .s { font-size: 12.5px; font-weight: 500; color: #8da4be; }
+  .issue-link { flex-shrink: 0; font-size: 12.5px; font-weight: 700; color: #1960bd; white-space: nowrap; margin-top: 2px; }
+
+  /* recommendations preview */
+  .rec-row { display: grid; grid-template-columns: 1.6fr 0.9fr 0.9fr 1.1fr; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid #f2f4f7; }
+  .rec-row:first-of-type { border-top: none; padding-top: 2px; }
+  .rec-row .nm { font-size: 13px; font-weight: 700; }
+  .rec-row .lbl { font-size: 11px; font-weight: 600; color: #8da4be; display: block; }
+  .rec-row .v { font-size: 13px; font-weight: 700; color: #384352; }
+  .rec-badge { justify-self: end; display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+  .rec-badge.buy { background: #feecec; color: #b91c1c; }
+  .rec-badge.ok { background: #eef1f5; color: #576a84; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sb">
+    <div class="sb-brand">
+      <div class="sb-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg></div>
+      <div class="sb-brand-text"><span class="name">Stockhouse</span><span class="sub">Inventory Control</span></div>
+    </div>
+    <span class="sb-label">Menu</span>
+    <nav class="sb-nav">
+      <div class="sb-item active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></div>
+      <a class="sb-item" href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg><span>Inventory</span></a>
+      <a class="sb-item" href="transfers.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l3 4 3-4h6"/><path d="M4 17h4l3-4 3 4h6"/><path d="M17 4l3 3-3 3"/><path d="M17 14l3 3-3 3"/></svg><span>Transfers</span></a>
+      <a class="sb-item" href="purchasing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"/></svg><span>Purchasing</span></a>
+      <a class="sb-item" href="warehouses.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/><path d="M4 21h16"/></svg><span>Warehouses</span></a>
+      <a class="sb-item" href="suppliers.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M15.5 13a5 5 0 0 1 6 4.8"/></svg><span>Suppliers</span></a>
+      <div class="sb-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-7"/><path d="M2 20h20"/></svg><span>Reports</span></div>
+    </nav>
+    <div class="sb-spacer"></div>
+    <div class="sb-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M4.9 4.9l1.55 1.55M17.55 17.55l1.55 1.55M3 12h2.2M18.8 12H21M4.9 19.1l1.55-1.55M17.55 6.45l1.55-1.55"/></svg><span>Settings</span></div>
+    <div class="sb-profile">
+      <div class="sb-avatar"><div class="disc">MD</div><div class="dot"></div></div>
+      <div class="sb-profile-text"><span class="name">Mira Delgado</span><span class="role">Operations Manager</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="crumb"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6e8aab" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></div>
+
+    <div class="page-head">
+      <div><h1>Dashboard</h1><p>Your inventory command center — what needs attention today, Sep 16.</p></div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.5 1.3 6 1.6 8 1.5 0 8-3.2 12.4-8 14.5-4.8-2.1-8-6.5-8-14.5 2 .1 4.5-.2 8-1.5Z"/><path d="M9 12.2l2 2 4-4.4"/></svg></div><span class="kpi-delta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>4 pts</span></div><div class="kpi-body"><span class="kpi-num">82<span style="font-size:14px; font-weight:700; color:#8da4be;">/100</span></span><span class="kpi-label">Inventory Health Score</span></div></div>
+
+      <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.6" r="0.9" fill="#e56106" stroke="none"/></svg></div></div><div class="kpi-body"><span class="kpi-num caution">3</span><span class="kpi-label">Predicted stockouts · within 7 days</span></div></div>
+
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num">₹38.4L</span><span class="kpi-label">Cash locked · ₹8.8L recoverable</span></div></div>
+
+      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5"/><circle cx="12" cy="16.4" r="0.9" fill="#dc2626" stroke="none"/><circle cx="12" cy="12" r="9"/></svg></div></div><div class="kpi-body"><span class="kpi-num warn">7</span><span class="kpi-label">Issues need attention today</span></div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="col">
+        <div class="card card-pad">
+          <div class="card-title-row"><p class="card-title">Critical actions</p></div>
+          <p class="card-sub">Ranked by impact — the 7 issues driving your health score down.</p>
+
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#dc2626;"></div>
+            <div class="issue-body"><span class="t">Cargo Pant and Card Holder are out of, or below, reorder stock</span><span class="s">2 SKUs · immediate reorder recommended</span></div>
+            <a class="issue-link" href="index.html">Review inventory →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#dc2626;"></div>
+            <div class="issue-body"><span class="t">Canvas Low Top, Card Holder and Cargo Pant are predicted to stock out within 7 days</span><span class="s">Canvas Low Top isn't flagged by reorder point yet — demand is up 40% this month</span></div>
+            <a class="issue-link" href="index.html">View inventory →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#e56106;"></div>
+            <div class="issue-body"><span class="t">Central DC · Delhi is at 94% capacity while Returns Hub · Mumbai sits at 32%</span><span class="s">Rebalancing stock could free up space and cut holding cost</span></div>
+            <a class="issue-link" href="warehouses.html">Open warehouses →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#e56106;"></div>
+            <div class="issue-body"><span class="t">3 purchase orders have been pending approval for 5+ days</span><span class="s">Vendor lead times mean further delay risks a stockout</span></div>
+            <a class="issue-link" href="purchasing.html">Review purchasing →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#e56106;"></div>
+            <div class="issue-body"><span class="t">2 supplier deliveries are running behind schedule this week</span><span class="s">Hanover Works and Verado Mills both trending slower than usual</span></div>
+            <a class="issue-link" href="suppliers.html">Open suppliers →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#e5c022;"></div>
+            <div class="issue-body"><span class="t">Ceramic Vase is overstocked at 100% cover — ₹5.2L tied up</span><span class="s">No sales velocity increase forecast this quarter</span></div>
+            <a class="issue-link" href="item-detail.html">View item →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#e5c022;"></div>
+            <div class="issue-body"><span class="t">₹4.6L in dead stock across 6 SKUs with no movement in 90+ days</span><span class="s">Candidates for bundling, discounting or vendor return</span></div>
+            <span class="issue-link" style="color:#8da4be; cursor:default;">See breakdown ↓</span>
+          </div>
+        </div>
+
+        <div class="card card-pad">
+          <div class="card-title-row"><p class="card-title">Procurement recommendations</p><a class="view-all" href="purchasing.html#recommendations">Create purchase orders →</a></div>
+          <p class="card-sub">Based on 30-day demand forecast, open sales and supplier lead time.</p>
+
+          <div class="rec-row" style="padding-top:0; border-top:0;">
+            <span class="lbl">Product</span><span class="lbl">Current</span><span class="lbl">Recommended</span><span></span>
+          </div>
+          <div class="rec-row">
+            <span class="nm">Cargo Pant</span><span class="v">0</span><span class="v">+180 units</span><span class="rec-badge buy">Buy now</span>
+          </div>
+          <div class="rec-row">
+            <span class="nm">Card Holder</span><span class="v">98</span><span class="v">+140 units</span><span class="rec-badge buy">Buy now</span>
+          </div>
+          <div class="rec-row">
+            <span class="nm">Canvas Low Top</span><span class="v">259</span><span class="v">+210 units</span><span class="rec-badge buy">Buy now</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card card-pad">
+          <p class="card-title">Inventory health</p>
+          <p class="card-sub">47 SKUs across 6 categories</p>
+          <div class="seg-bar"><span style="width:68%; background:#10bc83;"></span><span style="width:21%; background:#e5c022;"></span><span style="width:11%; background:#dc2626;"></span></div>
+          <div class="signal-row"><span class="dot" style="background:#10bc83;"></span><span class="nm">Healthy</span><span class="val">32 SKUs</span><span class="pct">68%</span></div>
+          <div class="signal-row"><span class="dot" style="background:#e5c022;"></span><span class="nm">Attention</span><span class="val">10 SKUs</span><span class="pct">21%</span></div>
+          <div class="signal-row"><span class="dot" style="background:#dc2626;"></span><span class="nm">Critical</span><span class="val">5 SKUs</span><span class="pct">11%</span></div>
+        </div>
+
+        <div class="card card-pad">
+          <p class="card-title">Cash locked in inventory</p>
+          <p class="card-sub">₹38.4L total · ₹8.8L potentially recoverable</p>
+          <div class="seg-bar"><span style="width:56%; background:#1960bd;"></span><span style="width:21%; background:#e56106;"></span><span style="width:12%; background:#dc2626;"></span><span style="width:11%; background:#8da4be;"></span></div>
+          <div class="signal-row"><span class="dot" style="background:#1960bd;"></span><span class="nm">Healthy stock</span><span class="val">₹21.4L</span><span class="pct">56%</span></div>
+          <div class="signal-row"><span class="dot" style="background:#e56106;"></span><span class="nm">Slow-moving</span><span class="val">₹8.2L</span><span class="pct">21%</span></div>
+          <div class="signal-row"><span class="dot" style="background:#dc2626;"></span><span class="nm">Dead stock</span><span class="val">₹4.6L</span><span class="pct">12%</span></div>
+          <div class="signal-row"><span class="dot" style="background:#8da4be;"></span><span class="nm">Excess stock</span><span class="val">₹4.2L</span><span class="pct">11%</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
