@@ -124,25 +124,73 @@
 
   /* modal (Create Purchase Order) */
   .modal-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
-  .modal-wrap { position: fixed; inset: 0; z-index: 71; display: none; align-items: center; justify-content: center; pointer-events: none; }
-  .modal-card { pointer-events: auto; width: 440px; max-width: calc(100vw - 32px); background: #ffffff; border-radius: 16px; box-shadow: 0 24px 64px rgba(21,27,35,0.24); display: flex; flex-direction: column; max-height: calc(100vh - 48px); }
-  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; }
+  .modal-wrap { position: fixed; inset: 0; z-index: 71; display: none; align-items: flex-start; justify-content: center; pointer-events: none; padding: 28px 16px; overflow-y: auto; }
+  .modal-card { pointer-events: auto; width: 900px; max-width: calc(100vw - 32px); background: #ffffff; border-radius: 16px; box-shadow: 0 24px 64px rgba(21,27,35,0.24); display: flex; flex-direction: column; max-height: calc(100vh - 56px); }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; gap: 16px; }
   .modal-title { font-size: 18px; font-weight: 800; margin: 0; }
   .modal-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
-  .modal-close { width: 32px; height: 32px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-head-right { display: flex; align-items: flex-end; gap: 10px; flex-shrink: 0; }
+  .modal-close { width: 36px; height: 36px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .modal-close:hover { background: #f4f7fa; color: #384352; }
-  .modal-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
-  .modal-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+  .modal-body { flex: 1; overflow-y: auto; padding: 22px 24px; display: flex; flex-direction: column; gap: 22px; }
+  .modal-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+  .foot-right { display: flex; align-items: center; gap: 10px; }
+  .btn.ghost { border-color: transparent; background: transparent; color: #576a84; }
+  .btn.secondary { background: #ffffff; border-color: #cbd6e6; color: #384352; }
 
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field label { font-size: 12px; font-weight: 700; color: #384352; }
   .field input, .field select, .field textarea { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; width: 100%; }
   .field input:focus, .field select:focus, .field textarea:focus { border-color: #1960bd; }
   .field textarea { resize: vertical; min-height: 64px; font-family: inherit; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .field .amount-wrap { position: relative; }
-  .field .amount-wrap span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 600; color: #8da4be; pointer-events: none; }
-  .field .amount-wrap input { padding-left: 26px; }
+  .field-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .amount-wrap { position: relative; }
+  .amount-wrap span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 600; color: #8da4be; pointer-events: none; }
+  .amount-wrap input { padding-left: 26px; }
+  .field-with-icon { display: flex; align-items: center; gap: 8px; }
+  .field-with-icon input { flex: 1; }
+  .icon-btn { flex-shrink: 0; width: 38px; height: 38px; border-radius: 9px; border: 1px solid #cbd6e6; background: #ffffff; color: #576a84; display: flex; align-items: center; justify-content: center; }
+  .icon-btn:hover { background: #f4f7fa; color: #384352; }
+
+  .section-label { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 10px; }
+
+  .addr-toggle { display: inline-flex; padding: 3px; border-radius: 10px; background: #f4f7fa; border: 1px solid #eef1f5; width: fit-content; }
+  .addr-toggle button { padding: 7px 14px; border-radius: 8px; border: 0; background: transparent; font-size: 12.5px; font-weight: 700; color: #576a84; }
+  .addr-toggle button.active { background: #ffffff; color: #1960bd; box-shadow: 0 1px 2px rgba(21,27,35,0.08); }
+  .addr-block { margin-top: 10px; padding: 12px 14px; border-radius: 10px; background: #fafbfd; border: 1px solid #eef1f5; font-size: 13px; font-weight: 500; color: #384352; line-height: 1.5; }
+
+  .li-table { border: 1px solid #eef1f5; border-radius: 12px; overflow: hidden; }
+  .li-head { display: grid; grid-template-columns: 2.2fr 1.5fr 0.8fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; background: #fafbfd; border-bottom: 1px solid #eef1f5; }
+  .li-head span { font-size: 10.5px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
+  .li-row { display: grid; grid-template-columns: 2.2fr 1.5fr 0.8fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #f2f4f7; align-items: center; }
+  .li-row:last-child { border-bottom: 0; }
+  .li-row select, .li-row input { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 8px; padding: 8px 10px; background: #ffffff; outline: 0; width: 100%; }
+  .li-row select:focus, .li-row input:focus { border-color: #1960bd; }
+  .li-amount { font-size: 13px; font-weight: 700; text-align: right; padding-right: 4px; }
+  .li-remove { width: 28px; height: 28px; border-radius: 8px; border: 0; background: transparent; color: #b2c1d7; display: flex; align-items: center; justify-content: center; }
+  .li-remove:hover { background: #feecec; color: #b91c1c; }
+  .li-remove[disabled] { opacity: 0.35; cursor: not-allowed; }
+  .li-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; background: #fafbfd; }
+  .li-add-btn { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #1960bd; background: transparent; border: 0; padding: 6px 4px; }
+  .li-add-btn:hover { text-decoration: underline; }
+  .li-bulk-btn { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #576a84; background: transparent; border: 0; padding: 6px 4px; }
+  .li-bulk-btn:hover { color: #384352; }
+
+  .summary-wrap { display: flex; justify-content: flex-end; }
+  .summary-card { width: 320px; display: flex; flex-direction: column; gap: 10px; }
+  .summary-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; color: #384352; }
+  .summary-row .lbl { color: #6e8aab; font-weight: 600; }
+  .summary-row input, .summary-row select { width: 96px; text-align: right; font-family: inherit; font-size: 13px; font-weight: 600; color: #151b23; border: 1px solid #cbd6e6; border-radius: 8px; padding: 6px 8px; }
+  .summary-row .amount-wrap { width: 96px; }
+  .summary-row.total { padding-top: 10px; border-top: 1px solid #eef1f5; font-size: 15px; font-weight: 800; color: #151b23; }
+  .summary-row.total .v { color: #1960bd; }
+
+  .attach-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1.5px dashed #cbd6e6; background: #fafbfd; }
+  .attach-box .l { display: flex; align-items: center; gap: 10px; }
+  .attach-box .t { font-size: 13px; font-weight: 700; color: #384352; }
+  .attach-box .s { font-size: 12px; font-weight: 500; color: #8da4be; }
+  .attach-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 700; border: 1px solid #cbd6e6; background: #ffffff; color: #384352; flex-shrink: 0; }
 
   .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
   .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
@@ -199,21 +247,21 @@
         <span class="v">0</span>
         <span class="v">+180 units</span>
         <span class="rec-badge buy">Buy now</span>
-        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Kestrel Supply Co." data-items="180" data-value="153000" data-notes="Auto-recommended: predicted stockout, 30-day demand forecast.">Create PO</button>
+        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Kestrel Supply Co." data-item="Cargo Pant" data-qty="180" data-rate="850" data-notes="Auto-recommended: predicted stockout, 30-day demand forecast.">Create PO</button>
       </div>
       <div class="rec-row">
         <div><span class="nm">Card Holder</span><br><span class="sub">Stock cover: ~4 days · below reorder point</span></div>
         <span class="v">98</span>
         <span class="v">+140 units</span>
         <span class="rec-badge buy">Buy now</span>
-        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Hanover Works" data-items="140" data-value="98000" data-notes="Auto-recommended: below reorder point, 30-day demand forecast.">Create PO</button>
+        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Hanover Works" data-item="Card Holder" data-qty="140" data-rate="700" data-notes="Auto-recommended: below reorder point, 30-day demand forecast.">Create PO</button>
       </div>
       <div class="rec-row">
         <div><span class="nm">Canvas Low Top</span><br><span class="sub">Stock cover: ~6 days · not yet flagged by reorder point, demand up 40%</span></div>
         <span class="v">259</span>
         <span class="v">+210 units</span>
         <span class="rec-badge buy">Buy now</span>
-        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Verado Mills" data-items="210" data-value="178500" data-notes="Auto-recommended: demand up 40% this month, not yet below reorder point.">Create PO</button>
+        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Verado Mills" data-item="Canvas Low Top" data-qty="210" data-rate="850" data-notes="Auto-recommended: demand up 40% this month, not yet below reorder point.">Create PO</button>
       </div>
       <div class="rec-row">
         <div><span class="nm">Chino Short</span><br><span class="sub">Stock cover: 23 days · healthy</span></div>
@@ -270,22 +318,97 @@
   <div class="modal-card">
     <div class="modal-head">
       <div><p class="modal-title">Create Purchase Order</p><p class="modal-sub">Place a new order with a supplier.</p></div>
-      <button class="modal-close" id="closePo" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="modal-head-right">
+        <div class="field" style="min-width:160px;">
+          <label>PDF Template</label>
+          <select id="poPdfTemplate">
+            <option>Standard Template</option>
+            <option>Spartan</option>
+            <option>Minimal</option>
+          </select>
+        </div>
+        <button class="modal-close" id="closePo" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
     </div>
     <div class="modal-body">
-      <div class="field"><label>Vendor</label><select id="poVendor"></select></div>
-      <div class="field-row">
-        <div class="field"><label>Number of items</label><input id="poItemsCount" type="number" placeholder="0"></div>
-        <div class="field"><label>Order value</label>
-          <div class="amount-wrap"><span>₹</span><input id="poValue" type="number" placeholder="0"></div>
+      <div class="field-row-2">
+        <div class="field"><label>Vendor Name</label><select id="poVendor"></select></div>
+        <div class="field">
+          <label>PO Number</label>
+          <div class="field-with-icon">
+            <input id="poNumber" type="text">
+            <button class="icon-btn" id="poNumberSettings" type="button" title="Numbering settings"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1Z"/></svg></button>
+          </div>
         </div>
       </div>
-      <div class="field"><label>Expected delivery date</label><input id="poExpectedDate" type="date"></div>
-      <div class="field"><label>Notes (optional)</label><textarea id="poNotes" placeholder="Add any extra context…" rows="2"></textarea></div>
+
+      <div>
+        <p class="section-label">Delivery Address</p>
+        <div class="addr-toggle">
+          <button type="button" id="addrOrg">Organization</button>
+          <button type="button" id="addrCust">Customer</button>
+        </div>
+        <div class="addr-block" id="addrBlock"></div>
+      </div>
+
+      <div class="field-row-3">
+        <div class="field"><label>Reference #</label><input id="poReference" type="text" placeholder="Optional"></div>
+        <div class="field"><label>Order Date</label><input id="poOrderDate" type="date"></div>
+        <div class="field"><label>Delivery Date</label><input id="poExpectedDate" type="date"></div>
+      </div>
+
+      <div class="field-row-2">
+        <div class="field"><label>Payment Terms</label><select id="poPaymentTerms"></select></div>
+        <div class="field"><label>Shipment Preference</label><select id="poShipment"></select></div>
+      </div>
+
+      <div>
+        <p class="section-label">Item Details</p>
+        <div class="li-table">
+          <div class="li-head"><span>Item</span><span>Account</span><span>Qty</span><span>Rate</span><span>Amount</span><span></span></div>
+          <div id="liRows"></div>
+          <div class="li-foot">
+            <button class="li-add-btn" id="liAddRow" type="button">+ Add New Row</button>
+            <button class="li-bulk-btn" id="liBulkAdd" type="button">Add Items in Bulk</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-wrap">
+        <div class="summary-card">
+          <div class="summary-row"><span class="lbl">Sub Total</span><span id="sumSubtotal">₹0</span></div>
+          <div class="summary-row"><span class="lbl">Discount (%)</span><input id="poDiscount" type="number" value="0" min="0" max="100"></div>
+          <div class="summary-row"><span class="lbl">Tax</span><select id="poTax">
+            <option value="0">Exempt (0%)</option>
+            <option value="5">GST 5%</option>
+            <option value="12">GST 12%</option>
+            <option value="18" selected>GST 18%</option>
+            <option value="28">GST 28%</option>
+          </select></div>
+          <div class="summary-row"><span class="lbl">Adjustment</span><div class="amount-wrap"><span>₹</span><input id="poAdjustment" type="number" value="0"></div></div>
+          <div class="summary-row total"><span>Total</span><span class="v" id="sumTotal">₹0</span></div>
+        </div>
+      </div>
+
+      <div class="field-row-2">
+        <div class="field"><label>Notes (optional)</label><textarea id="poNotes" placeholder="Add any extra context…" rows="2"></textarea></div>
+        <div class="field"><label>Terms &amp; Conditions (optional)</label><textarea id="poTerms" placeholder="e.g. Payment due within 30 days of delivery." rows="2"></textarea></div>
+      </div>
+
+      <div class="attach-box">
+        <div class="l">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.5 12.6 20.3a5 5 0 0 1-7.1-7.1l9-9a3.5 3.5 0 0 1 5 5l-9 9a2 2 0 0 1-2.8-2.8l8.2-8.2"/></svg>
+          <div><div class="t" id="attachLabel">No files attached</div><div class="s">PDF, PNG, JPG up to 10MB</div></div>
+        </div>
+        <button class="attach-btn" id="poAttach" type="button">Attach File(s)</button>
+      </div>
     </div>
     <div class="modal-foot">
-      <button class="btn" id="cancelPo" type="button">Cancel</button>
-      <button class="btn primary" id="submitPo" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Create PO</button>
+      <button class="btn ghost" id="cancelPo" type="button">Cancel</button>
+      <div class="foot-right">
+        <button class="btn secondary" id="draftPo" type="button">Save as Draft</button>
+        <button class="btn primary" id="submitPo" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Save and Send</button>
+      </div>
     </div>
   </div>
 </div>
@@ -409,8 +532,9 @@
       if (action === 'rec-create-po') {
         openPoModal({
           vendor: el.getAttribute('data-vendor'),
-          itemsCount: el.getAttribute('data-items'),
-          value: el.getAttribute('data-value'),
+          item: el.getAttribute('data-item'),
+          qty: parseInt(el.getAttribute('data-qty'), 10),
+          rate: parseFloat(el.getAttribute('data-rate')),
           notes: el.getAttribute('data-notes')
         });
         return;
@@ -444,29 +568,126 @@
   });
 
   // ---- Create Purchase Order modal ----
+  var itemCatalog = [
+    { name: 'Boxy Knit Vest', rate: 950 },
+    { name: 'Canvas Low Top', rate: 850 },
+    { name: 'Canvas Tote', rate: 620 },
+    { name: 'Card Holder', rate: 700 },
+    { name: 'Cargo Pant', rate: 850 },
+    { name: 'Cashmere Scarf', rate: 1450 },
+    { name: 'Ceramic Vase', rate: 540 },
+    { name: 'Chino Short', rate: 780 }
+  ];
+  var accountOptions = ['Inventory Asset', 'Cost of Goods Sold', 'Raw Materials'];
+  var paymentTermsOptions = ['Due on Receipt', 'Net 15', 'Net 30', 'Net 45', 'Net 60'];
+  var shipmentOptions = ['Standard Ground', 'Express Air', 'Sea Freight', 'Vendor Pickup'];
+  var poState = { addr: 'organization', lineItems: [], nextLiId: 1 };
+
   function fillSelect(sel, options, selectedVal) {
     sel.innerHTML = options.map(function (o) {
       return '<option value="' + esc(o) + '"' + (o === selectedVal ? ' selected' : '') + '>' + esc(o) + '</option>';
     }).join('');
   }
 
+  function todayIso() {
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + day;
+  }
+
   function checkPoValid() {
     var vendor = document.getElementById('poVendor').value;
-    var value = document.getElementById('poValue').value;
-    var valid = !!vendor && !!value;
-    document.getElementById('submitPo').disabled = !valid;
-    document.getElementById('submitPo').style.opacity = valid ? '1' : '0.55';
-    document.getElementById('submitPo').style.cursor = valid ? 'pointer' : 'not-allowed';
+    var valid = !!vendor;
+    ['submitPo', 'draftPo'].forEach(function (id) {
+      var b = document.getElementById(id);
+      b.disabled = !valid;
+      b.style.opacity = valid ? '1' : '0.55';
+      b.style.cursor = valid ? 'pointer' : 'not-allowed';
+    });
+  }
+
+  function newLineItem(prefill) {
+    prefill = prefill || {};
+    var id = poState.nextLiId++;
+    var itemName = prefill.item || itemCatalog[0].name;
+    var match = itemCatalog.filter(function (it) { return it.name === itemName; })[0] || itemCatalog[0];
+    var rate = prefill.rate != null && !isNaN(prefill.rate) ? prefill.rate : match.rate;
+    var qty = prefill.qty != null && !isNaN(prefill.qty) ? prefill.qty : 1;
+    return { id: id, item: itemName, account: prefill.account || accountOptions[0], qty: qty, rate: rate };
+  }
+
+  function liAmount(li) { return (parseFloat(li.qty) || 0) * (parseFloat(li.rate) || 0); }
+
+  function computeSubtotal() {
+    return poState.lineItems.reduce(function (sum, li) { return sum + liAmount(li); }, 0);
+  }
+
+  function renderSummary() {
+    var subtotal = computeSubtotal();
+    var discountPct = parseFloat(document.getElementById('poDiscount').value) || 0;
+    var discountAmt = subtotal * discountPct / 100;
+    var taxPct = parseFloat(document.getElementById('poTax').value) || 0;
+    var taxable = subtotal - discountAmt;
+    var taxAmt = taxable * taxPct / 100;
+    var adjustment = parseFloat(document.getElementById('poAdjustment').value) || 0;
+    var total = Math.max(0, taxable + taxAmt + adjustment);
+    document.getElementById('sumSubtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+    document.getElementById('sumTotal').textContent = '₹' + total.toLocaleString('en-IN');
+    checkPoValid();
+  }
+
+  function renderLineItems() {
+    var rowsEl = document.getElementById('liRows');
+    rowsEl.innerHTML = poState.lineItems.map(function (li) {
+      var itemOpts = itemCatalog.map(function (it) {
+        return '<option value="' + esc(it.name) + '"' + (it.name === li.item ? ' selected' : '') + '>' + esc(it.name) + '</option>';
+      }).join('');
+      var acctOpts = accountOptions.map(function (a) {
+        return '<option value="' + esc(a) + '"' + (a === li.account ? ' selected' : '') + '>' + esc(a) + '</option>';
+      }).join('');
+      var removeDisabled = poState.lineItems.length <= 1;
+      return '' +
+        '<div class="li-row">' +
+          '<select data-li-field="item" data-li-id="' + li.id + '">' + itemOpts + '</select>' +
+          '<select data-li-field="account" data-li-id="' + li.id + '">' + acctOpts + '</select>' +
+          '<input type="number" min="0" value="' + li.qty + '" data-li-field="qty" data-li-id="' + li.id + '">' +
+          '<div class="amount-wrap"><span>₹</span><input type="number" min="0" value="' + li.rate + '" data-li-field="rate" data-li-id="' + li.id + '"></div>' +
+          '<span class="li-amount">₹' + liAmount(li).toLocaleString('en-IN') + '</span>' +
+          '<button class="li-remove" type="button" data-action="li-remove" data-key="' + li.id + '"' + (removeDisabled ? ' disabled' : '') + '><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
+        '</div>';
+    }).join('');
+    renderSummary();
+  }
+
+  function renderAddr() {
+    document.getElementById('addrOrg').className = poState.addr === 'organization' ? 'active' : '';
+    document.getElementById('addrCust').className = poState.addr === 'customer' ? 'active' : '';
+    document.getElementById('addrBlock').textContent = poState.addr === 'organization'
+      ? 'Stockhouse Fulfillment Center, 42 Harbor Road, Andheri East, Mumbai, Maharashtra 400069'
+      : "Delivered to the customer's address on the linked sales order.";
   }
 
   function resetPoForm(prefill) {
     prefill = prefill || {};
     fillSelect(document.getElementById('poVendor'), vendorNames, prefill.vendor || vendorNames[0]);
-    document.getElementById('poItemsCount').value = prefill.itemsCount || '';
-    document.getElementById('poValue').value = prefill.value || '';
+    document.getElementById('poNumber').value = 'PO-' + nextPoNumber;
+    poState.addr = 'organization';
+    document.getElementById('poReference').value = '';
+    document.getElementById('poOrderDate').value = todayIso();
     document.getElementById('poExpectedDate').value = '';
+    fillSelect(document.getElementById('poPaymentTerms'), paymentTermsOptions, 'Net 30');
+    fillSelect(document.getElementById('poShipment'), shipmentOptions, shipmentOptions[0]);
+    document.getElementById('poPdfTemplate').value = 'Standard Template';
+    document.getElementById('poDiscount').value = 0;
+    document.getElementById('poTax').value = '18';
+    document.getElementById('poAdjustment').value = 0;
     document.getElementById('poNotes').value = prefill.notes || '';
-    checkPoValid();
+    document.getElementById('poTerms').value = '';
+    poState.nextLiId = 1;
+    poState.lineItems = [ newLineItem(prefill.item ? { item: prefill.item, qty: prefill.qty, rate: prefill.rate } : null) ];
+    renderAddr();
+    renderLineItems();
   }
 
   function openPoModal(prefill) {
@@ -489,38 +710,113 @@
   document.getElementById('cancelPo').addEventListener('click', closePoModal);
   document.getElementById('poBackdrop').addEventListener('click', closePoModal);
   document.getElementById('poVendor').addEventListener('change', checkPoValid);
-  document.getElementById('poValue').addEventListener('input', checkPoValid);
+  document.getElementById('poDiscount').addEventListener('input', renderSummary);
+  document.getElementById('poTax').addEventListener('change', renderSummary);
+  document.getElementById('poAdjustment').addEventListener('input', renderSummary);
+  document.getElementById('addrOrg').addEventListener('click', function () { poState.addr = 'organization'; renderAddr(); });
+  document.getElementById('addrCust').addEventListener('click', function () { poState.addr = 'customer'; renderAddr(); });
+  document.getElementById('liAddRow').addEventListener('click', function () { poState.lineItems.push(newLineItem()); renderLineItems(); });
+  document.getElementById('liBulkAdd').addEventListener('click', function () {
+    showToast('poToastWrap', 'poToastText', "Bulk item import isn't available in this demo — add rows manually above.");
+  });
+  document.getElementById('poNumberSettings').addEventListener('click', function () {
+    showToast('poToastWrap', 'poToastText', "PO numbering settings aren't available in this demo.");
+  });
+  document.getElementById('poAttach').addEventListener('click', function () {
+    showToast('poToastWrap', 'poToastText', "File attachments aren't available in this demo.");
+  });
 
-  document.getElementById('submitPo').addEventListener('click', function () {
+  document.getElementById('liRows').addEventListener('input', function (e) {
+    var field = e.target.getAttribute('data-li-field');
+    if (!field || (field !== 'qty' && field !== 'rate')) return;
+    var id = parseInt(e.target.getAttribute('data-li-id'), 10);
+    var li = poState.lineItems.filter(function (x) { return x.id === id; })[0];
+    if (!li) return;
+    li[field] = e.target.value;
+    var amtEl = e.target.closest('.li-row').querySelector('.li-amount');
+    amtEl.textContent = '₹' + liAmount(li).toLocaleString('en-IN');
+    renderSummary();
+  });
+  document.getElementById('liRows').addEventListener('change', function (e) {
+    var field = e.target.getAttribute('data-li-field');
+    if (!field) return;
+    var id = parseInt(e.target.getAttribute('data-li-id'), 10);
+    var li = poState.lineItems.filter(function (x) { return x.id === id; })[0];
+    if (!li) return;
+    if (field === 'item') {
+      li.item = e.target.value;
+      var match = itemCatalog.filter(function (it) { return it.name === li.item; })[0];
+      if (match) { li.rate = match.rate; renderLineItems(); }
+    } else if (field === 'account') {
+      li.account = e.target.value;
+    }
+  });
+  document.getElementById('liRows').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-action="li-remove"]');
+    if (!btn || btn.disabled) return;
+    var rid = parseInt(btn.getAttribute('data-key'), 10);
+    if (poState.lineItems.length > 1) {
+      poState.lineItems = poState.lineItems.filter(function (x) { return x.id !== rid; });
+      renderLineItems();
+    }
+  });
+
+  function buildPoFromForm(status) {
     var vendor = document.getElementById('poVendor').value;
-    var value = parseFloat(document.getElementById('poValue').value);
-    if (!vendor || !value) return;
+    if (!vendor) return null;
 
-    var itemsCount = parseInt(document.getElementById('poItemsCount').value, 10) || 0;
     var expectedRaw = document.getElementById('poExpectedDate').value;
     var formattedExpected = '—';
     if (expectedRaw) {
       var d = new Date(expectedRaw + 'T00:00:00');
-      if (!isNaN(d)) {
-        formattedExpected = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      }
+      if (!isNaN(d)) formattedExpected = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+    var orderRaw = document.getElementById('poOrderDate').value;
+    var formattedOrder = 'Sep 16, 2026';
+    if (orderRaw) {
+      var od = new Date(orderRaw + 'T00:00:00');
+      if (!isNaN(od)) formattedOrder = od.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
+    var subtotal = computeSubtotal();
+    var discountPct = parseFloat(document.getElementById('poDiscount').value) || 0;
+    var discountAmt = subtotal * discountPct / 100;
+    var taxPct = parseFloat(document.getElementById('poTax').value) || 0;
+    var taxable = subtotal - discountAmt;
+    var taxAmt = taxable * taxPct / 100;
+    var adjustment = parseFloat(document.getElementById('poAdjustment').value) || 0;
+    var total = Math.max(0, taxable + taxAmt + adjustment);
+    var itemsCount = poState.lineItems.reduce(function (sum, li) { return sum + (parseFloat(li.qty) || 0); }, 0);
+
     var poId = 'PO-' + (nextPoNumber++);
-    pos.unshift({
+    return {
       id: Date.now(),
       poId: poId,
       vendor: vendor,
       itemsCount: itemsCount,
-      value: '₹' + value.toLocaleString('en-IN'),
-      status: 'pending',
-      orderDate: 'Sep 16, 2026',
-      expectedDate: formattedExpected
-    });
+      value: '₹' + total.toLocaleString('en-IN'),
+      status: status,
+      orderDate: status === 'draft' ? '—' : formattedOrder,
+      expectedDate: status === 'draft' ? '—' : formattedExpected
+    };
+  }
 
+  document.getElementById('submitPo').addEventListener('click', function () {
+    var po = buildPoFromForm('pending');
+    if (!po) return;
+    pos.unshift(po);
     closePoModal();
     render();
-    showToast('poToastWrap', 'poToastText', poId + ' created and awaiting approval');
+    showToast('poToastWrap', 'poToastText', po.poId + ' created and awaiting approval');
+  });
+
+  document.getElementById('draftPo').addEventListener('click', function () {
+    var po = buildPoFromForm('draft');
+    if (!po) return;
+    pos.unshift(po);
+    closePoModal();
+    render();
+    showToast('poToastWrap', 'poToastText', po.poId + ' saved as draft');
   });
 
   render();
