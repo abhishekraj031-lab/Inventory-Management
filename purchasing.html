@@ -210,6 +210,17 @@
     { id: 8, poId: 'PO-3088', vendor: 'Pergola Goods', itemsCount: 2, value: '₹1,12,300', status: 'draft', orderDate: '—', expectedDate: '—' }
   ];
 
+  (function applyPoStatusOverrides() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhousePoStatusOverrides'); } catch (e) {}
+    if (!raw) return;
+    var overrides;
+    try { overrides = JSON.parse(raw); } catch (e) { return; }
+    pos.forEach(function (po) {
+      if (overrides[po.poId]) po.status = overrides[po.poId];
+    });
+  })();
+
   var statusMeta = {
     draft: { label: 'Draft', bg: '#eef1f5', color: '#576a84', dot: '#8da4be' },
     pending: { label: 'Pending Approval', bg: '#fff7ed', color: '#b84509', dot: '#e56106' },
@@ -218,6 +229,11 @@
   };
 
   var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false, checked: {} };
+  (function applyStatusUrlParam() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var statusParam = urlParams.get('status');
+    if (statusParam && statusMeta.hasOwnProperty(statusParam)) state.activeFilter = statusParam;
+  })();
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
@@ -285,7 +301,7 @@
               (menuOpen ? (
                 '<div class="row-menu">' +
                   '<div class="mi" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="0.9" fill="#576a84" stroke="none"/></svg>View PO details</div>' +
-                  '<div class="mi" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Approve</div>' +
+                  (it.status === 'pending' ? '<div class="mi" data-action="approve" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Approve</div>' : '') +
                   '<div class="sep"></div>' +
                   '<div class="mi danger" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Cancel PO</div>' +
                 '</div>'
@@ -311,6 +327,7 @@
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
       else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }
       else if (action === 'menu') { var mid = parseInt(key, 10); state.openMenuId = state.openMenuId === mid ? null : mid; state.rowsOpen = false; }
+      else if (action === 'approve') { approvePo(parseInt(key, 10)); }
       render();
       return;
     }
@@ -338,6 +355,18 @@
     document.getElementById('poToastText').textContent = msg;
     document.getElementById('poToastWrap').style.display = 'block';
     setTimeout(function () { document.getElementById('poToastWrap').style.display = 'none'; }, 2600);
+  }
+
+  function approvePo(id) {
+    var po = pos.filter(function (p) { return p.id === id; })[0];
+    if (!po || po.status !== 'pending') return;
+    po.status = 'inTransit';
+    state.openMenuId = null;
+    var overrides = {};
+    try { overrides = JSON.parse(localStorage.getItem('stockhousePoStatusOverrides') || '{}'); } catch (e) {}
+    overrides[po.poId] = po.status;
+    try { localStorage.setItem('stockhousePoStatusOverrides', JSON.stringify(overrides)); } catch (e) {}
+    showToast(po.poId + ' approved — now in transit');
   }
 
   // ---- Pick up any POs created on the Create Purchase Order page and merge them into the list ----

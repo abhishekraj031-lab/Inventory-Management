@@ -67,6 +67,10 @@
   .kpi-label { font-size: 12px; font-weight: 600; color: #6e8aab; }
 
   .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .special-filter-banner { display: none; align-items: center; flex-wrap: wrap; gap: 10px; padding: 12px 16px; border-radius: 10px; background: #eef4ff; border: 1px solid #d7e4fb; }
+  .special-filter-banner span { font-size: 12.5px; font-weight: 500; color: #1e3a66; line-height: 1.4; }
+  .special-filter-banner b { font-weight: 700; }
+  .special-filter-banner a.clear-filter { font-size: 12px; font-weight: 700; color: #1960bd; white-space: nowrap; }
   .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chip { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
   .chip .n { opacity: 0.85; font-weight: 600; }
@@ -234,6 +238,11 @@
       <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg></div><span class="kpi-delta warn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>3%</span></div><div class="kpi-body"><span class="kpi-num caution">11</span><span class="kpi-label">Overstocked · SKUs</span></div></div>
     </div>
 
+    <div class="special-filter-banner" id="specialFilterBanner">
+      <span id="specialFilterText"></span>
+      <a class="clear-filter" href="index.html">Clear filter ✕</a>
+    </div>
+
     <div class="toolbar">
       <div class="chips" id="chips"></div>
       <div class="toolbar-right">
@@ -373,12 +382,21 @@
 
   var state = { search: '', activeFilter: 'all', category: 'all', plants: [], activePage: 1, rowsPerPage: 8, openMenuId: null, categoryOpen: false, plantOpen: false, rowsOpen: false, checked: {} };
 
+  var SPECIAL_FILTERS = {
+    reorderIssues: { text: '<b>2 items</b> are out of, or below, reorder stock — from your Dashboard\u2019s Critical actions.', match: function (it) { return it.status === 'belowReorder' || it.status === 'stockout'; } },
+    predictedStockout: { text: '<b>3 items</b> are predicted to stock out within 7 days — from your Dashboard\u2019s Critical actions.', match: function (it) { return stockoutRisk(it) !== null; } }
+  };
+  var urlParams = new URLSearchParams(window.location.search);
+  var specialFilterKey = urlParams.get('filter');
+  state.specialFilter = SPECIAL_FILTERS.hasOwnProperty(specialFilterKey) ? specialFilterKey : null;
+
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   function visibleItems() {
     var q = state.search.trim().toLowerCase();
     return items.filter(function (it) {
-      if (state.activeFilter !== 'all' && it.status !== state.activeFilter) return false;
+      if (state.specialFilter && !SPECIAL_FILTERS[state.specialFilter].match(it)) return false;
+      if (!state.specialFilter && state.activeFilter !== 'all' && it.status !== state.activeFilter) return false;
       if (state.category !== 'all' && it.category !== state.category) return false;
       if (state.plants.length > 0 && state.plants.indexOf(it.plant) === -1) return false;
       if (q && it.name.toLowerCase().indexOf(q) === -1 && it.sku.toLowerCase().indexOf(q) === -1) return false;
@@ -391,6 +409,13 @@
     var visibleIds = visible.map(function (it) { return it.id; });
     var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
 
+    if (state.specialFilter) {
+      document.getElementById('specialFilterText').innerHTML = SPECIAL_FILTERS[state.specialFilter].text;
+      document.getElementById('specialFilterBanner').style.display = 'flex';
+    } else {
+      document.getElementById('specialFilterBanner').style.display = 'none';
+    }
+
     // chips
     var filterDefs = [
       { key: 'all', label: 'All', count: items.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
@@ -399,7 +424,7 @@
       { key: 'overstock', label: 'Overstock', count: items.filter(function (i) { return i.status === 'overstock'; }).length, activeBg: '#e56106', activeBorder: '#e56106', activeColor: '#ffffff', idleBg: '#fff7ed', idleBorder: '#ffe9cc', idleColor: '#b84509' }
     ];
     document.getElementById('chips').innerHTML = filterDefs.map(function (f) {
-      var isActive = state.activeFilter === f.key;
+      var isActive = !state.specialFilter && state.activeFilter === f.key;
       var bg = isActive ? f.activeBg : f.idleBg, border = isActive ? f.activeBorder : f.idleBorder, color = isActive ? f.activeColor : f.idleColor;
       return '<button type="button" class="chip" data-action="filter" data-key="' + f.key + '" style="background:' + bg + '; border-color:' + border + '; color:' + color + ';">' + f.label + ' <span class="n">' + f.count + '</span></button>';
     }).join('');
@@ -494,7 +519,7 @@
       if (action === 'ai-mic') { simulateVoice(); return; }
       if (action === 'ai-send') { sendChatMessage(); return; }
       if (action === 'ai-chip') { handleChipClick(el); return; }
-      if (action === 'filter') { state.activeFilter = key; state.openMenuId = null; }
+      if (action === 'filter') { state.activeFilter = key; state.specialFilter = null; state.openMenuId = null; }
       else if (action === 'category') { if (el.closest('#categoryMenu')) { state.category = key; state.categoryOpen = false; } }
       else if (action === 'plant') {
         var idx = state.plants.indexOf(key);

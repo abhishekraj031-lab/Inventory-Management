@@ -92,6 +92,11 @@
   .issue-body .s { font-size: 12.5px; font-weight: 500; color: #8da4be; }
   .issue-link { display: inline-flex; width: fit-content; padding: 6px 10px; border-radius: 8px; background: #e8f0fc; font-size: 12px; font-weight: 700; color: #1960bd; white-space: nowrap; margin-top: 8px; }
   .issue-link.muted { background: #f4f7fa; color: #8da4be; cursor: default; }
+  .issue-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .issue-actions .issue-link { margin-top: 0; }
+  .issue-link.resolve-btn { background: #f4f7fa; color: #576a84; border: 1px solid #e5eaf1; }
+  .issue-link.resolve-btn:hover { background: #eef1f5; color: #384352; }
+  .crit-empty { font-size: 13px; font-weight: 500; color: #6e8aab; padding: 20px 0 4px; }
   .module-label { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 2px; }
   .module-label.grouped { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f2f4f7; }
 
@@ -286,43 +291,8 @@
       <div class="col">
         <div class="card card-pad">
           <div class="card-title-row"><p class="card-title">Critical actions</p></div>
-          <p class="card-sub">Ranked by impact — the 7 issues driving your health score down.</p>
-
-          <p class="module-label">Inventory</p>
-          <div class="issue-row no-border">
-            <div class="issue-dot" style="background:#dc2626;"></div>
-            <div class="issue-body"><span class="t">Cargo Pant and Card Holder are out of, or below, reorder stock</span><span class="s">2 SKUs · immediate reorder recommended</span><a class="issue-link" href="index.html">Review inventory →</a></div>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#dc2626;"></div>
-            <div class="issue-body"><span class="t">Canvas Low Top, Card Holder and Cargo Pant are predicted to stock out within 7 days</span><span class="s">Canvas Low Top isn't flagged by reorder point yet — demand is up 40% this month</span><a class="issue-link" href="index.html">View inventory →</a></div>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#e5c022;"></div>
-            <div class="issue-body"><span class="t">Ceramic Vase is overstocked at 100% cover — ₹5.2L tied up</span><span class="s">No sales velocity increase forecast this quarter</span><a class="issue-link" href="item-detail.html">View item →</a></div>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#e5c022;"></div>
-            <div class="issue-body"><span class="t">₹4.6L in dead stock across 6 SKUs with no movement in 90+ days</span><span class="s">Candidates for bundling, discounting or vendor return</span><span class="issue-link muted">See breakdown ↓</span></div>
-          </div>
-
-          <p class="module-label grouped">Warehouses</p>
-          <div class="issue-row no-border">
-            <div class="issue-dot" style="background:#e56106;"></div>
-            <div class="issue-body"><span class="t">Central DC · Delhi is at 94% capacity while Returns Hub · Mumbai sits at 32%</span><span class="s">Rebalancing stock could free up space and cut holding cost</span><a class="issue-link" href="warehouses.html">Open warehouses →</a></div>
-          </div>
-
-          <p class="module-label grouped">Purchasing</p>
-          <div class="issue-row no-border">
-            <div class="issue-dot" style="background:#e56106;"></div>
-            <div class="issue-body"><span class="t">3 purchase orders have been pending approval for 5+ days</span><span class="s">Vendor lead times mean further delay risks a stockout</span><a class="issue-link" href="purchasing.html">Review purchasing →</a></div>
-          </div>
-
-          <p class="module-label grouped">Suppliers</p>
-          <div class="issue-row no-border">
-            <div class="issue-dot" style="background:#e56106;"></div>
-            <div class="issue-body"><span class="t">2 supplier deliveries are running behind schedule this week</span><span class="s">Hanover Works and Verado Mills both trending slower than usual</span><a class="issue-link" href="suppliers.html">Open suppliers →</a></div>
-          </div>
+          <p class="card-sub" id="critSub">Ranked by impact — the 7 issues driving your health score down.</p>
+          <div id="critActionsList"></div>
         </div>
       </div>
     </div>
@@ -682,6 +652,140 @@
         });
       }
     });
+  })();
+
+  // ---- Critical actions: computed from real page state, so a row disappears once its underlying action is taken ----
+  (function () {
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    // The 2 POs the Purchasing page currently seeds as 'pending' (PO-3083, PO-3087) — mirrors purchasing.html's base data.
+    var BASE_PENDING_POS = ['PO-3083', 'PO-3087'];
+
+    var CRIT_ACTIONS = [
+      { id: 'inv-reorder', module: 'Inventory', dot: '#dc2626',
+        title: 'Cargo Pant and Card Holder are out of, or below, reorder stock',
+        sub: '2 SKUs · immediate reorder recommended',
+        href: 'index.html?filter=reorderIssues', linkLabel: 'Review inventory →',
+        resolveType: 'covered', coverItems: ['Cargo Pant', 'Card Holder'] },
+      { id: 'inv-predictive', module: 'Inventory', dot: '#dc2626',
+        title: 'Canvas Low Top, Card Holder and Cargo Pant are predicted to stock out within 7 days',
+        sub: 'Canvas Low Top isn’t flagged by reorder point yet — demand is up 40% this month',
+        href: 'index.html?filter=predictedStockout', linkLabel: 'View inventory →',
+        resolveType: 'covered', coverItems: ['Canvas Low Top', 'Card Holder', 'Cargo Pant'] },
+      { id: 'inv-overstock', module: 'Inventory', dot: '#e5c022',
+        title: 'Ceramic Vase is overstocked at 100% cover — ₹5.2L tied up',
+        sub: 'No sales velocity increase forecast this quarter',
+        href: 'item-detail.html?id=7', linkLabel: 'View item →',
+        resolveType: 'none' },
+      { id: 'inv-deadstock', module: 'Inventory', dot: '#e5c022',
+        title: '₹4.6L in dead stock across 6 SKUs with no movement in 90+ days',
+        sub: 'Candidates for bundling, discounting or vendor return',
+        href: null, linkLabel: 'See breakdown ↓',
+        resolveType: 'stub' },
+      { id: 'wh-capacity', module: 'Warehouses', dot: '#e56106',
+        title: 'Central DC · Delhi is at 94% capacity while Returns Hub · Mumbai sits at 32%',
+        sub: 'Rebalancing stock could free up space and cut holding cost',
+        href: 'warehouses.html?filter=capacityImbalance', linkLabel: 'Open warehouses →',
+        resolveType: 'stub' },
+      { id: 'po-pending', module: 'Purchasing', dot: '#e56106',
+        href: 'purchasing.html?status=pending', linkLabel: 'Review purchasing →',
+        resolveType: 'poCount' },
+      { id: 'sup-delayed', module: 'Suppliers', dot: '#e56106',
+        title: '2 supplier deliveries are running behind schedule this week',
+        sub: 'Hanover Works and Verado Mills both trending slower than usual',
+        href: 'suppliers.html?filter=delayed', linkLabel: 'Open suppliers →',
+        resolveType: 'stub' }
+    ];
+
+    function getCoveredItems() {
+      try { return JSON.parse(localStorage.getItem('stockhouseCoveredItems') || '[]'); } catch (e) { return []; }
+    }
+    function getResolvedStubs() {
+      try { return JSON.parse(localStorage.getItem('stockhouseResolvedActions') || '{}'); } catch (e) { return {}; }
+    }
+    function getPoStatusOverrides() {
+      try { return JSON.parse(localStorage.getItem('stockhousePoStatusOverrides') || '{}'); } catch (e) { return {}; }
+    }
+    function setResolvedStub(id) {
+      var resolved = getResolvedStubs();
+      resolved[id] = true;
+      try { localStorage.setItem('stockhouseResolvedActions', JSON.stringify(resolved)); } catch (e) {}
+    }
+
+    function pendingPoCount() {
+      var overrides = getPoStatusOverrides();
+      return BASE_PENDING_POS.filter(function (poId) {
+        var status = overrides[poId] || 'pending';
+        return status === 'pending';
+      }).length;
+    }
+
+    function isResolved(action) {
+      if (action.resolveType === 'covered') {
+        var covered = getCoveredItems();
+        return action.coverItems.every(function (name) { return covered.indexOf(name) !== -1; });
+      }
+      if (action.resolveType === 'stub') return !!getResolvedStubs()[action.id];
+      if (action.resolveType === 'poCount') return pendingPoCount() === 0;
+      return false;
+    }
+
+    function renderCriticalActions() {
+      var visible = CRIT_ACTIONS.filter(function (a) { return !isResolved(a); });
+
+      document.getElementById('critSub').textContent = visible.length === 0
+        ? 'Nice work — nothing is currently flagged as a critical action.'
+        : 'Ranked by impact — the ' + visible.length + ' issue' + (visible.length === 1 ? '' : 's') + ' driving your health score down.';
+
+      var html = '';
+      var lastModule = null;
+      visible.forEach(function (a) {
+        var isNewModule = a.module !== lastModule;
+        lastModule = a.module;
+        if (isNewModule) {
+          html += '<p class="module-label' + (html === '' ? '' : ' grouped') + '">' + esc(a.module) + '</p>';
+        }
+
+        var title = a.title, sub = a.sub;
+        if (a.resolveType === 'poCount') {
+          var n = pendingPoCount();
+          title = n + ' purchase order' + (n === 1 ? ' has' : 's have') + ' been pending approval for 5+ days';
+          sub = 'Vendor lead times mean further delay risks a stockout';
+        }
+
+        var linkHtml = a.href
+          ? '<a class="issue-link" href="' + a.href + '">' + esc(a.linkLabel) + '</a>'
+          : '<span class="issue-link muted">' + esc(a.linkLabel) + '</span>';
+        var resolveBtnHtml = a.resolveType === 'stub'
+          ? '<button type="button" class="issue-link resolve-btn" data-action="resolve" data-key="' + a.id + '">Mark as resolved</button>'
+          : '';
+
+        html += '' +
+          '<div class="issue-row' + (isNewModule ? ' no-border' : '') + '">' +
+            '<div class="issue-dot" style="background:' + a.dot + ';"></div>' +
+            '<div class="issue-body">' +
+              '<span class="t">' + esc(title) + '</span>' +
+              '<span class="s">' + esc(sub) + '</span>' +
+              '<div class="issue-actions">' + linkHtml + resolveBtnHtml + '</div>' +
+            '</div>' +
+          '</div>';
+      });
+
+      document.getElementById('critActionsList').innerHTML = html || '<p class="crit-empty">All caught up — check back as new signals come in.</p>';
+    }
+
+    document.getElementById('critActionsList').addEventListener('click', function (e) {
+      var el = e.target.closest('[data-action="resolve"]');
+      if (!el) return;
+      setResolvedStub(el.getAttribute('data-key'));
+      renderCriticalActions();
+    });
+
+    renderCriticalActions();
   })();
 </script>
 </body>

@@ -589,10 +589,20 @@
     };
   }
 
+  function persistCoveredItems() {
+    var names = poState.lineItems.map(function (li) { return li.item; }).filter(Boolean);
+    if (!names.length) return;
+    var covered = [];
+    try { covered = JSON.parse(localStorage.getItem('stockhouseCoveredItems') || '[]'); } catch (e) {}
+    names.forEach(function (n) { if (covered.indexOf(n) === -1) covered.push(n); });
+    try { localStorage.setItem('stockhouseCoveredItems', JSON.stringify(covered)); } catch (e) {}
+  }
+
   function handleSave(status) {
     var po = buildPoFromForm(status);
     if (!po) return;
     queueNewPo(po);
+    persistCoveredItems();
     var savedMsg = status === 'draft' ? (po.poId + ' saved as draft') : (po.poId + ' created and awaiting approval');
     if (pendingRecGroups.length) {
       var next = pendingRecGroups.shift();
