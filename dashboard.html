@@ -63,6 +63,7 @@
 
   .two-col { display: grid; grid-template-columns: 1.55fr 1fr; gap: 16px; align-items: start; }
   .col { display: flex; flex-direction: column; gap: 16px; }
+  .pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
   .card { background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); }
   .card-pad { padding: 18px 20px; }
@@ -84,11 +85,14 @@
   /* critical actions */
   .issue-row { display: flex; align-items: flex-start; gap: 12px; padding: 13px 0; border-top: 1px solid #f2f4f7; }
   .issue-row:first-of-type { border-top: none; padding-top: 2px; }
+  .issue-row.no-border { border-top: none; padding-top: 2px; }
   .issue-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
   .issue-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .issue-body .t { font-size: 13.5px; font-weight: 700; line-height: 1.4; }
   .issue-body .s { font-size: 12.5px; font-weight: 500; color: #8da4be; }
   .issue-link { flex-shrink: 0; font-size: 12.5px; font-weight: 700; color: #1960bd; white-space: nowrap; margin-top: 2px; }
+  .module-label { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 2px; }
+  .module-label.grouped { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f2f4f7; }
 
   /* recommendations preview */
   .rec-row { display: grid; grid-template-columns: 1.6fr 0.9fr 0.9fr 1.1fr; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid #f2f4f7; }
@@ -145,44 +149,24 @@
 
     <div class="two-col">
       <div class="col">
-        <div class="card card-pad">
-          <div class="card-title-row"><p class="card-title">Critical actions</p></div>
-          <p class="card-sub">Ranked by impact — the 7 issues driving your health score down.</p>
+        <div class="pair-grid">
+          <div class="card card-pad">
+            <p class="card-title">Inventory health</p>
+            <p class="card-sub">47 SKUs across 6 categories</p>
+            <div class="seg-bar"><span style="width:68%; background:#10bc83;"></span><span style="width:21%; background:#e5c022;"></span><span style="width:11%; background:#dc2626;"></span></div>
+            <div class="signal-row"><span class="dot" style="background:#10bc83;"></span><span class="nm">Healthy</span><span class="val">32 SKUs</span><span class="pct">68%</span></div>
+            <div class="signal-row"><span class="dot" style="background:#e5c022;"></span><span class="nm">Attention</span><span class="val">10 SKUs</span><span class="pct">21%</span></div>
+            <div class="signal-row"><span class="dot" style="background:#dc2626;"></span><span class="nm">Critical</span><span class="val">5 SKUs</span><span class="pct">11%</span></div>
+          </div>
 
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#dc2626;"></div>
-            <div class="issue-body"><span class="t">Cargo Pant and Card Holder are out of, or below, reorder stock</span><span class="s">2 SKUs · immediate reorder recommended</span></div>
-            <a class="issue-link" href="index.html">Review inventory →</a>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#dc2626;"></div>
-            <div class="issue-body"><span class="t">Canvas Low Top, Card Holder and Cargo Pant are predicted to stock out within 7 days</span><span class="s">Canvas Low Top isn't flagged by reorder point yet — demand is up 40% this month</span></div>
-            <a class="issue-link" href="index.html">View inventory →</a>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#e56106;"></div>
-            <div class="issue-body"><span class="t">Central DC · Delhi is at 94% capacity while Returns Hub · Mumbai sits at 32%</span><span class="s">Rebalancing stock could free up space and cut holding cost</span></div>
-            <a class="issue-link" href="warehouses.html">Open warehouses →</a>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#e56106;"></div>
-            <div class="issue-body"><span class="t">3 purchase orders have been pending approval for 5+ days</span><span class="s">Vendor lead times mean further delay risks a stockout</span></div>
-            <a class="issue-link" href="purchasing.html">Review purchasing →</a>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#e56106;"></div>
-            <div class="issue-body"><span class="t">2 supplier deliveries are running behind schedule this week</span><span class="s">Hanover Works and Verado Mills both trending slower than usual</span></div>
-            <a class="issue-link" href="suppliers.html">Open suppliers →</a>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#e5c022;"></div>
-            <div class="issue-body"><span class="t">Ceramic Vase is overstocked at 100% cover — ₹5.2L tied up</span><span class="s">No sales velocity increase forecast this quarter</span></div>
-            <a class="issue-link" href="item-detail.html">View item →</a>
-          </div>
-          <div class="issue-row">
-            <div class="issue-dot" style="background:#e5c022;"></div>
-            <div class="issue-body"><span class="t">₹4.6L in dead stock across 6 SKUs with no movement in 90+ days</span><span class="s">Candidates for bundling, discounting or vendor return</span></div>
-            <span class="issue-link" style="color:#8da4be; cursor:default;">See breakdown ↓</span>
+          <div class="card card-pad">
+            <p class="card-title">Cash locked in inventory</p>
+            <p class="card-sub">₹38.4L total · ₹8.8L potentially recoverable</p>
+            <div class="seg-bar"><span style="width:56%; background:#1960bd;"></span><span style="width:21%; background:#e56106;"></span><span style="width:12%; background:#dc2626;"></span><span style="width:11%; background:#8da4be;"></span></div>
+            <div class="signal-row"><span class="dot" style="background:#1960bd;"></span><span class="nm">Healthy stock</span><span class="val">₹21.4L</span><span class="pct">56%</span></div>
+            <div class="signal-row"><span class="dot" style="background:#e56106;"></span><span class="nm">Slow-moving</span><span class="val">₹8.2L</span><span class="pct">21%</span></div>
+            <div class="signal-row"><span class="dot" style="background:#dc2626;"></span><span class="nm">Dead stock</span><span class="val">₹4.6L</span><span class="pct">12%</span></div>
+            <div class="signal-row"><span class="dot" style="background:#8da4be;"></span><span class="nm">Excess stock</span><span class="val">₹4.2L</span><span class="pct">11%</span></div>
           </div>
         </div>
 
@@ -207,22 +191,51 @@
 
       <div class="col">
         <div class="card card-pad">
-          <p class="card-title">Inventory health</p>
-          <p class="card-sub">47 SKUs across 6 categories</p>
-          <div class="seg-bar"><span style="width:68%; background:#10bc83;"></span><span style="width:21%; background:#e5c022;"></span><span style="width:11%; background:#dc2626;"></span></div>
-          <div class="signal-row"><span class="dot" style="background:#10bc83;"></span><span class="nm">Healthy</span><span class="val">32 SKUs</span><span class="pct">68%</span></div>
-          <div class="signal-row"><span class="dot" style="background:#e5c022;"></span><span class="nm">Attention</span><span class="val">10 SKUs</span><span class="pct">21%</span></div>
-          <div class="signal-row"><span class="dot" style="background:#dc2626;"></span><span class="nm">Critical</span><span class="val">5 SKUs</span><span class="pct">11%</span></div>
-        </div>
+          <div class="card-title-row"><p class="card-title">Critical actions</p></div>
+          <p class="card-sub">Ranked by impact — the 7 issues driving your health score down.</p>
 
-        <div class="card card-pad">
-          <p class="card-title">Cash locked in inventory</p>
-          <p class="card-sub">₹38.4L total · ₹8.8L potentially recoverable</p>
-          <div class="seg-bar"><span style="width:56%; background:#1960bd;"></span><span style="width:21%; background:#e56106;"></span><span style="width:12%; background:#dc2626;"></span><span style="width:11%; background:#8da4be;"></span></div>
-          <div class="signal-row"><span class="dot" style="background:#1960bd;"></span><span class="nm">Healthy stock</span><span class="val">₹21.4L</span><span class="pct">56%</span></div>
-          <div class="signal-row"><span class="dot" style="background:#e56106;"></span><span class="nm">Slow-moving</span><span class="val">₹8.2L</span><span class="pct">21%</span></div>
-          <div class="signal-row"><span class="dot" style="background:#dc2626;"></span><span class="nm">Dead stock</span><span class="val">₹4.6L</span><span class="pct">12%</span></div>
-          <div class="signal-row"><span class="dot" style="background:#8da4be;"></span><span class="nm">Excess stock</span><span class="val">₹4.2L</span><span class="pct">11%</span></div>
+          <p class="module-label">Inventory</p>
+          <div class="issue-row no-border">
+            <div class="issue-dot" style="background:#dc2626;"></div>
+            <div class="issue-body"><span class="t">Cargo Pant and Card Holder are out of, or below, reorder stock</span><span class="s">2 SKUs · immediate reorder recommended</span></div>
+            <a class="issue-link" href="index.html">Review inventory →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#dc2626;"></div>
+            <div class="issue-body"><span class="t">Canvas Low Top, Card Holder and Cargo Pant are predicted to stock out within 7 days</span><span class="s">Canvas Low Top isn't flagged by reorder point yet — demand is up 40% this month</span></div>
+            <a class="issue-link" href="index.html">View inventory →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#e5c022;"></div>
+            <div class="issue-body"><span class="t">Ceramic Vase is overstocked at 100% cover — ₹5.2L tied up</span><span class="s">No sales velocity increase forecast this quarter</span></div>
+            <a class="issue-link" href="item-detail.html">View item →</a>
+          </div>
+          <div class="issue-row">
+            <div class="issue-dot" style="background:#e5c022;"></div>
+            <div class="issue-body"><span class="t">₹4.6L in dead stock across 6 SKUs with no movement in 90+ days</span><span class="s">Candidates for bundling, discounting or vendor return</span></div>
+            <span class="issue-link" style="color:#8da4be; cursor:default;">See breakdown ↓</span>
+          </div>
+
+          <p class="module-label grouped">Warehouses</p>
+          <div class="issue-row no-border">
+            <div class="issue-dot" style="background:#e56106;"></div>
+            <div class="issue-body"><span class="t">Central DC · Delhi is at 94% capacity while Returns Hub · Mumbai sits at 32%</span><span class="s">Rebalancing stock could free up space and cut holding cost</span></div>
+            <a class="issue-link" href="warehouses.html">Open warehouses →</a>
+          </div>
+
+          <p class="module-label grouped">Purchasing</p>
+          <div class="issue-row no-border">
+            <div class="issue-dot" style="background:#e56106;"></div>
+            <div class="issue-body"><span class="t">3 purchase orders have been pending approval for 5+ days</span><span class="s">Vendor lead times mean further delay risks a stockout</span></div>
+            <a class="issue-link" href="purchasing.html">Review purchasing →</a>
+          </div>
+
+          <p class="module-label grouped">Suppliers</p>
+          <div class="issue-row no-border">
+            <div class="issue-dot" style="background:#e56106;"></div>
+            <div class="issue-body"><span class="t">2 supplier deliveries are running behind schedule this week</span><span class="s">Hanover Works and Verado Mills both trending slower than usual</span></div>
+            <a class="issue-link" href="suppliers.html">Open suppliers →</a>
+          </div>
         </div>
       </div>
     </div>

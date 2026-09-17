@@ -108,19 +108,19 @@
 
   /* procurement recommendations */
   .rec-card { background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); padding: 18px 20px; }
-  .rec-card-title { font-size: 15px; font-weight: 800; margin: 0 0 4px; }
-  .rec-card-sub { font-size: 12px; font-weight: 500; color: #8da4be; margin: 0 0 6px; }
-  .rec-row { display: grid; grid-template-columns: 1.8fr 1fr 1.2fr 1.4fr 0.9fr; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #f2f4f7; }
+  .rec-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 4px; }
+  .rec-card-title { font-size: 15px; font-weight: 800; margin: 0; }
+  .rec-card-sub { font-size: 12px; font-weight: 500; color: #8da4be; margin: 0 0 14px; }
+  .rec-create-btn { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 700; background: #1960bd; border: 1px solid #1960bd; color: #ffffff; }
+  .rec-row { display: grid; grid-template-columns: 1.8fr 1fr 1.2fr 1.1fr; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #f2f4f7; }
   .rec-row:first-of-type { border-top: 0; }
   .rec-row .lbl { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.04em; text-transform: uppercase; }
   .rec-row .nm { font-size: 13px; font-weight: 700; }
   .rec-row .sub { font-size: 11.5px; font-weight: 500; color: #8da4be; }
   .rec-row .v { font-size: 13px; font-weight: 700; color: #384352; }
-  .rec-badge { justify-self: start; display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+  .rec-badge { justify-self: end; display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
   .rec-badge.buy { background: #feecec; color: #b91c1c; }
   .rec-badge.ok { background: #eef1f5; color: #576a84; }
-  .rec-btn { justify-self: end; display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 9px; font-size: 12.5px; font-weight: 700; background: #1960bd; border: 1px solid #1960bd; color: #ffffff; }
-  .rec-btn[disabled] { background: #eef1f5; border-color: #eef1f5; color: #b2c1d7; cursor: not-allowed; }
 
   /* modal (Create Purchase Order) */
   .modal-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
@@ -200,6 +200,10 @@
   .ai-review-banner input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; width: 16px; height: 16px; accent-color: #1960bd; }
   .ai-review-banner span { font-size: 12.5px; font-weight: 500; color: #1e3a66; line-height: 1.45; }
   .ai-review-banner b { font-weight: 700; }
+
+  .rec-combined-banner { display: none; align-items: flex-start; gap: 10px; margin: 0 24px 20px; padding: 12px 14px; border-radius: 10px; background: #eef4ff; border: 1px solid #d7e4fb; }
+  .rec-combined-banner span { font-size: 12.5px; font-weight: 500; color: #1e3a66; line-height: 1.45; }
+  .rec-combined-banner b { font-weight: 700; }
 </style>
 </head>
 <body>
@@ -245,36 +249,35 @@
     </div>
 
     <div class="rec-card" id="recommendations">
-      <p class="rec-card-title">Procurement recommendations</p>
-      <p class="rec-card-sub">Based on 30-day demand forecast, open sales and supplier lead time.</p>
-      <div class="rec-row"><span class="lbl">Product</span><span class="lbl">Current</span><span class="lbl">Recommended</span><span class="lbl"></span><span class="lbl"></span></div>
+      <div class="rec-card-head">
+        <p class="rec-card-title">Procurement recommendations</p>
+        <button class="rec-create-btn" id="createRecPo" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Create Purchase Order</button>
+      </div>
+      <p class="rec-card-sub">Based on 30-day demand forecast, open sales and supplier lead time — the 3 buy-now items below are combined into a single PO for your review.</p>
+      <div class="rec-row"><span class="lbl">Product</span><span class="lbl">Current</span><span class="lbl">Recommended</span><span class="lbl"></span></div>
       <div class="rec-row">
         <div><span class="nm">Cargo Pant</span><br><span class="sub">Stock cover: 0 days · predicted stockout now</span></div>
         <span class="v">0</span>
         <span class="v">+180 units</span>
         <span class="rec-badge buy">Buy now</span>
-        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Kestrel Supply Co." data-item="Cargo Pant" data-qty="180" data-rate="850" data-notes="Auto-recommended: predicted stockout, 30-day demand forecast.">Create PO</button>
       </div>
       <div class="rec-row">
         <div><span class="nm">Card Holder</span><br><span class="sub">Stock cover: ~4 days · below reorder point</span></div>
         <span class="v">98</span>
         <span class="v">+140 units</span>
         <span class="rec-badge buy">Buy now</span>
-        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Hanover Works" data-item="Card Holder" data-qty="140" data-rate="700" data-notes="Auto-recommended: below reorder point, 30-day demand forecast.">Create PO</button>
       </div>
       <div class="rec-row">
         <div><span class="nm">Canvas Low Top</span><br><span class="sub">Stock cover: ~6 days · not yet flagged by reorder point, demand up 40%</span></div>
         <span class="v">259</span>
         <span class="v">+210 units</span>
         <span class="rec-badge buy">Buy now</span>
-        <button class="rec-btn" type="button" data-action="rec-create-po" data-vendor="Verado Mills" data-item="Canvas Low Top" data-qty="210" data-rate="850" data-notes="Auto-recommended: demand up 40% this month, not yet below reorder point.">Create PO</button>
       </div>
       <div class="rec-row">
         <div><span class="nm">Chino Short</span><br><span class="sub">Stock cover: 23 days · healthy</span></div>
         <span class="v">566</span>
         <span class="v">—</span>
         <span class="rec-badge ok">No action</span>
-        <button class="rec-btn" type="button" disabled>Create PO</button>
       </div>
     </div>
 
@@ -323,7 +326,7 @@
 <div class="modal-wrap" id="poWrap">
   <div class="modal-card">
     <div class="modal-head">
-      <div><p class="modal-title">Create Purchase Order</p><p class="modal-sub">Place a new order with a supplier.</p></div>
+      <div><p class="modal-title">Create Purchase Order</p><p class="modal-sub" id="poModalSub">Place a new order with a supplier.</p></div>
       <div class="modal-head-right">
         <div class="field" style="min-width:160px;">
           <label>PDF Template</label>
@@ -335,6 +338,10 @@
         </div>
         <button class="modal-close" id="closePo" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
+    </div>
+    <div class="rec-combined-banner" id="recBanner">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><circle cx="12" cy="8" r="0.9" fill="#1960bd" stroke="none"/></svg>
+      <span><b>All 3 recommended items are combined into this one PO</b> instead of separate orders per item — review the vendor and quantities below before sending.</span>
     </div>
     <div class="ai-review-banner" id="aiReviewBanner">
       <label>
@@ -541,16 +548,6 @@
     if (el) {
       var action = el.getAttribute('data-action');
       var key = el.getAttribute('data-key');
-      if (action === 'rec-create-po') {
-        openPoModal({
-          vendor: el.getAttribute('data-vendor'),
-          item: el.getAttribute('data-item'),
-          qty: parseInt(el.getAttribute('data-qty'), 10),
-          rate: parseFloat(el.getAttribute('data-rate')),
-          notes: el.getAttribute('data-notes')
-        });
-        return;
-      }
       if (action === 'filter') { state.activeFilter = key; state.openMenuId = null; }
       else if (action === 'rows') { if (el.closest('#rowsMenu')) { state.rowsPerPage = parseInt(key, 10); state.rowsOpen = false; } }
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
@@ -713,6 +710,14 @@
     renderAddr();
     renderLineItems();
     setAiReviewGate(prefill.aiDrafted);
+    setRecBanner(prefill.fromRecommendations);
+  }
+
+  function setRecBanner(fromRecommendations) {
+    document.getElementById('recBanner').style.display = fromRecommendations ? 'flex' : 'none';
+    document.getElementById('poModalSub').textContent = fromRecommendations
+      ? 'Combined from Procurement Recommendations — review before sending.'
+      : 'Place a new order with a supplier.';
   }
 
   function openPoModal(prefill) {
@@ -731,6 +736,18 @@
   }
 
   document.getElementById('openPo').addEventListener('click', function () { openPoModal(); });
+  document.getElementById('createRecPo').addEventListener('click', function () {
+    openPoModal({
+      vendor: 'Kestrel Supply Co.',
+      lines: [
+        { item: 'Cargo Pant', qty: 180, rate: 850 },
+        { item: 'Card Holder', qty: 140, rate: 700 },
+        { item: 'Canvas Low Top', qty: 210, rate: 850 }
+      ],
+      notes: 'Auto-recommended: predicted stockout / below reorder point / rising demand, per 30-day demand forecast.',
+      fromRecommendations: true
+    });
+  });
   document.getElementById('closePo').addEventListener('click', closePoModal);
   document.getElementById('cancelPo').addEventListener('click', closePoModal);
   document.getElementById('poBackdrop').addEventListener('click', closePoModal);
