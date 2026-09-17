@@ -160,6 +160,34 @@
   /* toast */
   .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
   .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
+
+  /* AI Command Chat */
+  .ai-fab { position: fixed; right: 28px; bottom: 28px; z-index: 80; display: flex; align-items: center; gap: 8px; padding: 13px 18px 13px 14px; border-radius: 999px; border: 0; background: #1960bd; color: #ffffff; font-size: 13.5px; font-weight: 700; box-shadow: 0 12px 28px rgba(25,96,189,0.32); }
+  .ai-fab:hover { background: #124287; }
+  .ai-chat-panel { position: fixed; right: 28px; bottom: 96px; z-index: 81; width: 380px; max-width: calc(100vw - 32px); height: 520px; max-height: calc(100vh - 140px); background: #ffffff; border-radius: 18px; box-shadow: 0 24px 64px rgba(21,27,35,0.24); border: 1px solid #eef1f5; display: none; flex-direction: column; overflow: hidden; }
+  .ai-chat-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid #eef1f5; background: #fafbfd; flex-shrink: 0; }
+  .ai-chat-head-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+  .ai-chat-head-text .t { font-size: 14px; font-weight: 800; }
+  .ai-chat-head-text .s { font-size: 11px; font-weight: 500; color: #8da4be; }
+  .ai-chat-close { flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; }
+  .ai-chat-close:hover { background: #eef1f5; color: #384352; }
+  .ai-chat-body { flex: 1; overflow-y: auto; padding: 16px 16px 6px; display: flex; flex-direction: column; gap: 12px; }
+  .ai-msg { display: flex; flex-direction: column; gap: 8px; }
+  .ai-msg.user { align-items: flex-end; }
+  .ai-msg.assistant { align-items: flex-start; }
+  .ai-bubble { max-width: 88%; padding: 10px 13px; border-radius: 14px; font-size: 13px; font-weight: 500; line-height: 1.45; }
+  .ai-msg.assistant .ai-bubble { background: #f4f7fa; color: #151b23; border-bottom-left-radius: 4px; }
+  .ai-msg.user .ai-bubble { background: #1960bd; color: #ffffff; border-bottom-right-radius: 4px; }
+  .ai-chip-row { display: flex; flex-wrap: wrap; gap: 6px; max-width: 92%; }
+  .ai-chip { padding: 7px 12px; border-radius: 999px; border: 1px solid #cbd6e6; background: #ffffff; color: #1960bd; font-size: 12px; font-weight: 700; }
+  .ai-chip:hover { background: #e8f0fc; }
+  .ai-chat-foot { padding: 12px 14px; border-top: 1px solid #eef1f5; flex-shrink: 0; }
+  .ai-input-row { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 14px; border-radius: 999px; border: 1px solid #cbd6e6; background: #ffffff; }
+  .ai-input-row input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 13px; font-weight: 500; color: #151b23; font-family: inherit; }
+  .ai-mic-btn { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border: 0; background: #eef1f5; color: #576a84; display: flex; align-items: center; justify-content: center; }
+  .ai-mic-btn.listening { background: #feecec; color: #dc2626; animation: aiPulse 1s ease-in-out infinite; }
+  .ai-send-btn { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border: 0; background: #1960bd; color: #ffffff; display: flex; align-items: center; justify-content: center; }
+  @keyframes aiPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.35); } 50% { box-shadow: 0 0 0 6px rgba(220,38,38,0); } }
 </style>
 </head>
 <body>
@@ -288,6 +316,26 @@
 
 <div class="toast-wrap" id="addItemToastWrap">
   <div class="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="addItemToastText"></span></div>
+</div>
+
+<button class="ai-fab" type="button" data-action="ai-toggle">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/><path d="M9 21h6"/></svg>
+  Ask Stockhouse AI
+</button>
+
+<div class="ai-chat-panel" id="aiChatPanel">
+  <div class="ai-chat-head">
+    <div class="ai-chat-head-text"><span class="t">Stockhouse AI</span><span class="s">Command chat · human review required before any PO sends</span></div>
+    <button class="ai-chat-close" type="button" data-action="ai-close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="ai-chat-body" id="aiChatMessages"></div>
+  <div class="ai-chat-foot">
+    <div class="ai-input-row">
+      <input id="aiChatInput" type="text" placeholder="Ask Stockhouse AI…" autocomplete="off">
+      <button class="ai-mic-btn" id="aiMicBtn" type="button" data-action="ai-mic" title="Voice command (demo)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></button>
+      <button class="ai-send-btn" id="aiSendBtn" type="button" data-action="ai-send"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -441,6 +489,11 @@
     if (el) {
       var action = el.getAttribute('data-action');
       var key = el.getAttribute('data-key');
+      if (action === 'ai-toggle') { aiChat.open = !aiChat.open; if (aiChat.open) ensureGreeting(); renderChat(); return; }
+      if (action === 'ai-close') { aiChat.open = false; renderChat(); return; }
+      if (action === 'ai-mic') { simulateVoice(); return; }
+      if (action === 'ai-send') { sendChatMessage(); return; }
+      if (action === 'ai-chip') { handleChipClick(el); return; }
       if (action === 'filter') { state.activeFilter = key; state.openMenuId = null; }
       else if (action === 'category') { if (el.closest('#categoryMenu')) { state.category = key; state.categoryOpen = false; } }
       else if (action === 'plant') {
@@ -516,6 +569,162 @@
     setTimeout(function () { document.getElementById(wrapId).style.display = 'none'; }, 2600);
   }
 
+  // ---- AI Command Chat ----
+  var aiChat = { open: false, listening: false, messages: [], nextId: 1 };
+  var voiceExamples = [
+    'Create a PO by selecting items which are low on stock',
+    'Show items below reorder point',
+    'Show stockouts'
+  ];
+
+  function addMessage(role, html, chips) {
+    var id = aiChat.nextId++;
+    aiChat.messages.push({ id: id, role: role, html: html, chips: chips || null });
+    renderChat();
+  }
+
+  function ensureGreeting() {
+    if (aiChat.messages.length > 0) return;
+    addMessage('assistant', 'Hi Mira — I can draft a purchase order for low-stock items or filter this list. Nothing gets sent without your review. Try one of these, or type your own:', [
+      { action: 'example', text: voiceExamples[0], label: 'Create a PO for items low on stock' },
+      { action: 'example', text: voiceExamples[1], label: 'Show items below reorder point' },
+      { action: 'example', text: voiceExamples[2], label: 'Show stockouts' }
+    ]);
+  }
+
+  function renderChat() {
+    document.getElementById('aiChatPanel').style.display = aiChat.open ? 'flex' : 'none';
+    var list = document.getElementById('aiChatMessages');
+    list.innerHTML = aiChat.messages.map(function (m) {
+      var chipsHtml = '';
+      if (m.chips && m.chips.length) {
+        chipsHtml = '<div class="ai-chip-row">' + m.chips.map(function (c, i) {
+          return '<button type="button" class="ai-chip" data-action="ai-chip" data-mid="' + m.id + '" data-ci="' + i + '">' + esc(c.label) + '</button>';
+        }).join('') + '</div>';
+      }
+      return '<div class="ai-msg ' + m.role + '"><div class="ai-bubble">' + m.html + '</div>' + chipsHtml + '</div>';
+    }).join('');
+    list.scrollTop = list.scrollHeight;
+    var micBtn = document.getElementById('aiMicBtn');
+    if (micBtn) micBtn.classList.toggle('listening', aiChat.listening);
+    var input = document.getElementById('aiChatInput');
+    if (input) input.placeholder = aiChat.listening ? 'Listening…' : 'Ask Stockhouse AI…';
+  }
+
+  function groupLowStockByVendor() {
+    var lowStock = items.filter(function (it) { return it.status === 'belowReorder' || it.status === 'stockout'; });
+    var byVendor = {};
+    lowStock.forEach(function (it) {
+      if (!byVendor[it.vendor]) byVendor[it.vendor] = { vendor: it.vendor, hasStockout: false, lines: [] };
+      if (it.status === 'stockout') byVendor[it.vendor].hasStockout = true;
+      var qty = Math.max(it.reorder * 2 - it.onHand, it.reorder);
+      byVendor[it.vendor].lines.push({ item: it.name, qty: qty });
+    });
+    var groups = Object.keys(byVendor).map(function (k) { return byVendor[k]; });
+    groups.sort(function (a, b) { return (b.hasStockout ? 1 : 0) - (a.hasStockout ? 1 : 0); });
+    return groups;
+  }
+
+  function openAiDraftInPurchasing(draft) {
+    var payload = {
+      vendor: draft.vendor,
+      lines: draft.lines,
+      notes: 'Drafted by Stockhouse AI from low-stock signals. Review quantities and vendor before sending.',
+      aiDrafted: true
+    };
+    try { localStorage.setItem('stockhouseAiPoDraft', JSON.stringify(payload)); } catch (e) {}
+    window.location.href = 'purchasing.html';
+  }
+
+  function handleChipClick(el) {
+    var mid = parseInt(el.getAttribute('data-mid'), 10);
+    var ci = parseInt(el.getAttribute('data-ci'), 10);
+    var m = aiChat.messages.filter(function (x) { return x.id === mid; })[0];
+    if (!m || !m.chips || !m.chips[ci]) return;
+    var chip = m.chips[ci];
+    if (chip.action === 'example') {
+      document.getElementById('aiChatInput').value = chip.text;
+      sendChatMessage();
+    } else if (chip.action === 'openDraft') {
+      openAiDraftInPurchasing(chip.draft);
+    }
+  }
+
+  function processCommand(raw) {
+    addMessage('user', esc(raw));
+    var text = raw.toLowerCase();
+    var isPoIntent = /\b(po|purchase order)\b/.test(text);
+    var isLowStockIntent = /(low.*stock|below reorder|reorder point|stockout|out of stock)/.test(text);
+
+    if (isPoIntent && isLowStockIntent) {
+      var groups = groupLowStockByVendor();
+      if (groups.length === 0) {
+        addMessage('assistant', "Good news — nothing is currently at or below its reorder point, so there's nothing to draft a PO for.");
+        return;
+      }
+      var primary = groups[0];
+      var others = groups.slice(1);
+      var totalCount = groups.reduce(function (s, g) { return s + g.lines.length; }, 0);
+      var lineDesc = primary.lines.map(function (l) { return esc(l.item) + ' (qty ' + l.qty + ')'; }).join(', ');
+      var msgHtml = 'I found ' + totalCount + ' item' + (totalCount === 1 ? '' : 's') + ' at or below reorder point across ' + groups.length + ' vendor' + (groups.length === 1 ? '' : 's') + '. ' +
+        (primary.hasStockout ? 'Prioritizing the stockout vendor first: ' : 'Starting with ') +
+        '<b>' + esc(primary.vendor) + '</b> — ' + lineDesc + '. Nothing sends automatically — this opens the Create PO form for your review.';
+      var chips = [{ action: 'openDraft', draft: { vendor: primary.vendor, lines: primary.lines }, label: 'Review PO for ' + primary.vendor }];
+      others.forEach(function (g) {
+        chips.push({ action: 'openDraft', draft: { vendor: g.vendor, lines: g.lines }, label: 'Also draft a PO for ' + g.vendor });
+      });
+      addMessage('assistant', msgHtml, chips);
+      return;
+    }
+
+    if (/^(show|filter|list)\b/.test(text) || /show (me|items)/.test(text)) {
+      var filterMap = [
+        { re: /below reorder|reorder point/, key: 'belowReorder', label: 'below reorder' },
+        { re: /stockout|out of stock/, key: 'stockout', label: 'stockouts' },
+        { re: /overstock/, key: 'overstock', label: 'overstocked' },
+        { re: /healthy/, key: 'healthy', label: 'healthy' },
+        { re: /\ball\b|everything/, key: 'all', label: 'all items' }
+      ];
+      var match = filterMap.filter(function (f) { return f.re.test(text); })[0];
+      if (match) {
+        state.activeFilter = match.key; state.search = ''; state.activePage = 1; render();
+        var count = visibleItems().length;
+        addMessage('assistant', 'Showing ' + count + ' item' + (count === 1 ? '' : 's') + (match.key === 'all' ? '' : ' — ' + esc(match.label)) + '.');
+        return;
+      }
+    }
+
+    addMessage('assistant', 'I can draft a purchase order for low-stock items (e.g. "create a PO for items low on stock"), or filter this list (e.g. "show stockouts"). Try one of the examples below.', [
+      { action: 'example', text: voiceExamples[0], label: 'Create a PO for items low on stock' },
+      { action: 'example', text: voiceExamples[1], label: 'Show items below reorder point' }
+    ]);
+  }
+
+  function sendChatMessage() {
+    var input = document.getElementById('aiChatInput');
+    var raw = input.value.trim();
+    if (!raw) return;
+    input.value = '';
+    processCommand(raw);
+  }
+
+  function simulateVoice() {
+    if (aiChat.listening) return;
+    aiChat.listening = true;
+    renderChat();
+    setTimeout(function () {
+      aiChat.listening = false;
+      var example = voiceExamples[Math.floor(Math.random() * voiceExamples.length)];
+      document.getElementById('aiChatInput').value = example;
+      renderChat();
+      setTimeout(function () { sendChatMessage(); }, 450);
+    }, 1300);
+  }
+
+  document.getElementById('aiChatInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); sendChatMessage(); }
+  });
+
   document.getElementById('openAddItem').addEventListener('click', openAddItemDrawer);
   document.getElementById('closeAddItem').addEventListener('click', closeAddItemDrawer);
   document.getElementById('cancelAddItem').addEventListener('click', closeAddItemDrawer);
@@ -548,6 +757,7 @@
   });
 
   render();
+  renderChat();
 })();
 </script>
 </body>

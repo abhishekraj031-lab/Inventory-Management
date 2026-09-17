@@ -194,6 +194,12 @@
 
   .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
   .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
+
+  .ai-review-banner { display: none; align-items: flex-start; gap: 10px; padding: 12px 24px; background: #eef4ff; border-bottom: 1px solid #d7e4fb; flex-shrink: 0; }
+  .ai-review-banner label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+  .ai-review-banner input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; width: 16px; height: 16px; accent-color: #1960bd; }
+  .ai-review-banner span { font-size: 12.5px; font-weight: 500; color: #1e3a66; line-height: 1.45; }
+  .ai-review-banner b { font-weight: 700; }
 </style>
 </head>
 <body>
@@ -329,6 +335,12 @@
         </div>
         <button class="modal-close" id="closePo" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
+    </div>
+    <div class="ai-review-banner" id="aiReviewBanner">
+      <label>
+        <input type="checkbox" id="aiReviewCheck">
+        <span><b>Drafted by Stockhouse AI</b> from low-stock signals. I've reviewed the vendor, items and quantities below — this must be checked before the PO can be sent.</span>
+      </label>
     </div>
     <div class="modal-body">
       <div class="field-row-2">
@@ -581,7 +593,7 @@
   var accountOptions = ['Inventory Asset', 'Cost of Goods Sold', 'Raw Materials'];
   var paymentTermsOptions = ['Due on Receipt', 'Net 15', 'Net 30', 'Net 45', 'Net 60'];
   var shipmentOptions = ['Standard Ground', 'Express Air', 'Sea Freight', 'Vendor Pickup'];
-  var poState = { addr: 'organization', lineItems: [], nextLiId: 1 };
+  var poState = { addr: 'organization', lineItems: [], nextLiId: 1, aiDrafted: false, aiReviewed: false };
 
   function fillSelect(sel, options, selectedVal) {
     sel.innerHTML = options.map(function (o) {
@@ -599,12 +611,23 @@
   function checkPoValid() {
     var vendor = document.getElementById('poVendor').value;
     var valid = !!vendor;
-    ['submitPo', 'draftPo'].forEach(function (id) {
-      var b = document.getElementById(id);
-      b.disabled = !valid;
-      b.style.opacity = valid ? '1' : '0.55';
-      b.style.cursor = valid ? 'pointer' : 'not-allowed';
-    });
+    var sendValid = valid && (!poState.aiDrafted || poState.aiReviewed);
+    var draftBtn = document.getElementById('draftPo');
+    draftBtn.disabled = !valid;
+    draftBtn.style.opacity = valid ? '1' : '0.55';
+    draftBtn.style.cursor = valid ? 'pointer' : 'not-allowed';
+    var sendBtn = document.getElementById('submitPo');
+    sendBtn.disabled = !sendValid;
+    sendBtn.style.opacity = sendValid ? '1' : '0.55';
+    sendBtn.style.cursor = sendValid ? 'pointer' : 'not-allowed';
+  }
+
+  function setAiReviewGate(isAiDrafted) {
+    poState.aiDrafted = !!isAiDrafted;
+    poState.aiReviewed = false;
+    document.getElementById('aiReviewBanner').style.display = poState.aiDrafted ? 'flex' : 'none';
+    document.getElementById('aiReviewCheck').checked = false;
+    checkPoValid();
   }
 
   function newLineItem(prefill) {
@@ -685,9 +708,11 @@
     document.getElementById('poNotes').value = prefill.notes || '';
     document.getElementById('poTerms').value = '';
     poState.nextLiId = 1;
-    poState.lineItems = [ newLineItem(prefill.item ? { item: prefill.item, qty: prefill.qty, rate: prefill.rate } : null) ];
+    var lines = (prefill.lines && prefill.lines.length) ? prefill.lines : (prefill.item ? [{ item: prefill.item, qty: prefill.qty, rate: prefill.rate }] : null);
+    poState.lineItems = lines ? lines.map(function (l) { return newLineItem(l); }) : [ newLineItem(null) ];
     renderAddr();
     renderLineItems();
+    setAiReviewGate(prefill.aiDrafted);
   }
 
   function openPoModal(prefill) {
@@ -710,6 +735,10 @@
   document.getElementById('cancelPo').addEventListener('click', closePoModal);
   document.getElementById('poBackdrop').addEventListener('click', closePoModal);
   document.getElementById('poVendor').addEventListener('change', checkPoValid);
+  document.getElementById('aiReviewCheck').addEventListener('change', function (e) {
+    poState.aiReviewed = e.target.checked;
+    checkPoValid();
+  });
   document.getElementById('poDiscount').addEventListener('input', renderSummary);
   document.getElementById('poTax').addEventListener('change', renderSummary);
   document.getElementById('poAdjustment').addEventListener('input', renderSummary);
@@ -820,6 +849,19 @@
   });
 
   render();
+
+  // ---- Pick up a PO drafted by the AI Command Chat on the Item List page ----
+  (function checkAiDraft() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhouseAiPoDraft'); } catch (e) {}
+    if (!raw) return;
+    try { localStorage.removeItem('stockhouseAiPoDraft'); } catch (e) {}
+    var draft;
+    try { draft = JSON.parse(raw); } catch (e) { return; }
+    if (!draft || !draft.vendor || !draft.lines || !draft.lines.length) return;
+    openPoModal({ vendor: draft.vendor, lines: draft.lines, notes: draft.notes, aiDrafted: true });
+    showToast('poToastWrap', 'poToastText', 'Drafted by Stockhouse AI — review before sending');
+  })();
 })();
 </script>
 </body>
