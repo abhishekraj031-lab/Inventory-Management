@@ -188,6 +188,12 @@
   .rec-combined-banner { display: none; align-items: flex-start; gap: 10px; margin: 0 24px 20px; padding: 12px 14px; border-radius: 10px; background: #eef4ff; border: 1px solid #d7e4fb; }
   .rec-combined-banner span { font-size: 12.5px; font-weight: 500; color: #1e3a66; line-height: 1.45; }
   .rec-combined-banner b { font-weight: 700; }
+
+  .other-vendor-banner { display: none; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 24px 20px; padding: 12px 14px; border-radius: 10px; background: #fafbfd; border: 1px solid #eef1f5; }
+  .other-vendor-banner .ovb-label { font-size: 12px; font-weight: 700; color: #576a84; flex-shrink: 0; }
+  .chips-inline { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips-inline .chip-btn { padding: 7px 12px; border-radius: 999px; border: 1px solid #cbd6e6; background: #ffffff; color: #1960bd; font-size: 12px; font-weight: 700; }
+  .chips-inline .chip-btn:hover { background: #e8f0fc; }
 </style>
 </head>
 <body>
@@ -292,7 +298,11 @@
     </div>
     <div class="rec-combined-banner" id="recBanner">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><circle cx="12" cy="8" r="0.9" fill="#1960bd" stroke="none"/></svg>
-      <span><b>All 3 recommended items are combined into this one PO</b> instead of separate orders per item — review the vendor and quantities below before sending.</span>
+      <span id="recBannerText"><b>Recommended items are combined into this one PO</b> instead of separate orders per item — review the vendor and quantities below before sending.</span>
+    </div>
+    <div class="other-vendor-banner" id="otherVendorBanner">
+      <span class="ovb-label">Also flagged for reorder:</span>
+      <div class="chips-inline" id="otherVendorChips"></div>
     </div>
     <div class="ai-review-banner" id="aiReviewBanner">
       <label>
@@ -542,6 +552,7 @@
   var paymentTermsOptions = ['Due on Receipt', 'Net 15', 'Net 30', 'Net 45', 'Net 60'];
   var shipmentOptions = ['Standard Ground', 'Express Air', 'Sea Freight', 'Vendor Pickup'];
   var poState = { addr: 'organization', lineItems: [], nextLiId: 1, aiDrafted: false, aiReviewed: false };
+  var pendingRecGroups = [];
 
   function fillSelect(sel, options, selectedVal) {
     sel.innerHTML = options.map(function (o) {
@@ -661,11 +672,15 @@
     renderAddr();
     renderLineItems();
     setAiReviewGate(prefill.aiDrafted);
-    setRecBanner(prefill.fromRecommendations);
+    setRecBanner(prefill.fromRecommendations, lines ? lines.length : 0);
   }
 
-  function setRecBanner(fromRecommendations) {
+  function setRecBanner(fromRecommendations, lineCount) {
     document.getElementById('recBanner').style.display = fromRecommendations ? 'flex' : 'none';
+    if (fromRecommendations) {
+      var n = lineCount || 0;
+      document.getElementById('recBannerText').innerHTML = '<b>' + n + ' recommended item' + (n === 1 ? ' is' : 's are') + ' combined into this one PO</b> instead of separate orders per item — review the vendor and quantities below before sending.';
+    }
     document.getElementById('poModalSub').textContent = fromRecommendations
       ? 'Combined from Procurement Recommendations — review before sending.'
       : 'Place a new order with a supplier.';
@@ -679,6 +694,8 @@
   function closePoModal() {
     document.getElementById('poBackdrop').style.display = 'none';
     document.getElementById('poWrap').style.display = 'none';
+    pendingRecGroups = [];
+    renderOtherVendorChips();
   }
   function showToast(wrapId, textId, msg) {
     document.getElementById(textId).textContent = msg;
@@ -686,18 +703,39 @@
     setTimeout(function () { document.getElementById(wrapId).style.display = 'none'; }, 2600);
   }
 
-  function openRecommendationsPo() {
+  function openRecGroupPo(group) {
     openPoModal({
-      vendor: 'Kestrel Supply Co.',
-      lines: [
-        { item: 'Cargo Pant', qty: 180, rate: 850 },
-        { item: 'Card Holder', qty: 140, rate: 700 },
-        { item: 'Canvas Low Top', qty: 210, rate: 850 }
-      ],
+      vendor: group.vendor,
+      lines: group.lines,
       notes: 'Auto-recommended: predicted stockout / below reorder point / rising demand, per 30-day demand forecast.',
       fromRecommendations: true
     });
   }
+
+  function renderOtherVendorChips() {
+    var banner = document.getElementById('otherVendorBanner');
+    var chipsEl = document.getElementById('otherVendorChips');
+    if (!pendingRecGroups.length) {
+      banner.style.display = 'none';
+      chipsEl.innerHTML = '';
+      return;
+    }
+    banner.style.display = 'flex';
+    chipsEl.innerHTML = pendingRecGroups.map(function (g, i) {
+      return '<button type="button" class="chip-btn" data-idx="' + i + '">Draft PO for ' + esc(g.vendor) + ' (' + g.lines.length + ')</button>';
+    }).join('');
+  }
+
+  document.getElementById('otherVendorChips').addEventListener('click', function (e) {
+    var btn = e.target.closest('.chip-btn');
+    if (!btn) return;
+    var idx = parseInt(btn.getAttribute('data-idx'), 10);
+    var g = pendingRecGroups[idx];
+    if (!g) return;
+    pendingRecGroups.splice(idx, 1);
+    openRecGroupPo(g);
+    renderOtherVendorChips();
+  });
 
   document.getElementById('openPo').addEventListener('click', function () { openPoModal(); });
   document.getElementById('closePo').addEventListener('click', closePoModal);
@@ -832,17 +870,25 @@
     showToast('poToastWrap', 'poToastText', 'Drafted by Stockhouse AI — review before sending');
   })();
 
-  // ---- Arrived from Dashboard's "Create purchase orders" link: open the combined recommendations PO directly ----
-  (function checkOpenRecPo() {
-    var params;
-    try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
-    if (params.get('openRecPo') !== '1') return;
-    openRecommendationsPo();
-    try {
-      var url = new URL(window.location.href);
-      url.searchParams.delete('openRecPo');
-      window.history.replaceState({}, '', url.pathname + url.search + url.hash);
-    } catch (e) {}
+  // ---- Arrived from Dashboard's "View all" recommendations picker: open the primary vendor's PO, ----
+  // ---- with quick chips to draft POs for any other vendors in the selection. ----
+  (function checkRecSelection() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhouseRecSelection'); } catch (e) {}
+    if (!raw) return;
+    try { localStorage.removeItem('stockhouseRecSelection'); } catch (e) {}
+    var data;
+    try { data = JSON.parse(raw); } catch (e) { return; }
+    if (!data || !data.groups || !data.groups.length) return;
+    var groups = data.groups.slice();
+    var primary = groups.shift();
+    if (!primary || !primary.vendor || !primary.lines || !primary.lines.length) return;
+    pendingRecGroups = groups;
+    openRecGroupPo(primary);
+    renderOtherVendorChips();
+    showToast('poToastWrap', 'poToastText', groups.length
+      ? 'Opened PO for ' + primary.vendor + ' — ' + groups.length + ' more vendor' + (groups.length === 1 ? '' : 's') + ' to review'
+      : primary.lines.length + ' recommended item' + (primary.lines.length === 1 ? '' : 's') + ' combined into this PO');
   })();
 })();
 </script>

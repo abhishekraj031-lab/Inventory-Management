@@ -122,6 +122,43 @@
   .mc-custom-range label { font-size: 11px; font-weight: 700; color: #384352; }
   .mc-custom-range input[type="date"] { padding: 7px 9px; border-radius: 8px; border: 1px solid #cbd6e6; font-family: inherit; font-size: 12.5px; font-weight: 500; color: #151b23; outline: 0; }
   .mc-apply-btn { padding: 7px 14px; border-radius: 8px; border: 1px solid #1960bd; background: #1960bd; color: #ffffff; font-size: 12.5px; font-weight: 700; }
+
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
+  .modal-wrap { position: fixed; inset: 0; z-index: 71; display: none; align-items: flex-start; justify-content: center; pointer-events: none; padding: 28px 16px; overflow-y: auto; }
+  .modal-card { pointer-events: auto; width: 760px; max-width: calc(100vw - 32px); background: #ffffff; border-radius: 16px; box-shadow: 0 24px 64px rgba(21,27,35,0.24); display: flex; flex-direction: column; max-height: calc(100vh - 56px); }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; gap: 16px; }
+  .modal-title { font-size: 18px; font-weight: 800; margin: 0; }
+  .modal-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
+  .modal-close { width: 36px; height: 36px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #f4f7fa; color: #384352; }
+  .modal-body { flex: 1; overflow-y: auto; padding: 0 24px 6px; }
+  .modal-foot { display: flex; flex-direction: column; gap: 8px; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 700; border: 1px solid #cbd6e6; background: #ffffff; color: #384352; }
+  .btn.primary { background: #1960bd; border-color: #1960bd; color: #ffffff; box-shadow: 0 1px 2px rgba(25,96,189,0.25); }
+  .btn.primary:disabled { background: #b7cbe8; border-color: #b7cbe8; color: #ffffff; cursor: not-allowed; box-shadow: none; }
+  .btn.secondary { background: #ffffff; border-color: #cbd6e6; color: #384352; }
+  .btn.sm { padding: 6px 12px; font-size: 12.5px; }
+
+  .rec-all-col-head { display: grid; grid-template-columns: 22px 1.6fr 0.8fr 1fr 1fr; align-items: center; gap: 10px; padding: 4px 0 10px; border-bottom: 1px solid #eef1f5; position: sticky; top: 0; background: #ffffff; z-index: 1; }
+  .rec-all-col-head input[type="checkbox"] { width: 15px; height: 15px; accent-color: #1960bd; }
+  .rec-all-col-head .lbl { font-size: 11px; font-weight: 600; color: #8da4be; }
+  .rec-all-col-head .lbl.head-select { font-size: 12.5px; font-weight: 800; color: #384352; }
+  .rec-vendor-group { margin: 14px 0; }
+  .rec-vendor-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border-radius: 8px; background: #fafbfd; border: 1px solid #eef1f5; margin-bottom: 4px; }
+  .rec-group-check { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #384352; }
+  .rec-group-check input[type="checkbox"] { width: 15px; height: 15px; accent-color: #1960bd; }
+  .rec-vendor-count { font-size: 11.5px; font-weight: 600; color: #8da4be; }
+  .rec-vendor-none { font-size: 12px; font-weight: 600; color: #8da4be; }
+  .rec-all-row { display: grid; grid-template-columns: 22px 1.6fr 0.8fr 1fr 1fr; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f2f4f7; }
+  .rec-all-row:last-of-type { border-bottom: none; }
+  .rec-all-row.disabled { opacity: 0.5; }
+  .rec-all-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: #1960bd; }
+  .rec-all-row .nm { font-size: 13px; font-weight: 700; }
+  .rec-all-row .v { font-size: 13px; font-weight: 700; color: #384352; }
+
+  .rec-sel-count { font-size: 13px; font-weight: 700; color: #384352; }
+  .rec-vendor-note { font-size: 11.5px; font-weight: 600; color: #1960bd; margin: 0; }
 </style>
 </head>
 <body>
@@ -190,21 +227,13 @@
         </div>
 
         <div class="card card-pad">
-          <div class="card-title-row"><p class="card-title">Procurement recommendations</p><a class="view-all" href="purchasing.html?openRecPo=1">Create purchase orders →</a></div>
+          <div class="card-title-row"><p class="card-title">Procurement recommendations</p><a class="view-all" href="#" id="recViewAll">View all <span id="recCount"></span> →</a></div>
           <p class="card-sub">Based on 30-day demand forecast, open sales and supplier lead time.</p>
 
           <div class="rec-row" style="padding-top:0; border-top:0;">
             <span class="lbl">Product</span><span class="lbl">Current</span><span class="lbl">Recommended</span><span></span>
           </div>
-          <div class="rec-row">
-            <span class="nm">Cargo Pant</span><span class="v">0</span><span class="v">+180 units</span><span class="rec-badge buy">Buy now</span>
-          </div>
-          <div class="rec-row">
-            <span class="nm">Card Holder</span><span class="v">98</span><span class="v">+140 units</span><span class="rec-badge buy">Buy now</span>
-          </div>
-          <div class="rec-row">
-            <span class="nm">Canvas Low Top</span><span class="v">259</span><span class="v">+210 units</span><span class="rec-badge buy">Buy now</span>
-          </div>
+          <div id="recRows"></div>
         </div>
 
         <div class="card card-pad">
@@ -298,6 +327,36 @@
       </div>
     </div>
   </main>
+</div>
+
+<div class="modal-backdrop" id="recBackdrop"></div>
+<div class="modal-wrap" id="recWrap">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <p class="modal-title">Procurement recommendations</p>
+        <p class="modal-sub">All items currently flagged by the 30-day demand forecast, grouped by vendor — select the ones you want to order.</p>
+      </div>
+      <button class="modal-close" id="recModalClose" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="rec-all-col-head">
+        <input type="checkbox" id="recSelectAll">
+        <span class="lbl head-select">Select all</span>
+        <span class="lbl" style="text-align:right;">Current</span>
+        <span class="lbl" style="text-align:right;">Recommended</span>
+        <span></span>
+      </div>
+      <div id="recAllGroups"></div>
+    </div>
+    <div class="modal-foot">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <span class="rec-sel-count" id="recSelCount">0 items selected</span>
+        <button class="btn primary" id="recCreatePo" type="button" disabled>Create Purchase Order →</button>
+      </div>
+      <p class="rec-vendor-note" id="recVendorNote"></p>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -411,6 +470,217 @@
 
       // initial render matches the default active tab (Last Month)
       mcRender('month', PERIOD_DAYS.month, false);
+    });
+  })();
+
+  // ---- Procurement recommendations: top-5 preview + "View all" grouped-by-vendor picker ----
+  (function () {
+    var REC_ITEMS = [
+      { id: 1, name: 'Cargo Pant', current: 0, recommended: 180, rate: 850, vendor: 'Kestrel Supply Co.', status: 'buy' },
+      { id: 2, name: 'Card Holder', current: 98, recommended: 140, rate: 700, vendor: 'Kestrel Supply Co.', status: 'buy' },
+      { id: 3, name: 'Canvas Low Top', current: 259, recommended: 210, rate: 850, vendor: 'Kestrel Supply Co.', status: 'buy' },
+      { id: 4, name: 'Cashmere Scarf', current: 18, recommended: 90, rate: 1450, vendor: 'Northline Textile', status: 'buy' },
+      { id: 5, name: 'Boxy Knit Vest', current: 9, recommended: 120, rate: 950, vendor: 'Verado Mills', status: 'buy' },
+      { id: 6, name: 'Canvas Tote', current: 22, recommended: 160, rate: 620, vendor: 'Pergola Goods', status: 'buy' },
+      { id: 7, name: 'Chino Short', current: 540, recommended: 0, rate: 780, vendor: 'Hanover Works', status: 'ok' },
+      { id: 8, name: 'Ceramic Vase', current: 340, recommended: 0, rate: 540, vendor: 'Solano Freight & Textiles', status: 'ok' }
+    ];
+
+    var recSelected = {};
+    REC_ITEMS.forEach(function (it) { if (it.status === 'buy') recSelected[it.id] = true; });
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function recBadge(status) {
+      return status === 'buy'
+        ? '<span class="rec-badge buy">Buy now</span>'
+        : '<span class="rec-badge ok">No action</span>';
+    }
+
+    function renderRecPreview() {
+      var top5 = REC_ITEMS.filter(function (it) { return it.status === 'buy'; })
+        .slice()
+        .sort(function (a, b) { return b.recommended - a.recommended; })
+        .slice(0, 5);
+      var html = top5.map(function (it) {
+        return '<div class="rec-row"><span class="nm">' + esc(it.name) + '</span>' +
+          '<span class="v">' + it.current + '</span>' +
+          '<span class="v">+' + it.recommended + ' units</span>' +
+          recBadge(it.status) + '</div>';
+      }).join('');
+      var rowsEl = document.getElementById('recRows');
+      if (rowsEl) rowsEl.innerHTML = html;
+      var countEl = document.getElementById('recCount');
+      if (countEl) countEl.textContent = '(' + REC_ITEMS.length + ')';
+    }
+
+    function vendorGroups(items) {
+      var byVendor = {};
+      var order = [];
+      items.forEach(function (it) {
+        if (!byVendor[it.vendor]) { byVendor[it.vendor] = []; order.push(it.vendor); }
+        byVendor[it.vendor].push(it);
+      });
+      var groups = order.map(function (v) { return { vendor: v, items: byVendor[v] }; });
+      groups.sort(function (a, b) {
+        var aBuy = a.items.filter(function (i) { return i.status === 'buy'; }).length;
+        var bBuy = b.items.filter(function (i) { return i.status === 'buy'; }).length;
+        if (bBuy !== aBuy) return bBuy - aBuy;
+        return a.vendor.localeCompare(b.vendor);
+      });
+      return groups;
+    }
+
+    function renderRecModal() {
+      var groups = vendorGroups(REC_ITEMS);
+      var groupsHtml = groups.map(function (g) {
+        var buyItems = g.items.filter(function (i) { return i.status === 'buy'; });
+        var allBuyChecked = buyItems.length > 0 && buyItems.every(function (i) { return recSelected[i.id]; });
+        var rowsHtml = g.items.map(function (it) {
+          var disabled = it.status !== 'buy';
+          var checked = !disabled && recSelected[it.id];
+          return '<div class="rec-all-row' + (disabled ? ' disabled' : '') + '">' +
+            '<input type="checkbox" class="rec-item-check" data-id="' + it.id + '"' + (checked ? ' checked' : '') + (disabled ? ' disabled' : '') + '>' +
+            '<span class="nm">' + esc(it.name) + '</span>' +
+            '<span class="v" style="text-align:right;">' + it.current + '</span>' +
+            '<span class="v" style="text-align:right;">' + (it.recommended > 0 ? '+' + it.recommended + ' units' : '—') + '</span>' +
+            recBadge(it.status) +
+            '</div>';
+        }).join('');
+        var actionHtml = buyItems.length
+          ? '<button type="button" class="btn secondary sm rec-vendor-po-btn" data-vendor="' + esc(g.vendor) + '">Create PO for this vendor →</button>'
+          : '<span class="rec-vendor-none">Nothing to reorder</span>';
+        return '<div class="rec-vendor-group">' +
+          '<div class="rec-vendor-head">' +
+            '<label class="rec-group-check">' +
+              '<input type="checkbox" class="rec-vendor-select" data-vendor="' + esc(g.vendor) + '"' + (buyItems.length ? '' : ' disabled') + (allBuyChecked ? ' checked' : '') + '>' +
+              '<b>' + esc(g.vendor) + '</b> <span class="rec-vendor-count">' + g.items.length + ' item' + (g.items.length === 1 ? '' : 's') + '</span>' +
+            '</label>' +
+            actionHtml +
+          '</div>' +
+          rowsHtml +
+          '</div>';
+      }).join('');
+      var groupsEl = document.getElementById('recAllGroups');
+      if (groupsEl) groupsEl.innerHTML = groupsHtml;
+
+      var buyItems = REC_ITEMS.filter(function (it) { return it.status === 'buy'; });
+      var selectedItems = REC_ITEMS.filter(function (it) { return recSelected[it.id]; });
+      var selectAllCb = document.getElementById('recSelectAll');
+      if (selectAllCb) {
+        selectAllCb.checked = buyItems.length > 0 && selectedItems.length === buyItems.length;
+        selectAllCb.indeterminate = selectedItems.length > 0 && selectedItems.length < buyItems.length;
+      }
+      var countLabel = document.getElementById('recSelCount');
+      if (countLabel) countLabel.textContent = selectedItems.length + (selectedItems.length === 1 ? ' item selected' : ' items selected');
+
+      var vendorNoteEl = document.getElementById('recVendorNote');
+      if (vendorNoteEl) {
+        var selVendorGroups = vendorGroups(selectedItems);
+        vendorNoteEl.textContent = selVendorGroups.length > 1
+          ? 'Spans ' + selVendorGroups.length + ' vendors — Create Purchase Order opens ' + selVendorGroups[0].vendor + ' first (' + selVendorGroups[0].items.length + ' item' + (selVendorGroups[0].items.length === 1 ? '' : 's') + '), then offers quick links to draft the rest.'
+          : '';
+      }
+      var createBtn = document.getElementById('recCreatePo');
+      if (createBtn) createBtn.disabled = selectedItems.length === 0;
+    }
+
+    function toggleItem(id) {
+      var it = REC_ITEMS.filter(function (x) { return x.id === id; })[0];
+      if (!it || it.status !== 'buy') return;
+      if (recSelected[id]) delete recSelected[id]; else recSelected[id] = true;
+      renderRecModal();
+    }
+
+    function toggleVendor(vendor) {
+      var items = REC_ITEMS.filter(function (it) { return it.vendor === vendor && it.status === 'buy'; });
+      if (!items.length) return;
+      var allChecked = items.every(function (it) { return recSelected[it.id]; });
+      items.forEach(function (it) { if (allChecked) delete recSelected[it.id]; else recSelected[it.id] = true; });
+      renderRecModal();
+    }
+
+    function toggleSelectAll() {
+      var buyItems = REC_ITEMS.filter(function (it) { return it.status === 'buy'; });
+      var allChecked = buyItems.length > 0 && buyItems.every(function (it) { return recSelected[it.id]; });
+      buyItems.forEach(function (it) { if (allChecked) delete recSelected[it.id]; else recSelected[it.id] = true; });
+      renderRecModal();
+    }
+
+    function handoffToPurchasing(groups) {
+      try { localStorage.setItem('stockhouseRecSelection', JSON.stringify({ groups: groups })); } catch (e) {}
+      window.location.href = 'purchasing.html';
+    }
+
+    function createPoForVendor(vendor) {
+      var items = REC_ITEMS.filter(function (it) { return it.vendor === vendor && it.status === 'buy'; });
+      if (!items.length) return;
+      handoffToPurchasing([{
+        vendor: vendor,
+        lines: items.map(function (it) { return { item: it.name, qty: it.recommended, rate: it.rate }; })
+      }]);
+    }
+
+    function createPurchaseOrderFromSelection() {
+      var selectedItems = REC_ITEMS.filter(function (it) { return recSelected[it.id]; });
+      if (!selectedItems.length) return;
+      var groups = vendorGroups(selectedItems).map(function (g) {
+        return {
+          vendor: g.vendor,
+          lines: g.items.map(function (it) { return { item: it.name, qty: it.recommended, rate: it.rate }; })
+        };
+      });
+      handoffToPurchasing(groups);
+    }
+
+    function openRecModal() {
+      renderRecModal();
+      document.getElementById('recBackdrop').style.display = 'block';
+      document.getElementById('recWrap').style.display = 'flex';
+    }
+    function closeRecModal() {
+      document.getElementById('recBackdrop').style.display = 'none';
+      document.getElementById('recWrap').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      renderRecPreview();
+
+      var viewAllLink = document.getElementById('recViewAll');
+      if (viewAllLink) viewAllLink.addEventListener('click', function (e) { e.preventDefault(); openRecModal(); });
+
+      var closeBtn = document.getElementById('recModalClose');
+      if (closeBtn) closeBtn.addEventListener('click', closeRecModal);
+
+      var backdrop = document.getElementById('recBackdrop');
+      if (backdrop) backdrop.addEventListener('click', closeRecModal);
+
+      var selectAllCb = document.getElementById('recSelectAll');
+      if (selectAllCb) selectAllCb.addEventListener('change', toggleSelectAll);
+
+      var createBtn = document.getElementById('recCreatePo');
+      if (createBtn) createBtn.addEventListener('click', createPurchaseOrderFromSelection);
+
+      var groupsEl = document.getElementById('recAllGroups');
+      if (groupsEl) {
+        groupsEl.addEventListener('change', function (e) {
+          var t = e.target;
+          if (t.classList.contains('rec-item-check')) {
+            toggleItem(parseInt(t.getAttribute('data-id'), 10));
+          } else if (t.classList.contains('rec-vendor-select')) {
+            toggleVendor(t.getAttribute('data-vendor'));
+          }
+        });
+        groupsEl.addEventListener('click', function (e) {
+          var btn = e.target.closest('.rec-vendor-po-btn');
+          if (!btn) return;
+          createPoForVendor(btn.getAttribute('data-vendor'));
+        });
+      }
     });
   })();
 </script>
