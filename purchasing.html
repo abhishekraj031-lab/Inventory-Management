@@ -735,8 +735,7 @@
     setTimeout(function () { document.getElementById(wrapId).style.display = 'none'; }, 2600);
   }
 
-  document.getElementById('openPo').addEventListener('click', function () { openPoModal(); });
-  document.getElementById('createRecPo').addEventListener('click', function () {
+  function openRecommendationsPo() {
     openPoModal({
       vendor: 'Kestrel Supply Co.',
       lines: [
@@ -747,7 +746,10 @@
       notes: 'Auto-recommended: predicted stockout / below reorder point / rising demand, per 30-day demand forecast.',
       fromRecommendations: true
     });
-  });
+  }
+
+  document.getElementById('openPo').addEventListener('click', function () { openPoModal(); });
+  document.getElementById('createRecPo').addEventListener('click', openRecommendationsPo);
   document.getElementById('closePo').addEventListener('click', closePoModal);
   document.getElementById('cancelPo').addEventListener('click', closePoModal);
   document.getElementById('poBackdrop').addEventListener('click', closePoModal);
@@ -878,6 +880,19 @@
     if (!draft || !draft.vendor || !draft.lines || !draft.lines.length) return;
     openPoModal({ vendor: draft.vendor, lines: draft.lines, notes: draft.notes, aiDrafted: true });
     showToast('poToastWrap', 'poToastText', 'Drafted by Stockhouse AI — review before sending');
+  })();
+
+  // ---- Arrived from Dashboard's "Create purchase orders" link: open the combined recommendations PO directly ----
+  (function checkOpenRecPo() {
+    var params;
+    try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+    if (params.get('openRecPo') !== '1') return;
+    openRecommendationsPo();
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('openRecPo');
+      window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+    } catch (e) {}
   })();
 })();
 </script>
