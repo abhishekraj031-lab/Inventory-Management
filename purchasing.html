@@ -55,6 +55,10 @@
   .kpi-num { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
   .kpi-label { font-size: 12px; font-weight: 600; color: #6e8aab; }
 
+  .special-filter-banner { display: none; align-items: center; flex-wrap: wrap; gap: 10px; padding: 12px 16px; border-radius: 10px; background: #eef4ff; border: 1px solid #d7e4fb; }
+  .special-filter-banner span { font-size: 12.5px; font-weight: 500; color: #1e3a66; line-height: 1.4; }
+  .special-filter-banner b { font-weight: 700; }
+  .special-filter-banner a.clear-filter { font-size: 12px; font-weight: 700; color: #1960bd; white-space: nowrap; }
   .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chip { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
@@ -152,6 +156,11 @@
       <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num">₹42.6L</span><span class="kpi-label">Ordered this month</span></div></div>
     </div>
 
+    <div class="special-filter-banner" id="specialFilterBanner">
+      <span id="specialFilterText"></span>
+      <a class="clear-filter" href="purchasing.html">Clear filter ✕</a>
+    </div>
+
     <div class="toolbar">
       <div class="chips" id="chips"></div>
       <div class="toolbar-right">
@@ -228,11 +237,13 @@
     received: { label: 'Received', bg: '#ecfdf1', color: '#047857', dot: '#10bc83' }
   };
 
-  var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false, checked: {} };
+  var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false, checked: {}, specialFilterPo: null };
   (function applyStatusUrlParam() {
     var urlParams = new URLSearchParams(window.location.search);
     var statusParam = urlParams.get('status');
     if (statusParam && statusMeta.hasOwnProperty(statusParam)) state.activeFilter = statusParam;
+    var poParam = urlParams.get('po');
+    if (poParam) state.specialFilterPo = poParam;
   })();
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -240,6 +251,7 @@
   function visibleItems() {
     var q = state.search.trim().toLowerCase();
     return pos.filter(function (it) {
+      if (state.specialFilterPo) return it.poId === state.specialFilterPo;
       if (state.activeFilter !== 'all' && it.status !== state.activeFilter) return false;
       if (q && it.poId.toLowerCase().indexOf(q) === -1 && it.vendor.toLowerCase().indexOf(q) === -1) return false;
       return true;
@@ -251,6 +263,13 @@
     var visibleIds = visible.map(function (it) { return it.id; });
     var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
 
+    if (state.specialFilterPo) {
+      document.getElementById('specialFilterText').innerHTML = 'Showing just <b>' + esc(state.specialFilterPo) + '</b> — flagged on your Dashboard\u2019s Critical actions for a price variance vs. your last order.';
+      document.getElementById('specialFilterBanner').style.display = 'flex';
+    } else {
+      document.getElementById('specialFilterBanner').style.display = 'none';
+    }
+
     var filterDefs = [
       { key: 'all', label: 'All', count: pos.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
       { key: 'pending', label: 'Pending Approval', count: pos.filter(function (i) { return i.status === 'pending'; }).length, activeBg: '#e56106', activeBorder: '#e56106', activeColor: '#ffffff', idleBg: '#fff7ed', idleBorder: '#ffe9cc', idleColor: '#b84509' },
@@ -258,7 +277,7 @@
       { key: 'received', label: 'Received', count: pos.filter(function (i) { return i.status === 'received'; }).length, activeBg: '#047857', activeBorder: '#047857', activeColor: '#ffffff', idleBg: '#ecfdf1', idleBorder: '#bdeed4', idleColor: '#047857' }
     ];
     document.getElementById('chips').innerHTML = filterDefs.map(function (f) {
-      var isActive = state.activeFilter === f.key;
+      var isActive = !state.specialFilterPo && state.activeFilter === f.key;
       var bg = isActive ? f.activeBg : f.idleBg, border = isActive ? f.activeBorder : f.idleBorder, color = isActive ? f.activeColor : f.idleColor;
       return '<button type="button" class="chip" data-action="filter" data-key="' + f.key + '" style="background:' + bg + '; border-color:' + border + '; color:' + color + ';">' + f.label + ' <span class="n">' + f.count + '</span></button>';
     }).join('');
@@ -322,7 +341,7 @@
     if (el) {
       var action = el.getAttribute('data-action');
       var key = el.getAttribute('data-key');
-      if (action === 'filter') { state.activeFilter = key; state.openMenuId = null; }
+      if (action === 'filter') { state.activeFilter = key; state.specialFilterPo = null; state.openMenuId = null; }
       else if (action === 'rows') { if (el.closest('#rowsMenu')) { state.rowsPerPage = parseInt(key, 10); state.rowsOpen = false; } }
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
       else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }

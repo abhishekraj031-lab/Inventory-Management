@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockhouse — Supplier Detail</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #f4f7fa; font-family: 'Albert Sans', system-ui, sans-serif; color: #151b23; }
+  a { color: #1960bd; text-decoration: none; }
+  a:hover { color: #124287; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .app { display: flex; min-height: 100vh; width: 100%; }
+
+  aside.sb { display: flex; flex-direction: column; width: 248px; flex-shrink: 0; background: #ffffff; border-right: 1px solid #e5eaf1; padding: 24px 16px; }
+  .sb-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 24px; border-bottom: 1px solid #eef1f5; margin-bottom: 20px; }
+  .sb-mark { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #1960bd; flex-shrink: 0; }
+  .sb-brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+  .sb-brand-text .name { font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
+  .sb-brand-text .sub { font-size: 11px; font-weight: 500; color: #6e8aab; }
+  .sb-label { font-size: 11px; font-weight: 600; color: #8da4be; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 10px; margin-bottom: 6px; display: block; }
+  .sb-nav { display: flex; flex-direction: column; gap: 2px; }
+  .sb-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; color: #576a84; }
+  .sb-item span { font-size: 14px; font-weight: 500; }
+  .sb-item.active { background: #e8f0fc; color: #1960bd; }
+  .sb-item.active span { font-weight: 700; }
+  .sb-spacer { flex: 1; }
+  .sb-profile { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; background: #f4f7fa; border: 1px solid #eef1f5; }
+  .sb-avatar { position: relative; width: 34px; height: 34px; flex-shrink: 0; }
+  .sb-avatar .disc { width: 34px; height: 34px; border-radius: 9px; background: #d1e3fa; color: #124287; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .sb-avatar .dot { position: absolute; right: -2px; bottom: -2px; width: 9px; height: 9px; border-radius: 50%; background: #10bc83; border: 2px solid #f4f7fa; }
+  .sb-profile-text { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+  .sb-profile-text .name { font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .sb-profile-text .role { font-size: 11px; font-weight: 500; color: #6e8aab; }
+
+  main { position: relative; display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 28px 36px 48px; gap: 20px; }
+  .crumb { display: flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 13px; font-weight: 600; color: #8da4be; }
+  .crumb a { color: #8da4be; }
+  .crumb a:hover { color: #576a84; }
+  .crumb .sep { color: #cbd6e6; }
+  .crumb .cur { color: #384352; }
+
+  .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .title-row h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 5px; width: fit-content; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .meta-line { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 13px; font-weight: 600; color: #6e8aab; }
+  .meta-line .cat-pill { display: inline-flex; padding: 3px 9px; border-radius: 999px; background: #eef1f5; color: #384352; font-size: 12px; font-weight: 600; }
+  .meta-line .dot { color: #cbd6e6; }
+  .btn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 700; border: 1px solid #cbd6e6; background: #ffffff; color: #384352; }
+
+  .two-col { display: grid; grid-template-columns: 1.55fr 1fr; gap: 16px; align-items: start; }
+  .col { display: flex; flex-direction: column; gap: 16px; }
+  .card { background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); }
+  .card-pad { padding: 18px 20px; }
+  .card-title { font-size: 15px; font-weight: 800; margin: 0 0 4px; }
+  .card-sub { font-size: 12px; font-weight: 500; color: #8da4be; margin: 0 0 14px; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+  .info-field { display: flex; flex-direction: column; gap: 2px; }
+  .info-field .lbl { font-size: 11.5px; font-weight: 600; color: #8da4be; }
+  .info-field .val { font-size: 13.5px; font-weight: 700; color: #151b23; }
+
+  .health-top { display: flex; align-items: center; gap: 16px; padding-bottom: 14px; margin-bottom: 4px; border-bottom: 1px solid #f2f4f7; }
+  .health-score-circle { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; font-size: 20px; font-weight: 800; flex-shrink: 0; border: 3px solid; }
+  .health-top-text .t { font-size: 14px; font-weight: 700; }
+  .health-top-text .s { font-size: 12px; font-weight: 500; color: #8da4be; margin-top: 2px; }
+  .health-signal-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-top: 1px solid #f2f4f7; }
+  .health-signal-row:first-of-type { border-top: 0; }
+  .health-signal-row .lbl { font-size: 13px; font-weight: 600; color: #384352; }
+  .health-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+  .health-insight { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: #e8f0fc; font-size: 12.5px; font-weight: 500; color: #1c3f66; line-height: 1.5; display: flex; gap: 8px; align-items: flex-start; }
+
+  .po-mini-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 0; border-top: 1px solid #f2f4f7; }
+  .po-mini-row:first-of-type { border-top: 0; }
+  .po-mini-id { display: flex; flex-direction: column; gap: 2px; }
+  .po-mini-id .nm { font-size: 13.5px; font-weight: 700; }
+  .po-mini-id .dt { font-size: 11.5px; font-weight: 500; color: #8da4be; }
+  .po-mini-right { display: flex; align-items: center; gap: 10px; }
+  .po-mini-val { font-size: 13px; font-weight: 700; color: #384352; }
+  .po-empty { font-size: 13px; font-weight: 500; color: #8da4be; padding: 8px 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sb">
+    <div class="sb-brand">
+      <div class="sb-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg></div>
+      <div class="sb-brand-text"><span class="name">Stockhouse</span><span class="sub">Inventory Control</span></div>
+    </div>
+    <span class="sb-label">Menu</span>
+    <nav class="sb-nav">
+      <a class="sb-item" href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></a>
+      <a class="sb-item" href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg><span>Inventory</span></a>
+      <a class="sb-item" href="transfers.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l3 4 3-4h6"/><path d="M4 17h4l3-4 3 4h6"/><path d="M17 4l3 3-3 3"/><path d="M17 14l3 3-3 3"/></svg><span>Transfers</span></a>
+      <a class="sb-item" href="purchasing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"/></svg><span>Purchasing</span></a>
+      <a class="sb-item" href="warehouses.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/><path d="M4 21h16"/></svg><span>Warehouses</span></a>
+      <a class="sb-item active" href="suppliers.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M15.5 13a5 5 0 0 1 6 4.8"/></svg><span>Suppliers</span></a>
+      <div class="sb-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-7"/><path d="M2 20h20"/></svg><span>Reports</span></div>
+    </nav>
+    <div class="sb-spacer"></div>
+    <div class="sb-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M4.9 4.9l1.55 1.55M17.55 17.55l1.55 1.55M3 12h2.2M18.8 12H21M4.9 19.1l1.55-1.55M17.55 6.45l1.55-1.55"/></svg><span>Settings</span></div>
+    <div class="sb-profile">
+      <div class="sb-avatar"><div class="disc">MD</div><div class="dot"></div></div>
+      <div class="sb-profile-text"><span class="name">Mira Delgado</span><span class="role">Operations Manager</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="crumb"><a href="suppliers.html">Suppliers</a><span class="sep">/</span><span class="cur" id="crumbCur">Supplier</span></div>
+
+    <div class="page-head">
+      <div>
+        <div class="title-row"><h1 id="supName">Supplier</h1><span class="status-pill" id="statusPill">Active</span></div>
+        <div class="meta-line"><span class="cat-pill" id="metaCategory">Category</span><span class="dot">·</span><span id="metaContact">Contact</span><span class="dot">·</span><span id="metaOpenPos">0 open POs</span></div>
+      </div>
+      <div class="head-actions">
+        <a class="btn" href="purchasing.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"/></svg>View purchase orders</a>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col">
+        <div class="card card-pad">
+          <p class="card-title">Supplier health score</p>
+          <p class="card-sub">Signals behind this vendor's overall reliability — mirrors the per-item health score on Inventory.</p>
+          <div class="health-top">
+            <div class="health-score-circle" id="healthScoreCircle">—</div>
+            <div class="health-top-text"><div class="t" id="healthTopTitle">—</div><div class="s" id="healthTopSub">Reviewed today</div></div>
+          </div>
+          <div id="healthSignals"></div>
+          <div class="health-insight">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
+            <span id="healthInsightText">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card card-pad">
+          <p class="card-title">Supplier info</p>
+          <div class="info-grid">
+            <div class="info-field"><span class="lbl">Contact</span><span class="val" id="infoContact">—</span></div>
+            <div class="info-field"><span class="lbl">Category</span><span class="val" id="infoCategory">—</span></div>
+            <div class="info-field"><span class="lbl">On-time delivery</span><span class="val" id="infoOnTime">—</span></div>
+            <div class="info-field"><span class="lbl">Open POs</span><span class="val" id="infoOpenPos">—</span></div>
+            <div class="info-field"><span class="lbl">Compliance docs</span><span class="val" id="infoCompliance">—</span></div>
+            <div class="info-field"><span class="lbl">Status</span><span class="val" id="infoStatus">—</span></div>
+          </div>
+        </div>
+
+        <div class="card card-pad">
+          <p class="card-title">Purchase orders with this supplier</p>
+          <p class="card-sub">Most recent first.</p>
+          <div id="poMiniList"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  var suppliers = [
+    { id: 1, name: 'Hanover Works', category: 'Apparel & Accessories', contact: 'Ananya Bose', openPOs: 3, ratePct: 96, status: 'active', lateDelivery: true, priceVariancePct: 4, fulfillmentAccuracyPct: 97, complianceStatus: 'current', volumeTrend: 'up' },
+    { id: 2, name: 'Verado Mills', category: 'Footwear', contact: 'Devraj Singh', openPOs: 2, ratePct: 91, status: 'active', lateDelivery: true, priceVariancePct: 18, fulfillmentAccuracyPct: 93, complianceStatus: 'current', volumeTrend: 'stable' },
+    { id: 3, name: 'Pergola Goods', category: 'Home & Accessories', contact: 'Leela Krishnan', openPOs: 2, ratePct: 88, status: 'active', priceVariancePct: 2, fulfillmentAccuracyPct: 95, complianceStatus: 'current', volumeTrend: 'stable' },
+    { id: 4, name: 'Kestrel Supply Co.', category: 'Bottoms', contact: 'Omar Farooqi', openPOs: 1, ratePct: 79, status: 'onHold', priceVariancePct: 9, fulfillmentAccuracyPct: 84, complianceStatus: 'expiring', volumeTrend: 'down' },
+    { id: 5, name: 'Northline Textile', category: 'Accessories', contact: 'Sana Iqbal', openPOs: 1, ratePct: 97, status: 'active', priceVariancePct: -3, fulfillmentAccuracyPct: 98, complianceStatus: 'current', volumeTrend: 'up' },
+    { id: 6, name: 'Solano Freight & Textiles', category: 'Raw Materials', contact: 'Marco Solano', openPOs: 0, ratePct: 92, status: 'inactive', priceVariancePct: 1, fulfillmentAccuracyPct: 90, complianceStatus: 'current', volumeTrend: 'down' },
+    { id: 7, name: 'Ridgeview Apparel Co.', category: 'Apparel', contact: 'Farah Khan', openPOs: 2, ratePct: 85, status: 'active', priceVariancePct: 7, fulfillmentAccuracyPct: 91, complianceStatus: 'expiring', volumeTrend: 'stable' },
+    { id: 8, name: 'Meridian Leather Works', category: 'Leather Goods', contact: 'Tomas Rivera', openPOs: 0, ratePct: 90, status: 'inactive', priceVariancePct: 0, fulfillmentAccuracyPct: 93, complianceStatus: 'current', volumeTrend: 'down' }
+  ];
+
+  var pos = [
+    { poId: 'PO-3081', vendor: 'Hanover Works', value: '₹4,82,000', status: 'received', orderDate: 'Aug 20, 2026' },
+    { poId: 'PO-3082', vendor: 'Verado Mills', value: '₹6,15,500', status: 'inTransit', orderDate: 'Sep 5, 2026' },
+    { poId: 'PO-3083', vendor: 'Pergola Goods', value: '₹1,84,200', status: 'pending', orderDate: 'Sep 12, 2026' },
+    { poId: 'PO-3084', vendor: 'Kestrel Supply Co.', value: '₹3,40,000', status: 'draft', orderDate: '—' },
+    { poId: 'PO-3085', vendor: 'Northline Textile', value: '₹92,400', status: 'received', orderDate: 'Aug 15, 2026' },
+    { poId: 'PO-3086', vendor: 'Hanover Works', value: '₹7,88,900', status: 'inTransit', orderDate: 'Sep 8, 2026' },
+    { poId: 'PO-3087', vendor: 'Verado Mills', value: '₹2,64,750', status: 'pending', orderDate: 'Sep 14, 2026' },
+    { poId: 'PO-3088', vendor: 'Pergola Goods', value: '₹1,12,300', status: 'draft', orderDate: '—' }
+  ];
+
+  var statusMeta = {
+    active: { label: 'Active', bg: '#ecfdf1', color: '#047857', dot: '#10bc83' },
+    onHold: { label: 'On Hold', bg: '#fff7ed', color: '#b84509', dot: '#e56106' },
+    inactive: { label: 'Inactive', bg: '#eef1f5', color: '#576a84', dot: '#8da4be' }
+  };
+  var poStatusMeta = {
+    draft: { label: 'Draft', bg: '#eef1f5', color: '#576a84' },
+    pending: { label: 'Pending Approval', bg: '#fff7ed', color: '#b84509' },
+    inTransit: { label: 'In Transit', bg: '#e8f0fc', color: '#1960bd' },
+    received: { label: 'Received', bg: '#ecfdf1', color: '#047857' }
+  };
+  var goodMeta = { bg: '#ecfdf1', fg: '#047857', dot: '#10bc83' };
+  var midMeta = { bg: '#fff7ed', fg: '#b84509', dot: '#e56106' };
+  var badMeta = { bg: '#feecec', fg: '#b91c1c', dot: '#dc2626' };
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function pillHtml(meta) {
+    return '<span class="health-pill" style="background:' + meta.bg + '; color:' + meta.fg + ';"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="' + meta.dot + '"/></svg>' + meta.label + '</span>';
+  }
+
+  function onTimeSignal(it) {
+    if (it.ratePct >= 95) return { meta: goodMeta, label: 'Excellent (' + it.ratePct + '%)' };
+    if (it.ratePct >= 88) return { meta: goodMeta, label: 'Good (' + it.ratePct + '%)' };
+    if (it.ratePct >= 80) return { meta: midMeta, label: 'Fair (' + it.ratePct + '%)' };
+    return { meta: badMeta, label: 'Needs attention (' + it.ratePct + '%)' };
+  }
+  function priceSignal(it) {
+    var v = it.priceVariancePct;
+    if (v <= 0) return { meta: goodMeta, label: 'At or below catalog avg' };
+    if (v < 10) return { meta: goodMeta, label: '+' + v + '% vs. catalog avg' };
+    if (v < 18) return { meta: midMeta, label: '+' + v + '% vs. catalog avg' };
+    return { meta: badMeta, label: '+' + v + '% vs. catalog avg' };
+  }
+  function fulfillmentSignal(it) {
+    if (it.fulfillmentAccuracyPct >= 95) return { meta: goodMeta, label: 'Excellent (' + it.fulfillmentAccuracyPct + '%)' };
+    if (it.fulfillmentAccuracyPct >= 90) return { meta: goodMeta, label: 'Good (' + it.fulfillmentAccuracyPct + '%)' };
+    if (it.fulfillmentAccuracyPct >= 85) return { meta: midMeta, label: 'Fair (' + it.fulfillmentAccuracyPct + '%)' };
+    return { meta: badMeta, label: 'Needs attention (' + it.fulfillmentAccuracyPct + '%)' };
+  }
+  function complianceSignal(it) {
+    if (it.complianceStatus === 'current') return { meta: goodMeta, label: 'Up to date' };
+    if (it.complianceStatus === 'expiring') return { meta: midMeta, label: 'Renewal due soon' };
+    return { meta: badMeta, label: 'Action required' };
+  }
+  function volumeSignal(it) {
+    if (it.volumeTrend === 'up') return { meta: goodMeta, label: 'Growing' };
+    if (it.volumeTrend === 'stable') return { meta: goodMeta, label: 'Steady' };
+    return { meta: midMeta, label: 'Declining' };
+  }
+
+  function healthScore(it) {
+    var score = 90;
+    score += (it.ratePct >= 95 ? 0 : it.ratePct >= 88 ? -3 : it.ratePct >= 80 ? -10 : -22);
+    score += (it.priceVariancePct <= 0 ? 0 : it.priceVariancePct < 10 ? -3 : it.priceVariancePct < 18 ? -10 : -18);
+    score += (it.fulfillmentAccuracyPct >= 95 ? 0 : it.fulfillmentAccuracyPct >= 90 ? -3 : it.fulfillmentAccuracyPct >= 85 ? -8 : -16);
+    score += (it.complianceStatus === 'current' ? 0 : it.complianceStatus === 'expiring' ? -6 : -20);
+    score += (it.volumeTrend === 'up' ? 2 : it.volumeTrend === 'stable' ? 0 : -6);
+    score = Math.max(5, Math.min(98, score));
+    var band = score >= 80 ? 'good' : (score >= 60 ? 'mid' : 'bad');
+    var bandMeta = {
+      good: { label: 'Reliable — above target', bg: '#ecfdf1', fg: '#047857', border: '#10bc83' },
+      mid: { label: 'Needs attention', bg: '#fff7ed', fg: '#b84509', border: '#e56106' },
+      bad: { label: 'At risk', bg: '#feecec', fg: '#b91c1c', border: '#dc2626' }
+    };
+    return { score: score, band: band, meta: bandMeta[band] };
+  }
+
+  function insightText(it, hs) {
+    if (hs.band === 'bad') {
+      return it.name + ' is scoring below target across multiple signals — consider a formal review before placing further orders, or sourcing this category from a backup vendor.';
+    }
+    if (it.priceVariancePct >= 18) {
+      return 'Recent orders from ' + it.name + ' are pricing meaningfully above your catalog average — worth a rate conversation before your next PO.';
+    }
+    if (hs.band === 'mid') {
+      return it.name + ' is trending below its usual reliability — keep an eye on upcoming deliveries and compliance renewals.';
+    }
+    return it.name + ' is a consistently reliable vendor — on-time delivery, fulfillment accuracy and compliance are all within target.';
+  }
+
+  var urlParams = new URLSearchParams(window.location.search);
+  var reqId = parseInt(urlParams.get('id'), 10);
+  var sup = suppliers.filter(function (s) { return s.id === reqId; })[0] || suppliers[0];
+
+  document.title = 'Stockhouse — ' + sup.name;
+  document.getElementById('crumbCur').textContent = sup.name;
+  document.getElementById('supName').textContent = sup.name;
+  document.getElementById('metaCategory').textContent = sup.category;
+  document.getElementById('metaContact').textContent = sup.contact;
+  document.getElementById('metaOpenPos').textContent = sup.openPOs + ' open PO' + (sup.openPOs === 1 ? '' : 's');
+
+  var sMeta = statusMeta[sup.status];
+  var statusPill = document.getElementById('statusPill');
+  statusPill.style.background = sMeta.bg;
+  statusPill.style.color = sMeta.color;
+  statusPill.innerHTML = '<svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="' + sMeta.dot + '"/></svg>' + sMeta.label;
+
+  document.getElementById('infoContact').textContent = sup.contact;
+  document.getElementById('infoCategory').textContent = sup.category;
+  document.getElementById('infoOnTime').textContent = sup.ratePct + '%';
+  document.getElementById('infoOpenPos').textContent = sup.openPOs;
+  document.getElementById('infoCompliance').textContent = sup.complianceStatus === 'current' ? 'Up to date' : (sup.complianceStatus === 'expiring' ? 'Renewal due soon' : 'Action required');
+  document.getElementById('infoStatus').textContent = sMeta.label + (sup.lateDelivery ? ' · deliveries running late this week' : '');
+
+  var hs = healthScore(sup);
+  var circle = document.getElementById('healthScoreCircle');
+  circle.textContent = hs.score;
+  circle.style.background = hs.meta.bg;
+  circle.style.color = hs.meta.fg;
+  circle.style.borderColor = hs.meta.border;
+  document.getElementById('healthTopTitle').textContent = hs.meta.label;
+
+  var onTime = onTimeSignal(sup), price = priceSignal(sup), fulfillment = fulfillmentSignal(sup), compliance = complianceSignal(sup), volume = volumeSignal(sup);
+  document.getElementById('healthSignals').innerHTML =
+    '<div class="health-signal-row"><span class="lbl">On-time delivery</span>' + pillHtml({ label: onTime.label, bg: onTime.meta.bg, fg: onTime.meta.fg, dot: onTime.meta.dot }) + '</div>' +
+    '<div class="health-signal-row"><span class="lbl">Price vs. catalog</span>' + pillHtml({ label: price.label, bg: price.meta.bg, fg: price.meta.fg, dot: price.meta.dot }) + '</div>' +
+    '<div class="health-signal-row"><span class="lbl">Fulfillment accuracy</span>' + pillHtml({ label: fulfillment.label, bg: fulfillment.meta.bg, fg: fulfillment.meta.fg, dot: fulfillment.meta.dot }) + '</div>' +
+    '<div class="health-signal-row"><span class="lbl">Compliance docs</span>' + pillHtml({ label: compliance.label, bg: compliance.meta.bg, fg: compliance.meta.fg, dot: compliance.meta.dot }) + '</div>' +
+    '<div class="health-signal-row"><span class="lbl">Order volume trend</span>' + pillHtml({ label: volume.label, bg: volume.meta.bg, fg: volume.meta.fg, dot: volume.meta.dot }) + '</div>';
+  document.getElementById('healthInsightText').textContent = insightText(sup, hs);
+
+  var supPos = pos.filter(function (p) { return p.vendor === sup.name; });
+  var poListEl = document.getElementById('poMiniList');
+  if (supPos.length === 0) {
+    poListEl.innerHTML = '<p class="po-empty">No purchase orders on record for this supplier yet.</p>';
+  } else {
+    poListEl.innerHTML = supPos.map(function (p) {
+      var pm = poStatusMeta[p.status];
+      return '<div class="po-mini-row"><div class="po-mini-id"><span class="nm">' + esc(p.poId) + '</span><span class="dt">' + esc(p.orderDate) + '</span></div>' +
+        '<div class="po-mini-right"><span class="po-mini-val">' + esc(p.value) + '</span><span class="health-pill" style="background:' + pm.bg + '; color:' + pm.color + ';">' + pm.label + '</span></div></div>';
+    }).join('');
+  }
+})();
+</script>
+</body>
+</html>

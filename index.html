@@ -185,6 +185,12 @@
   .ai-chip-row { display: flex; flex-wrap: wrap; gap: 6px; max-width: 92%; }
   .ai-chip { padding: 7px 12px; border-radius: 999px; border: 1px solid #cbd6e6; background: #ffffff; color: #1960bd; font-size: 12px; font-weight: 700; }
   .ai-chip:hover { background: #e8f0fc; }
+  .spend-bar-row { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+  .spend-bar-row:first-of-type { margin-top: 10px; }
+  .spend-bar-name { flex: 0 0 108px; font-size: 11.5px; font-weight: 700; color: #384352; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .spend-bar-track { flex: 1; height: 7px; border-radius: 999px; background: #e5eaf1; overflow: hidden; }
+  .spend-bar-fill { height: 100%; border-radius: 999px; background: #1960bd; }
+  .spend-bar-val { flex: 0 0 auto; font-size: 11.5px; font-weight: 700; color: #576a84; white-space: nowrap; }
   .ai-chat-foot { padding: 12px 14px; border-top: 1px solid #eef1f5; flex-shrink: 0; }
   .ai-input-row { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 14px; border-radius: 999px; border: 1px solid #cbd6e6; background: #ffffff; }
   .ai-input-row input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 13px; font-weight: 500; color: #151b23; font-family: inherit; }
@@ -599,8 +605,49 @@
   var voiceExamples = [
     'Create a PO by selecting items which are low on stock',
     'Show items below reorder point',
-    'Show stockouts'
+    'Show stockouts',
+    'What are our top vendors by spend?'
   ];
+
+  // ---- Spend data for the AI chat's spend-query intent — mirrors purchasing.html's pos records ----
+  var PO_SPEND = [
+    { poId: 'PO-3081', vendor: 'Hanover Works', amount: 482000 },
+    { poId: 'PO-3082', vendor: 'Verado Mills', amount: 615500 },
+    { poId: 'PO-3083', vendor: 'Pergola Goods', amount: 184200 },
+    { poId: 'PO-3084', vendor: 'Kestrel Supply Co.', amount: 340000 },
+    { poId: 'PO-3085', vendor: 'Northline Textile', amount: 92400 },
+    { poId: 'PO-3086', vendor: 'Hanover Works', amount: 788900 },
+    { poId: 'PO-3087', vendor: 'Verado Mills', amount: 264750 },
+    { poId: 'PO-3088', vendor: 'Pergola Goods', amount: 112300 }
+  ];
+
+  function fmtCr(n) { return '\u20B9' + Math.round(n).toLocaleString('en-IN'); }
+
+  function vendorSpendTotals() {
+    var byVendor = {};
+    PO_SPEND.forEach(function (p) {
+      if (!byVendor[p.vendor]) byVendor[p.vendor] = { vendor: p.vendor, total: 0, count: 0 };
+      byVendor[p.vendor].total += p.amount;
+      byVendor[p.vendor].count += 1;
+    });
+    return Object.keys(byVendor).map(function (k) { return byVendor[k]; }).sort(function (a, b) { return b.total - a.total; });
+  }
+
+  function spendBarChartHtml(rows) {
+    var max = rows.reduce(function (m, r) { return Math.max(m, r.total); }, 1);
+    return rows.map(function (r) {
+      var pct = Math.max(4, Math.round((r.total / max) * 100));
+      return '<div class="spend-bar-row"><span class="spend-bar-name">' + esc(r.vendor) + '</span>' +
+        '<div class="spend-bar-track"><div class="spend-bar-fill" style="width:' + pct + '%;"></div></div>' +
+        '<span class="spend-bar-val">' + fmtCr(r.total) + '</span></div>';
+    }).join('');
+  }
+
+  function findMentionedVendor(text) {
+    var vendors = vendorSpendTotals().map(function (r) { return r.vendor; });
+    var found = vendors.filter(function (v) { return text.indexOf(v.toLowerCase()) !== -1; });
+    return found[0] || null;
+  }
 
   function addMessage(role, html, chips) {
     var id = aiChat.nextId++;
@@ -610,10 +657,10 @@
 
   function ensureGreeting() {
     if (aiChat.messages.length > 0) return;
-    addMessage('assistant', 'Hi Mira — I can draft a purchase order for low-stock items or filter this list. Nothing gets sent without your review. Try one of these, or type your own:', [
+    addMessage('assistant', 'Hi Mira — I can draft a purchase order for low-stock items, filter this list, or answer spend questions. Nothing gets sent without your review. Try one of these, or type your own:', [
       { action: 'example', text: voiceExamples[0], label: 'Create a PO for items low on stock' },
       { action: 'example', text: voiceExamples[1], label: 'Show items below reorder point' },
-      { action: 'example', text: voiceExamples[2], label: 'Show stockouts' }
+      { action: 'example', text: voiceExamples[3], label: 'Top vendors by spend' }
     ]);
   }
 
@@ -695,6 +742,31 @@
       return;
     }
 
+    var isSpendIntent = /\bspen(d|t|ding)\b/.test(text);
+    if (isSpendIntent) {
+      var totals = vendorSpendTotals();
+      var grandTotal = totals.reduce(function (s, r) { return s + r.total; }, 0);
+      var mentionedVendor = findMentionedVendor(text);
+
+      if (mentionedVendor) {
+        var row = totals.filter(function (r) { return r.vendor === mentionedVendor; })[0];
+        var msg = 'You\u2019ve spent <b>' + fmtCr(row.total) + '</b> with <b>' + esc(mentionedVendor) + '</b> across ' + row.count + ' purchase order' + (row.count === 1 ? '' : 's') + ' — ' + Math.round((row.total / grandTotal) * 100) + '% of total spend.';
+        addMessage('assistant', msg);
+        return;
+      }
+
+      if (/top|highest|biggest|most\b/.test(text) || /by vendor/.test(text)) {
+        var top = totals.slice(0, 5);
+        var msg2 = 'Here\u2019s spend by vendor, ranked, across your ' + PO_SPEND.length + ' purchase orders on record:' + spendBarChartHtml(top);
+        addMessage('assistant', msg2);
+        return;
+      }
+
+      var msg3 = 'Total spend across all purchase orders on record is <b>' + fmtCr(grandTotal) + '</b>. Ask about a specific vendor (e.g. \u201cHow much have we spent with Verado Mills?\u201d) or say \u201ctop vendors by spend\u201d for the full breakdown.';
+      addMessage('assistant', msg3);
+      return;
+    }
+
     if (/^(show|filter|list)\b/.test(text) || /show (me|items)/.test(text)) {
       var filterMap = [
         { re: /below reorder|reorder point/, key: 'belowReorder', label: 'below reorder' },
@@ -712,9 +784,9 @@
       }
     }
 
-    addMessage('assistant', 'I can draft a purchase order for low-stock items (e.g. "create a PO for items low on stock"), or filter this list (e.g. "show stockouts"). Try one of the examples below.', [
+    addMessage('assistant', 'I can draft a purchase order for low-stock items (e.g. "create a PO for items low on stock"), filter this list (e.g. "show stockouts"), or answer spend questions (e.g. "top vendors by spend"). Try one of the examples below.', [
       { action: 'example', text: voiceExamples[0], label: 'Create a PO for items low on stock' },
-      { action: 'example', text: voiceExamples[1], label: 'Show items below reorder point' }
+      { action: 'example', text: voiceExamples[3], label: 'Top vendors by spend' }
     ]);
   }
 

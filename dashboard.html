@@ -205,7 +205,7 @@
 
       <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num">₹38.4L</span><span class="kpi-label">Cash locked · ₹8.8L recoverable</span></div></div>
 
-      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5"/><circle cx="12" cy="16.4" r="0.9" fill="#dc2626" stroke="none"/><circle cx="12" cy="12" r="9"/></svg></div></div><div class="kpi-body"><span class="kpi-num warn">7</span><span class="kpi-label">Issues need attention today</span></div></div>
+      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5"/><circle cx="12" cy="16.4" r="0.9" fill="#dc2626" stroke="none"/><circle cx="12" cy="12" r="9"/></svg></div></div><div class="kpi-body"><span class="kpi-num warn" id="issuesKpiNum">7</span><span class="kpi-label">Issues need attention today</span></div></div>
     </div>
 
     <div class="two-col">
@@ -694,6 +694,11 @@
       { id: 'po-pending', module: 'Purchasing', dot: '#e56106',
         href: 'purchasing.html?status=pending', linkLabel: 'Review purchasing →',
         resolveType: 'poCount' },
+      { id: 'po-anomaly', module: 'Purchasing', dot: '#e56106',
+        title: 'PO-3082 (Verado Mills) is priced 18% above your last order for Canvas Low Top',
+        sub: 'Last purchased at ₹720/unit from the same vendor — this PO bills it at ₹850/unit',
+        href: 'purchasing.html?po=PO-3082', linkLabel: 'Review PO →',
+        resolveType: 'stub' },
       { id: 'sup-delayed', module: 'Suppliers', dot: '#e56106',
         title: '2 supplier deliveries are running behind schedule this week',
         sub: 'Hanover Works and Verado Mills both trending slower than usual',
@@ -740,6 +745,8 @@
       document.getElementById('critSub').textContent = visible.length === 0
         ? 'Nice work — nothing is currently flagged as a critical action.'
         : 'Ranked by impact — the ' + visible.length + ' issue' + (visible.length === 1 ? '' : 's') + ' driving your health score down.';
+      var issuesKpiEl = document.getElementById('issuesKpiNum');
+      if (issuesKpiEl) issuesKpiEl.textContent = visible.length;
 
       var html = '';
       var lastModule = null;
