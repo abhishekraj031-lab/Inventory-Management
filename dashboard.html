@@ -81,6 +81,12 @@
   .signal-row .nm { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; }
   .signal-row .val { flex-shrink: 0; font-size: 13px; font-weight: 700; color: #384352; }
   .signal-row .pct { flex-shrink: 0; width: 38px; text-align: right; font-size: 12px; font-weight: 700; color: #576a84; }
+  .chart-row { display: flex; align-items: center; gap: 18px; margin-top: 4px; }
+  .donut-wrap { position: relative; width: 104px; height: 104px; flex-shrink: 0; }
+  .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .donut-center .num { font-size: 19px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.15; color: #151b23; }
+  .donut-center .lbl { font-size: 9.5px; font-weight: 600; color: #8da4be; margin-top: 2px; max-width: 64px; line-height: 1.2; }
+  .donut-legend { display: flex; flex-direction: column; gap: 0; flex: 1; min-width: 0; }
 
   /* critical actions */
   .issue-row { display: flex; align-items: flex-start; gap: 10px; padding: 13px 0; border-top: 1px solid #f2f4f7; }
@@ -214,20 +220,19 @@
           <div class="card card-pad">
             <p class="card-title">Inventory health</p>
             <p class="card-sub">47 SKUs across 6 categories</p>
-            <div class="seg-bar"><span style="width:68%; background:#10bc83;"></span><span style="width:21%; background:#e5c022;"></span><span style="width:11%; background:#dc2626;"></span></div>
-            <div class="signal-row"><span class="dot" style="background:#10bc83;"></span><span class="nm">Healthy</span><span class="val">32 SKUs</span><span class="pct">68%</span></div>
-            <div class="signal-row"><span class="dot" style="background:#e5c022;"></span><span class="nm">Attention</span><span class="val">10 SKUs</span><span class="pct">21%</span></div>
-            <div class="signal-row"><span class="dot" style="background:#dc2626;"></span><span class="nm">Critical</span><span class="val">5 SKUs</span><span class="pct">11%</span></div>
+            <div class="chart-row">
+              <div class="donut-wrap" id="healthDonut"></div>
+              <div class="donut-legend" id="healthLegend"></div>
+            </div>
           </div>
 
           <div class="card card-pad">
             <p class="card-title">Cash locked in inventory</p>
             <p class="card-sub">₹38.4L total · ₹8.8L potentially recoverable</p>
-            <div class="seg-bar"><span style="width:56%; background:#1960bd;"></span><span style="width:21%; background:#e56106;"></span><span style="width:12%; background:#dc2626;"></span><span style="width:11%; background:#8da4be;"></span></div>
-            <div class="signal-row"><span class="dot" style="background:#1960bd;"></span><span class="nm">Healthy stock</span><span class="val">₹21.4L</span><span class="pct">56%</span></div>
-            <div class="signal-row"><span class="dot" style="background:#e56106;"></span><span class="nm">Slow-moving</span><span class="val">₹8.2L</span><span class="pct">21%</span></div>
-            <div class="signal-row"><span class="dot" style="background:#dc2626;"></span><span class="nm">Dead stock</span><span class="val">₹4.6L</span><span class="pct">12%</span></div>
-            <div class="signal-row"><span class="dot" style="background:#8da4be;"></span><span class="nm">Excess stock</span><span class="val">₹4.2L</span><span class="pct">11%</span></div>
+            <div class="chart-row">
+              <div class="donut-wrap" id="cashDonut"></div>
+              <div class="donut-legend" id="cashLegend"></div>
+            </div>
           </div>
         </div>
 
@@ -330,6 +335,62 @@
 </div>
 
 <script>
+  // ---- Inventory health & Cash locked donut charts ----
+  (function () {
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function donutSvg(segments, size, stroke) {
+      var r = (size - stroke) / 2;
+      var c = 2 * Math.PI * r;
+      var gap = 3;
+      var total = segments.reduce(function (s, seg) { return s + seg.value; }, 0);
+      var offset = 0;
+      var arcs = segments.map(function (seg) {
+        var frac = total > 0 ? seg.value / total : 0;
+        var len = frac * c;
+        var dash = Math.max(len - gap, 0);
+        var html = '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="' + seg.color + '" stroke-width="' + stroke +
+          '" stroke-linecap="round" stroke-dasharray="' + dash + ' ' + (c - dash) + '" stroke-dashoffset="' + (-offset) +
+          '" transform="rotate(-90 ' + size / 2 + ' ' + size / 2 + ')"></circle>';
+        offset += len;
+        return html;
+      }).join('');
+      return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="' +
+        segments.map(function (s) { return s.label + ' ' + s.value; }).join(', ') + '">' +
+        '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="#eef1f5" stroke-width="' + stroke + '"></circle>' +
+        arcs + '</svg>';
+    }
+
+    function renderDonutCard(wrapId, legendId, segments, centerNum, centerLbl, valueFmt) {
+      var total = segments.reduce(function (s, seg) { return s + seg.value; }, 0);
+      var wrap = document.getElementById(wrapId);
+      wrap.innerHTML = donutSvg(segments, 104, 16) +
+        '<div class="donut-center"><span class="num">' + esc(centerNum) + '</span><span class="lbl">' + esc(centerLbl) + '</span></div>';
+      document.getElementById(legendId).innerHTML = segments.map(function (seg) {
+        var pct = total > 0 ? Math.round((seg.value / total) * 100) : 0;
+        return '<div class="signal-row"><span class="dot" style="background:' + seg.color + ';"></span><span class="nm">' + esc(seg.label) +
+          '</span><span class="val">' + esc(valueFmt(seg.value)) + '</span><span class="pct">' + pct + '%</span></div>';
+      }).join('');
+    }
+
+    renderDonutCard('healthDonut', 'healthLegend', [
+      { label: 'Healthy', value: 32, color: '#10bc83' },
+      { label: 'Attention', value: 10, color: '#e5c022' },
+      { label: 'Critical', value: 5, color: '#dc2626' }
+    ], '47', 'SKUs total', function (v) { return v + ' SKUs'; });
+
+    renderDonutCard('cashDonut', 'cashLegend', [
+      { label: 'Healthy stock', value: 21.4, color: '#1960bd' },
+      { label: 'Slow-moving', value: 8.2, color: '#e56106' },
+      { label: 'Dead stock', value: 4.6, color: '#dc2626' },
+      { label: 'Excess stock', value: 4.2, color: '#8da4be' }
+    ], '\u20B938.4L', 'Total value', function (v) { return '\u20B9' + v.toFixed(1) + 'L'; });
+  })();
+
   (function () {
     var TODAY = new Date('2026-09-16T00:00:00');
     var PERIOD_DAYS = { week: 7, month: 30, year: 365 };
