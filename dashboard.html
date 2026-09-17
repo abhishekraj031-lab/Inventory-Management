@@ -613,7 +613,7 @@
 
     function handoffToPurchasing(groups) {
       try { localStorage.setItem('stockhouseRecSelection', JSON.stringify({ groups: groups })); } catch (e) {}
-      window.location.href = 'purchasing.html';
+      window.location.href = 'create-po.html';
     }
 
     function createPoForVendor(vendor) {
