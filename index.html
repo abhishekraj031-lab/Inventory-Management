@@ -650,14 +650,8 @@
     return groups;
   }
 
-  function openAiDraftInPurchasing(draft) {
-    var payload = {
-      vendor: draft.vendor,
-      lines: draft.lines,
-      notes: 'Drafted by Stockhouse AI from low-stock signals. Review quantities and vendor before sending.',
-      aiDrafted: true
-    };
-    try { localStorage.setItem('stockhouseAiPoDraft', JSON.stringify(payload)); } catch (e) {}
+  function openGroupedPoDraft(groups) {
+    try { localStorage.setItem('stockhouseRecSelection', JSON.stringify({ groups: groups, aiDrafted: true })); } catch (e) {}
     window.location.href = 'create-po.html';
   }
 
@@ -670,8 +664,10 @@
     if (chip.action === 'example') {
       document.getElementById('aiChatInput').value = chip.text;
       sendChatMessage();
-    } else if (chip.action === 'openDraft') {
-      openAiDraftInPurchasing(chip.draft);
+    } else if (chip.action === 'viewItems') {
+      window.location.href = 'index.html?filter=reorderIssues';
+    } else if (chip.action === 'createPoGroups') {
+      openGroupedPoDraft(chip.groups);
     }
   }
 
@@ -687,17 +683,14 @@
         addMessage('assistant', "Good news — nothing is currently at or below its reorder point, so there's nothing to draft a PO for.");
         return;
       }
-      var primary = groups[0];
-      var others = groups.slice(1);
       var totalCount = groups.reduce(function (s, g) { return s + g.lines.length; }, 0);
-      var lineDesc = primary.lines.map(function (l) { return esc(l.item) + ' (qty ' + l.qty + ')'; }).join(', ');
-      var msgHtml = 'I found ' + totalCount + ' item' + (totalCount === 1 ? '' : 's') + ' at or below reorder point across ' + groups.length + ' vendor' + (groups.length === 1 ? '' : 's') + '. ' +
-        (primary.hasStockout ? 'Prioritizing the stockout vendor first: ' : 'Starting with ') +
-        '<b>' + esc(primary.vendor) + '</b> — ' + lineDesc + '. Nothing sends automatically — this opens the Create PO form for your review.';
-      var chips = [{ action: 'openDraft', draft: { vendor: primary.vendor, lines: primary.lines }, label: 'Review PO for ' + primary.vendor }];
-      others.forEach(function (g) {
-        chips.push({ action: 'openDraft', draft: { vendor: g.vendor, lines: g.lines }, label: 'Also draft a PO for ' + g.vendor });
-      });
+      var msgHtml = '<b>' + totalCount + ' item' + (totalCount === 1 ? '' : 's') + '</b> ' + (totalCount === 1 ? 'is' : 'are') +
+        ' currently low on stock (at or below reorder point), across ' + groups.length + ' vendor' + (groups.length === 1 ? '' : 's') + '. ' +
+        'Nothing sends automatically — review the items or go straight to a grouped PO for your approval.';
+      var chips = [
+        { action: 'viewItems', label: 'View Items' },
+        { action: 'createPoGroups', groups: groups, label: 'Create PO' }
+      ];
       addMessage('assistant', msgHtml, chips);
       return;
     }

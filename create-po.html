@@ -298,6 +298,7 @@
 
   var poState = { addr: 'organization', lineItems: [], nextLiId: 1, aiDrafted: false, aiReviewed: false };
   var pendingRecGroups = [];
+  var recGroupsAiDrafted = false;
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -475,8 +476,11 @@
     loadForm({
       vendor: group.vendor,
       lines: group.lines,
-      notes: 'Auto-recommended: predicted stockout / below reorder point / rising demand, per 30-day demand forecast.',
-      fromRecommendations: true
+      notes: recGroupsAiDrafted
+        ? 'Drafted by Stockhouse AI from low-stock signals. Review quantities and vendor before sending.'
+        : 'Auto-recommended: predicted stockout / below reorder point / rising demand, per 30-day demand forecast.',
+      fromRecommendations: true,
+      aiDrafted: recGroupsAiDrafted
     });
   }
 
@@ -632,6 +636,7 @@
       var groups = recData.groups.slice();
       var primary = groups.shift();
       pendingRecGroups = groups;
+      recGroupsAiDrafted = !!recData.aiDrafted;
       loadRecGroup(primary);
       renderOtherVendorChips();
     } else {
