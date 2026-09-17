@@ -114,6 +114,14 @@
   .mc-badge { justify-self: start; display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
   .mc-badge.sales { background: #e8f0fc; color: #1960bd; }
   .mc-badge.production { background: #f5f0ff; color: #7c3aed; }
+  .mc-tabs { display: inline-flex; flex-wrap: wrap; padding: 3px; border-radius: 10px; background: #f4f7fa; border: 1px solid #eef1f5; gap: 2px; flex-shrink: 0; }
+  .mc-tab { padding: 6px 10px; border-radius: 8px; border: 0; background: transparent; color: #576a84; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .mc-tab.active { background: #ffffff; color: #1960bd; box-shadow: 0 1px 2px rgba(21,27,35,0.08); }
+  .mc-custom-range { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; margin: 0 0 14px; padding: 12px 14px; border-radius: 10px; background: #fafbfd; border: 1px solid #eef1f5; }
+  .mc-custom-range .field-inline { display: flex; flex-direction: column; gap: 4px; }
+  .mc-custom-range label { font-size: 11px; font-weight: 700; color: #384352; }
+  .mc-custom-range input[type="date"] { padding: 7px 9px; border-radius: 8px; border: 1px solid #cbd6e6; font-family: inherit; font-size: 12.5px; font-weight: 500; color: #151b23; outline: 0; }
+  .mc-apply-btn { padding: 7px 14px; border-radius: 8px; border: 1px solid #1960bd; background: #1960bd; color: #ffffff; font-size: 12.5px; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -200,26 +208,48 @@
         </div>
 
         <div class="card card-pad">
-          <p class="card-title">Most consumed items</p>
-          <p class="card-sub">Top 5 by units consumed in the last 30 days — Sales Orders vs Production draw.</p>
+          <div class="card-title-row">
+            <p class="card-title">Most consumed items</p>
+            <div class="mc-tabs" id="mcTabs">
+              <button type="button" class="mc-tab" data-period="week">Last Week</button>
+              <button type="button" class="mc-tab active" data-period="month">Last Month</button>
+              <button type="button" class="mc-tab" data-period="year">Last Year</button>
+              <button type="button" class="mc-tab" data-period="custom">Custom</button>
+            </div>
+          </div>
+          <p class="card-sub" id="mcSub">Top 5 by units consumed in the last 30 days — Sales Orders vs Production draw.</p>
+
+          <div class="mc-custom-range" id="mcCustomRange" style="display:none;">
+            <div class="field-inline">
+              <label for="mcFrom">From</label>
+              <input type="date" id="mcFrom" value="2026-08-17">
+            </div>
+            <div class="field-inline">
+              <label for="mcTo">To</label>
+              <input type="date" id="mcTo" value="2026-09-16">
+            </div>
+            <button type="button" class="mc-apply-btn" id="mcApply">Apply</button>
+          </div>
 
           <div class="mc-row" style="padding-top:0; border-top:0;">
-            <span class="lbl">Product</span><span class="lbl">Source</span><span class="lbl" style="text-align:right;">Consumed (30d)</span>
+            <span class="lbl">Product</span><span class="lbl">Source</span><span class="lbl" style="text-align:right;">Consumed</span>
           </div>
-          <div class="mc-row">
-            <span class="nm">Canvas Low Top</span><span class="mc-badge sales">Sales Order</span><span class="v">340 units</span>
-          </div>
-          <div class="mc-row">
-            <span class="nm">Cargo Pant</span><span class="mc-badge sales">Sales Order</span><span class="v">310 units</span>
-          </div>
-          <div class="mc-row">
-            <span class="nm">Chino Short</span><span class="mc-badge production">Production</span><span class="v">265 units</span>
-          </div>
-          <div class="mc-row">
-            <span class="nm">Card Holder</span><span class="mc-badge sales">Sales Order</span><span class="v">240 units</span>
-          </div>
-          <div class="mc-row">
-            <span class="nm">Cashmere Scarf</span><span class="mc-badge production">Production</span><span class="v">150 units</span>
+          <div id="mcRows">
+            <div class="mc-row">
+              <span class="nm">Canvas Low Top</span><span class="mc-badge sales">Sales Order</span><span class="v">340 units</span>
+            </div>
+            <div class="mc-row">
+              <span class="nm">Cargo Pant</span><span class="mc-badge sales">Sales Order</span><span class="v">310 units</span>
+            </div>
+            <div class="mc-row">
+              <span class="nm">Chino Short</span><span class="mc-badge production">Production</span><span class="v">265 units</span>
+            </div>
+            <div class="mc-row">
+              <span class="nm">Card Holder</span><span class="mc-badge sales">Sales Order</span><span class="v">240 units</span>
+            </div>
+            <div class="mc-row">
+              <span class="nm">Cashmere Scarf</span><span class="mc-badge production">Production</span><span class="v">150 units</span>
+            </div>
           </div>
         </div>
       </div>
@@ -269,5 +299,120 @@
     </div>
   </main>
 </div>
+
+<script>
+  (function () {
+    var TODAY = new Date('2026-09-16T00:00:00');
+    var PERIOD_DAYS = { week: 7, month: 30, year: 365 };
+
+    // monthly = baseline units consumed per 30-day month; source = 'sales' | 'production'
+    var MC_ITEMS = [
+      { name: 'Canvas Low Top', source: 'sales', monthly: 340 },
+      { name: 'Cargo Pant', source: 'sales', monthly: 310 },
+      { name: 'Chino Short', source: 'production', monthly: 265 },
+      { name: 'Card Holder', source: 'sales', monthly: 240 },
+      { name: 'Cashmere Scarf', source: 'production', monthly: 150 }
+    ];
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function fmtDate(d) {
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function sourceBadge(source) {
+      return source === 'sales'
+        ? '<span class="mc-badge sales">Sales Order</span>'
+        : '<span class="mc-badge production">Production</span>';
+    }
+
+    function mcRender(period, days, extrapolated) {
+      var rows = MC_ITEMS.map(function (item) {
+        var units = Math.max(1, Math.round((item.monthly / 30) * days));
+        return { name: item.name, source: item.source, units: units };
+      }).sort(function (a, b) { return b.units - a.units; });
+
+      var rowsHtml = rows.map(function (r) {
+        return '<div class="mc-row"><span class="nm">' + esc(r.name) + '</span>' +
+          sourceBadge(r.source) +
+          '<span class="v">' + r.units.toLocaleString('en-US') + ' units</span></div>';
+      }).join('');
+
+      var mcRowsEl = document.getElementById('mcRows');
+      if (mcRowsEl) mcRowsEl.innerHTML = rowsHtml;
+
+      var subEl = document.getElementById('mcSub');
+      if (subEl) {
+        var label;
+        if (period === 'week') label = 'the last week';
+        else if (period === 'month') label = 'the last month';
+        else if (period === 'year') label = 'the last year';
+        else label = 'the selected range';
+        var text = 'Top 5 by units consumed in ' + label + ' — Sales Orders vs Production draw.';
+        if (extrapolated) text += ' (extrapolated from 30-day run rate)';
+        subEl.textContent = text;
+      }
+    }
+
+    function setActiveTab(period) {
+      var tabs = document.querySelectorAll('#mcTabs .mc-tab');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.toggle('active', tabs[i].getAttribute('data-period') === period);
+      }
+    }
+
+    function applyCustomRange() {
+      var fromInput = document.getElementById('mcFrom');
+      var toInput = document.getElementById('mcTo');
+      if (!fromInput || !toInput || !fromInput.value || !toInput.value) return;
+
+      var from = new Date(fromInput.value + 'T00:00:00');
+      var to = new Date(toInput.value + 'T00:00:00');
+      if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to) return;
+
+      var days = Math.round((to - from) / 86400000) + 1;
+      mcRender('custom', days, true);
+
+      var subEl = document.getElementById('mcSub');
+      if (subEl) {
+        subEl.textContent = 'Top 5 by units consumed from ' + fmtDate(from) + ' to ' + fmtDate(to) +
+          ' — Sales Orders vs Production draw. (extrapolated from 30-day run rate)';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var tabsEl = document.getElementById('mcTabs');
+      var customRangeEl = document.getElementById('mcCustomRange');
+      var applyBtn = document.getElementById('mcApply');
+      if (!tabsEl) return;
+
+      tabsEl.addEventListener('click', function (e) {
+        var btn = e.target.closest('.mc-tab');
+        if (!btn) return;
+        var period = btn.getAttribute('data-period');
+        setActiveTab(period);
+
+        if (period === 'custom') {
+          if (customRangeEl) customRangeEl.style.display = 'flex';
+          applyCustomRange();
+        } else {
+          if (customRangeEl) customRangeEl.style.display = 'none';
+          mcRender(period, PERIOD_DAYS[period], false);
+        }
+      });
+
+      if (applyBtn) {
+        applyBtn.addEventListener('click', applyCustomRange);
+      }
+
+      // initial render matches the default active tab (Last Month)
+      mcRender('month', PERIOD_DAYS.month, false);
+    });
+  })();
+</script>
 </body>
 </html>
