@@ -211,11 +211,11 @@
   </aside>
 
   <main>
-    <div class="crumb"><a href="index.html">Item List</a><span class="sep">/</span><span class="cur">Boxy Knit Vest</span></div>
+    <div class="crumb"><a href="index.html">Item List</a><span class="sep">/</span><span class="cur" id="crumbCur">Boxy Knit Vest</span></div>
 
     <div class="page-head">
       <div>
-        <div class="title-row"><h1 id="itemTitle">Boxy Knit Vest</h1><span class="status-pill"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Healthy</span></div>
+        <div class="title-row"><h1 id="itemTitle">Boxy Knit Vest</h1><span class="status-pill" id="statusPill"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Healthy</span></div>
         <div class="meta-line"><span id="metaSku">TOP-1096</span><span class="dot">·</span><span class="cat-pill" id="metaCategory">Tops</span><span class="dot">·</span><span id="metaVendor">Hanover Works</span></div>
       </div>
       <div class="head-actions">
@@ -242,26 +242,30 @@
         <div class="col">
           <div class="card card-pad">
             <p class="card-title">Stock by plant</p>
+            <div id="plantRows">
             <div class="plant-row"><span class="dot" style="background:#1960bd;"></span><span class="nm">Plant A · Gurgaon</span><span class="units">260 units</span><div class="track"><div class="fill" style="width:59%; background:#1960bd;"></div></div><span class="pct">59%</span></div>
             <div class="plant-row"><span class="dot" style="background:#2577e5;"></span><span class="nm">Plant B · Pune</span><span class="units">104 units</span><div class="track"><div class="fill" style="width:23%; background:#2577e5;"></div></div><span class="pct">23%</span></div>
             <div class="plant-row"><span class="dot" style="background:#77abee;"></span><span class="nm">Plant C · Chennai</span><span class="units">80 units</span><div class="track"><div class="fill" style="width:18%; background:#77abee;"></div></div><span class="pct">18%</span></div>
+            </div>
           </div>
 
           <div class="card card-pad">
             <p class="card-title">Inventory health score</p>
             <p class="card-sub">Signals behind this SKU's overall health.</p>
             <div class="health-top">
-              <div class="health-score-circle">88</div>
-              <div class="health-top-text"><div class="t">Healthy — above target</div><div class="s">+3 pts vs. last week</div></div>
+              <div class="health-score-circle" id="healthScoreCircle">88</div>
+              <div class="health-top-text"><div class="t" id="healthTopTitle">Healthy — above target</div><div class="s" id="healthTopSub">Reviewed today</div></div>
             </div>
+            <div id="healthSignals">
             <div class="health-signal-row"><span class="lbl">Current stock</span><span class="health-pill" style="background:#ecfdf1; color:#047857;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Healthy</span></div>
             <div class="health-signal-row"><span class="lbl">Demand trend</span><span class="health-pill" style="background:#ecfdf1; color:#047857;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Stable</span></div>
             <div class="health-signal-row"><span class="lbl">Supplier reliability</span><span class="health-pill" style="background:#ecfdf1; color:#047857;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Reliable</span></div>
             <div class="health-signal-row"><span class="lbl">Days of inventory</span><span class="health-pill" style="background:#fff7ed; color:#b84509;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#e56106"/></svg>28 days</span></div>
             <div class="health-signal-row"><span class="lbl">Dead stock risk</span><span class="health-pill" style="background:#ecfdf1; color:#047857;"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#10bc83"/></svg>Low</span></div>
+            </div>
             <div class="health-insight">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
-              <span>Demand has stayed within 5% of forecast for 8 weeks. At current velocity, on-hand stock covers ~28 days — comfortably above Hanover Works' 12-day lead time.</span>
+              <span id="healthInsightText">Demand has stayed within 5% of forecast for 8 weeks. At current velocity, on-hand stock covers ~28 days — comfortably above Hanover Works' 12-day lead time.</span>
             </div>
           </div>
 
@@ -283,6 +287,7 @@
         <div class="col">
           <div class="card card-pad">
             <div class="card-title-row"><p class="card-title">Recent activity</p><span class="view-all" id="viewAllLink">View all</span></div>
+            <div id="activityList">
             <div class="activity-item">
               <div class="activity-icon" style="background:#e8f0fc;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/></svg></div>
               <div class="activity-body"><div class="t">Stock adjusted +50 units</div><div class="s">Mira Delgado · Sep 15</div></div>
@@ -295,13 +300,14 @@
               <div class="activity-icon" style="background:#e4e2f1;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#473aa6" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg></div>
               <div class="activity-body"><div class="t">Transferred −30 units to Plant B</div><div class="s">Priya Nair · Sep 6</div></div>
             </div>
+            </div>
           </div>
 
           <div class="card card-pad">
             <p class="card-title">Primary vendor</p>
             <div class="vendor-row" style="margin-top:10px;">
-              <div class="vendor-badge">HW</div>
-              <div class="vendor-info"><div class="nm">Hanover Works</div><div class="s">12-day lead time</div></div>
+              <div class="vendor-badge" id="vendorBadge">HW</div>
+              <div class="vendor-info"><div class="nm" id="vendorName">Hanover Works</div><div class="s" id="vendorLeadTime">12-day lead time</div></div>
             </div>
           </div>
         </div>
@@ -312,7 +318,7 @@
       <div class="card card-pad">
         <p class="card-title">Full history</p>
         <p class="card-sub">Every stock movement and change recorded for this item.</p>
-        <div class="timeline">
+        <div class="timeline" id="auditTimeline">
           <div class="tl-row">
             <div class="tl-icon-wrap"><div class="tl-icon" style="background:#e8f0fc;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/></svg></div><div class="tl-line"></div></div>
             <div class="tl-body"><div class="tl-head"><span class="tl-title">Stock adjusted</span><span class="tl-delta pos">+50 units</span></div><div class="tl-desc">Cycle count correction</div><div class="tl-meta">Mira Delgado · Sep 15, 2026 · 9:42 AM</div></div>
@@ -347,7 +353,7 @@
 <div class="drawer-backdrop" id="editItemBackdrop"></div>
 <div class="drawer" id="editItemDrawer">
   <div class="drawer-head">
-    <div><p class="drawer-title">Edit Item</p><p class="drawer-sub">Update details for Boxy Knit Vest.</p></div>
+    <div><p class="drawer-title">Edit Item</p><p class="drawer-sub" id="editDrawerSub">Update details for Boxy Knit Vest.</p></div>
     <button class="drawer-close" id="closeEditItem" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="drawer-body">
@@ -378,7 +384,7 @@
 <div class="modal-wrap" id="adjustStockWrap">
   <div class="modal-card">
     <div class="modal-head">
-      <div><p class="modal-title">Adjust Stock</p><p class="modal-sub">Boxy Knit Vest · TOP-1096</p></div>
+      <div><p class="modal-title">Adjust Stock</p><p class="modal-sub" id="adjModalSub">Boxy Knit Vest · TOP-1096</p></div>
       <button class="modal-close" id="closeAdjustStock" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modal-body">
@@ -409,7 +415,7 @@
 <div class="modal-wrap" id="moveStockWrap">
   <div class="modal-card">
     <div class="modal-head">
-      <div><p class="modal-title">Create Stock Transfer</p><p class="modal-sub">Boxy Knit Vest · TOP-1096</p></div>
+      <div><p class="modal-title">Create Stock Transfer</p><p class="modal-sub" id="mvModalSub">Boxy Knit Vest · TOP-1096</p></div>
       <button class="modal-close" id="closeMoveStock" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modal-body">
@@ -423,7 +429,7 @@
         <div class="field"><label>Quantity</label><input id="mvQty" type="number" placeholder="0"></div>
         <div class="field"><label>Expected date</label><input id="mvDate" type="date"></div>
       </div>
-      <div class="readout"><span id="mvAvailableLabel">Available at Plant A · Gurgaon</span><span class="v">260 units</span></div>
+      <div class="readout"><span id="mvAvailableLabel">Available at Plant A · Gurgaon</span><span class="v" id="mvAvailableUnits">260 units</span></div>
       <div class="field"><label>Reason</label><select id="mvReason"></select></div>
       <div class="field"><label>Notes (optional)</label><textarea id="mvNotes" placeholder="Add any extra context…"></textarea></div>
     </div>
@@ -451,19 +457,31 @@
   document.getElementById('viewAllLink').addEventListener('click', function () { setTab('audit'); });
   if (window.location.hash === '#audit') { setTab('audit'); }
 
-  // ---- shared item state ----
-  var plantNames = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai'];
+  // ---- item catalog (mirrors the Inventory list on index.html) ----
+  var ALL_PLANTS = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai', 'Plant D · Bhiwandi'];
   var categoryNames = ['Tops', 'Footwear', 'Accessories', 'Bottoms', 'Home'];
   var uomNames = ['Piece', 'Pair', 'Set', 'Kg'];
   var adjustReasons = ['Cycle count correction', 'Damaged in transit', 'Returned to stock', 'Quality hold released', 'Other'];
   var transferReasons = ['Rebalance stock ahead of regional demand', 'Fulfil purchase order', 'Consolidate slow-moving stock', 'Other'];
-  var plantStock = { 'Plant A · Gurgaon': 260, 'Plant B · Pune': 104, 'Plant C · Chennai': 80 };
 
-  var item = {
-    name: 'Boxy Knit Vest', sku: 'TOP-1096', category: 'Tops', vendor: 'Hanover Works',
-    uom: 'Piece', onHand: 444, reorder: 126, cost: 1240, leadTime: 12,
-    description: 'Ribbed knit vest, mid-weight cotton-wool blend. Sold as a core layering piece across the Tops range — restocked seasonally from Hanover Works.'
-  };
+  var itemsCatalog = [
+    { id: 1, name: 'Boxy Knit Vest', sku: 'TOP-1096', category: 'Tops', vendor: 'Hanover Works', plant: 'Plant A · Gurgaon', onHand: 444, reorder: 126, dailyDemand: 16, uom: 'Piece', cost: 1240, leadTime: 12, description: 'Ribbed knit vest, mid-weight cotton-wool blend. Sold as a core layering piece across the Tops range — restocked seasonally from Hanover Works.' },
+    { id: 2, name: 'Canvas Low Top', sku: 'FTW-1215', category: 'Footwear', vendor: 'Verado Mills', plant: 'Plant B · Pune', onHand: 259, reorder: 66, dailyDemand: 42, uom: 'Pair', cost: 2150, leadTime: 9, description: 'Low-profile canvas sneaker with a rubber cupsole. One of the highest-velocity styles in Footwear — replenishment is struggling to keep pace with demand.' },
+    { id: 3, name: 'Canvas Tote', sku: 'ACC-1285', category: 'Accessories', vendor: 'Pergola Goods', plant: 'Plant A · Gurgaon', onHand: 470, reorder: 150, dailyDemand: 20, uom: 'Piece', cost: 890, leadTime: 15, description: 'Heavyweight canvas tote with an interior zip pocket. Steady year-round seller across the Accessories range.' },
+    { id: 4, name: 'Card Holder', sku: 'ACC-1292', category: 'Accessories', vendor: 'Hanover Works', plant: 'Plant C · Chennai', onHand: 98, reorder: 120, dailyDemand: 22, uom: 'Piece', cost: 420, leadTime: 10, description: 'Slim bi-fold card holder in full-grain leather. Compact accessory that gets restocked frequently from Hanover Works.' },
+    { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', category: 'Bottoms', vendor: 'Kestrel Supply Co.', plant: 'Plant B · Pune', onHand: 0, reorder: 126, dailyDemand: 15, uom: 'Piece', cost: 1560, leadTime: 18, description: 'Six-pocket cotton cargo pant, relaxed fit. Currently out of stock pending the next shipment from Kestrel Supply Co.' },
+    { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', category: 'Accessories', vendor: 'Northline Textile', plant: 'Plant D · Bhiwandi', onHand: 272, reorder: 78, dailyDemand: 9, uom: 'Piece', cost: 3200, leadTime: 20, description: 'Pure cashmere scarf with hand-finished edges. Premium accessory with modest, steady demand from Northline Textile.' },
+    { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', category: 'Home', vendor: 'Verado Mills', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, dailyDemand: 6, uom: 'Piece', cost: 680, leadTime: 25, description: 'Hand-thrown ceramic vase with a matte glaze finish. Home range item currently holding well above typical demand.' },
+    { id: 8, name: 'Chino Short', sku: 'BTM-1131', category: 'Bottoms', vendor: 'Hanover Works', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, dailyDemand: 24, uom: 'Piece', cost: 1180, leadTime: 14, description: 'Cotton-twill chino short, tailored fit. Reliable core seller across the Bottoms range from Hanover Works.' }
+  ];
+
+  var reqParams = new URLSearchParams(window.location.search);
+  var reqId = parseInt(reqParams.get('id'), 10);
+  var item = itemsCatalog.filter(function (it) { return it.id === reqId; })[0] || itemsCatalog[0];
+
+  // plant split + reason lists get rebuilt per item by renderPlants()
+  var plantNames = [];
+  var plantStock = {};
 
   function fmtMoney(n) { return '₹' + n.toLocaleString('en-IN'); }
   function fillSelect(sel, options, selectedVal) {
@@ -476,7 +494,190 @@
     document.getElementById('flowToastWrap').style.display = 'block';
     setTimeout(function () { document.getElementById('flowToastWrap').style.display = 'none'; }, 2600);
   }
+
+  // ---- predictive stockout logic — mirrors stockoutRisk() on the Item List page ----
+  function riskInfo(it) {
+    var days = it.dailyDemand > 0 ? Math.round(it.onHand / it.dailyDemand) : (it.onHand > 0 ? 999 : 0);
+    var tier = it.onHand === 0 ? 'red' : (days <= 7 ? 'red' : (days <= 14 ? 'amber' : 'none'));
+    var daysLabel = it.onHand === 0 ? 'Out of stock' : ('~' + days + ' days');
+    return { days: days, tier: tier, daysLabel: daysLabel };
+  }
+  // reorder-point status — same thresholds used to color the Item List rows
+  function computeStatus(it) {
+    if (it.onHand === 0) return 'stockout';
+    if (it.onHand < it.reorder) return 'belowReorder';
+    if (it.dailyDemand > 0 && Math.round(it.onHand / it.dailyDemand) > 60) return 'overstock';
+    return 'healthy';
+  }
+
+  var statusPillMeta = {
+    healthy: { label: 'Healthy', bg: '#ecfdf1', fg: '#047857', dot: '#10bc83' },
+    belowReorder: { label: 'Below Reorder Point', bg: '#fff7ed', fg: '#b84509', dot: '#e56106' },
+    stockout: { label: 'Out of Stock', bg: '#feecec', fg: '#b91c1c', dot: '#dc2626' },
+    overstock: { label: 'Overstocked', bg: '#efeaff', fg: '#6d4fd1', dot: '#8b6ff0' }
+  };
+  var tierMeta = {
+    red: { bg: '#feecec', fg: '#b91c1c', dot: '#dc2626' },
+    amber: { bg: '#fff7ed', fg: '#b84509', dot: '#e56106' },
+    none: { bg: '#ecfdf1', fg: '#047857', dot: '#10bc83' }
+  };
+
+  function pillHtml(meta) {
+    return '<span class="health-pill" style="background:' + meta.bg + '; color:' + meta.fg + ';"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="' + meta.dot + '"/></svg>' + meta.label + '</span>';
+  }
+
+  function healthScore(it, status, risk) {
+    var score = 90;
+    if (status === 'stockout') score = 15;
+    else if (status === 'belowReorder') score -= 25;
+    else if (status === 'overstock') score -= 20;
+    if (risk.tier === 'red' && status !== 'stockout') score -= 20;
+    else if (risk.tier === 'amber') score -= 8;
+    score = Math.max(5, Math.min(98, score));
+    var band = score >= 80 ? 'good' : (score >= 60 ? 'mid' : 'bad');
+    var bandMeta = {
+      good: { label: 'Healthy — above target', bg: '#ecfdf1', fg: '#047857', border: '#10bc83' },
+      mid: { label: 'Needs attention', bg: '#fff7ed', fg: '#b84509', border: '#e56106' },
+      bad: { label: 'At risk', bg: '#feecec', fg: '#b91c1c', border: '#dc2626' }
+    };
+    return { score: score, meta: bandMeta[band] };
+  }
+
+  function insightText(it, status, risk) {
+    if (status === 'stockout') {
+      return 'This item is currently out of stock. Demand of ~' + it.dailyDemand + '/day means any incoming stock will be consumed quickly — expedite the next purchase order from ' + it.vendor + '.';
+    }
+    if (risk.tier === 'red') {
+      return 'Demand is outpacing supply — at current velocity, on-hand stock covers only ' + risk.daysLabel + ', below ' + it.vendor + '’s ' + it.leadTime + '-day lead time. Consider raising the reorder point or placing a purchase order soon.';
+    }
+    if (risk.tier === 'amber') {
+      return 'Stock cover is tightening — ' + risk.daysLabel + ' on hand against a ' + it.leadTime + '-day lead time from ' + it.vendor + '. Keep an eye on incoming purchase orders.';
+    }
+    if (status === 'overstock') {
+      return 'On-hand stock is well above typical demand — ' + risk.daysLabel + ' of cover. Consider promotional activity or pausing reorders to avoid excess holding costs.';
+    }
+    return 'Demand has stayed within forecast. At current velocity, on-hand stock covers ' + risk.daysLabel + ' — comfortably above ' + it.vendor + '’s ' + it.leadTime + '-day lead time.';
+  }
+
+  function renderStatusPill(it, status) {
+    var meta = statusPillMeta[status];
+    var el = document.getElementById('statusPill');
+    el.style.background = meta.bg;
+    el.style.color = meta.fg;
+    el.innerHTML = '<svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="' + meta.dot + '"/></svg>' + meta.label;
+  }
+
+  function renderHealthCard(it) {
+    var status = computeStatus(it);
+    var risk = riskInfo(it);
+    var hs = healthScore(it, status, risk);
+    var circle = document.getElementById('healthScoreCircle');
+    circle.textContent = hs.score;
+    circle.style.background = hs.meta.bg;
+    circle.style.color = hs.meta.fg;
+    circle.style.borderColor = hs.meta.border;
+    document.getElementById('healthTopTitle').textContent = hs.meta.label;
+    document.getElementById('healthTopSub').textContent = 'Reviewed today';
+
+    var curStockMeta = statusPillMeta[status];
+    var tm = tierMeta[risk.tier];
+    var deadMeta = status === 'overstock' ? { label: 'Elevated', bg: '#fff7ed', fg: '#b84509', dot: '#e56106' } : { label: 'Low', bg: '#ecfdf1', fg: '#047857', dot: '#10bc83' };
+
+    document.getElementById('healthSignals').innerHTML =
+      '<div class="health-signal-row"><span class="lbl">Current stock</span>' + pillHtml({ label: curStockMeta.label, bg: curStockMeta.bg, fg: curStockMeta.fg, dot: curStockMeta.dot }) + '</div>' +
+      '<div class="health-signal-row"><span class="lbl">Demand trend</span>' + pillHtml({ label: 'Stable', bg: '#ecfdf1', fg: '#047857', dot: '#10bc83' }) + '</div>' +
+      '<div class="health-signal-row"><span class="lbl">Supplier reliability</span>' + pillHtml({ label: 'Reliable', bg: '#ecfdf1', fg: '#047857', dot: '#10bc83' }) + '</div>' +
+      '<div class="health-signal-row"><span class="lbl">Days of inventory</span>' + pillHtml({ label: risk.daysLabel, bg: tm.bg, fg: tm.fg, dot: tm.dot }) + '</div>' +
+      '<div class="health-signal-row"><span class="lbl">Dead stock risk</span>' + pillHtml(deadMeta) + '</div>';
+    document.getElementById('healthInsightText').textContent = insightText(it, status, risk);
+  }
+
+  function renderPlants(it) {
+    var others = ALL_PLANTS.filter(function (p) { return p !== it.plant; }).slice(0, 2);
+    var names = [it.plant].concat(others);
+    var fracs = [0.55, 0.30, 0.15];
+    var units = names.map(function (n, i) { return Math.round(it.onHand * fracs[i]); });
+    var sum = units[0] + units[1] + units[2];
+    units[0] = Math.max(0, units[0] + (it.onHand - sum));
+    var colors = ['#1960bd', '#2577e5', '#77abee'];
+    plantNames = names.slice();
+    plantStock = {};
+    document.getElementById('plantRows').innerHTML = names.map(function (n, i) {
+      var pct = it.onHand > 0 ? Math.round((units[i] / it.onHand) * 100) : 0;
+      plantStock[n] = units[i];
+      return '<div class="plant-row"><span class="dot" style="background:' + colors[i] + ';"></span><span class="nm">' + n + '</span><span class="units">' + units[i] + ' units</span><div class="track"><div class="fill" style="width:' + pct + '%; background:' + colors[i] + ';"></div></div><span class="pct">' + pct + '%</span></div>';
+    }).join('');
+  }
+
+  var iconHtml = {
+    adjust: { bg: '#e8f0fc', svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/></svg>' },
+    'adjust-neg': { bg: '#feecec', svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/></svg>' },
+    receive: { bg: '#ecfdf1', svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>' },
+    transfer: { bg: '#e4e2f1', svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#473aa6" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg>' },
+    reorder: { bg: '#eef1f5', svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>' },
+    created: { bg: '#eef1f5', svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>' }
+  };
+
+  function buildTimeline(it) {
+    var people = ['Mira Delgado', 'Priya Nair', 'Rahul Mehta', 'Devika Rao'];
+    var p1 = people[(it.id - 1) % people.length];
+    var p2 = people[it.id % people.length];
+    var p3 = people[(it.id + 1) % people.length];
+    var others = ALL_PLANTS.filter(function (p) { return p !== it.plant; });
+    var toPlant = others[0] || it.plant;
+    var adjQty = Math.max(5, Math.round(it.dailyDemand * 1.4));
+    var poQty = Math.max(30, it.reorder + Math.round(it.dailyDemand * 2.2));
+    var moveQty = Math.max(5, Math.round(it.dailyDemand * 0.7));
+    var damagedQty = Math.max(3, Math.round(it.dailyDemand * 0.4));
+    var prevReorder = Math.max(10, it.reorder - Math.round(it.dailyDemand * 2.5));
+    var poNumber = 4800 + it.id * 7;
+
+    var activity = [
+      { icon: 'adjust', title: 'Stock adjusted +' + adjQty + ' units', sub: p1 + ' · Sep 15' },
+      { icon: 'receive', title: 'Received PO #' + poNumber + ' +' + poQty + ' units', sub: 'System · Sep 10' },
+      { icon: 'transfer', title: 'Transferred −' + moveQty + ' units to ' + toPlant, sub: p2 + ' · Sep 6' }
+    ];
+    var audit = [
+      { icon: 'adjust', color: 'pos', title: 'Stock adjusted', delta: '+' + adjQty + ' units', desc: 'Cycle count correction', meta: p1 + ' · Sep 15, 2026 · 9:42 AM' },
+      { icon: 'receive', color: 'pos', title: 'Received PO #' + poNumber, delta: '+' + poQty + ' units', desc: 'Shipment from ' + it.vendor, meta: 'System · Sep 10, 2026 · 2:15 PM' },
+      { icon: 'transfer', color: 'neg', title: 'Transferred to ' + toPlant, delta: '−' + moveQty + ' units', desc: 'Rebalance stock ahead of regional demand', meta: p2 + ' · Sep 6, 2026 · 11:03 AM' },
+      { icon: 'adjust-neg', color: 'neg', title: 'Stock adjusted', delta: '−' + damagedQty + ' units', desc: 'Damaged in transit', meta: p3 + ' · Aug 28, 2026 · 4:47 PM' },
+      { icon: 'reorder', color: null, title: 'Reorder point updated ' + prevReorder + ' → ' + it.reorder, delta: null, desc: 'Seasonal demand update', meta: 'Mira Delgado · Aug 20, 2026 · 10:00 AM' },
+      { icon: 'created', color: null, title: 'Item created', delta: null, desc: 'Initial catalog entry', meta: 'System · Aug 12, 2026 · 8:30 AM' }
+    ];
+    return { activity: activity, audit: audit };
+  }
+
+  function renderActivity(activity) {
+    document.getElementById('activityList').innerHTML = activity.map(function (a) {
+      var ic = iconHtml[a.icon];
+      return '<div class="activity-item"><div class="activity-icon" style="background:' + ic.bg + ';">' + ic.svg + '</div><div class="activity-body"><div class="t">' + a.title + '</div><div class="s">' + a.sub + '</div></div></div>';
+    }).join('');
+  }
+  function renderAudit(audit) {
+    document.getElementById('auditTimeline').innerHTML = audit.map(function (a) {
+      var ic = iconHtml[a.icon];
+      var deltaHtml = a.delta ? '<span class="tl-delta ' + a.color + '">' + a.delta + '</span>' : '';
+      return '<div class="tl-row"><div class="tl-icon-wrap"><div class="tl-icon" style="background:' + ic.bg + ';">' + ic.svg + '</div><div class="tl-line"></div></div><div class="tl-body"><div class="tl-head"><span class="tl-title">' + a.title + '</span>' + deltaHtml + '</div><div class="tl-desc">' + a.desc + '</div><div class="tl-meta">' + a.meta + '</div></div></div>';
+    }).join('');
+  }
+
+  function renderVendorCard(it) {
+    document.getElementById('vendorBadge').textContent = it.vendor.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+    document.getElementById('vendorName').textContent = it.vendor;
+    document.getElementById('vendorLeadTime').textContent = it.leadTime + '-day lead time';
+  }
+
+  function renderModalSubtitles(it) {
+    var sub = it.name + ' · ' + it.sku;
+    document.getElementById('editDrawerSub').textContent = 'Update details for ' + it.name + '.';
+    document.getElementById('adjModalSub').textContent = sub;
+    document.getElementById('mvModalSub').textContent = sub;
+  }
+
   function renderItemHeader() {
+    document.title = 'Stockhouse — ' + item.name;
+    document.getElementById('crumbCur').textContent = item.name;
     document.getElementById('itemTitle').textContent = item.name;
     document.getElementById('metaSku').textContent = item.sku;
     document.getElementById('metaCategory').textContent = item.category;
@@ -492,7 +693,20 @@
     document.getElementById('infoUom').textContent = item.uom;
     document.getElementById('infoLeadTime').textContent = item.leadTime + ' days';
     document.getElementById('infoDescription').textContent = item.description;
+    renderStatusPill(item, computeStatus(item));
+    renderHealthCard(item);
+    renderVendorCard(item);
+    renderModalSubtitles(item);
   }
+
+  function renderItemFull() {
+    renderItemHeader();
+    renderPlants(item);
+    var tl = buildTimeline(item);
+    renderActivity(tl.activity);
+    renderAudit(tl.audit);
+  }
+  renderItemFull();
 
   // ---- Edit Item drawer ----
   function openEditItemDrawer() {
@@ -571,6 +785,7 @@
     var delta = adjDirection === 'increase' ? qty : -qty;
     item.onHand = Math.max(0, item.onHand + delta);
     renderItemHeader();
+    renderPlants(item);
     closeAdjustStockModal();
     showFlowToast('Stock adjustment saved');
   });
@@ -582,6 +797,7 @@
     var same = from === to;
     document.getElementById('mvWarning').style.display = same ? 'flex' : 'none';
     document.getElementById('mvAvailableLabel').textContent = 'Available at ' + from;
+    document.getElementById('mvAvailableUnits').textContent = (plantStock[from] || 0) + ' units';
     var submitBtn = document.getElementById('submitMoveStock');
     submitBtn.disabled = same;
     submitBtn.style.opacity = same ? '0.55' : '1';
