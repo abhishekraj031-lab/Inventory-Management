@@ -194,7 +194,8 @@
     draft: { label: 'Draft', bg: '#eef1f5', color: '#576a84' },
     pending: { label: 'Pending Approval', bg: '#fff7ed', color: '#b84509' },
     inTransit: { label: 'In Transit', bg: '#e8f0fc', color: '#1960bd' },
-    received: { label: 'Received', bg: '#ecfdf1', color: '#047857' }
+    received: { label: 'Received', bg: '#ecfdf1', color: '#047857' },
+    cancelled: { label: 'Cancelled', bg: '#feecec', color: '#b91c1c' }
   };
   var goodMeta = { bg: '#ecfdf1', fg: '#047857', dot: '#10bc83' };
   var midMeta = { bg: '#fff7ed', fg: '#b84509', dot: '#e56106' };
@@ -313,7 +314,7 @@
   } else {
     poListEl.innerHTML = supPos.map(function (p) {
       var pm = poStatusMeta[p.status];
-      return '<div class="po-mini-row"><div class="po-mini-id"><span class="nm">' + esc(p.poId) + '</span><span class="dt">' + esc(p.orderDate) + '</span></div>' +
+      return '<div class="po-mini-row"><div class="po-mini-id"><a class="nm" href="po-detail.html?po=' + encodeURIComponent(p.poId) + '">' + esc(p.poId) + '</a><span class="dt">' + esc(p.orderDate) + '</span></div>' +
         '<div class="po-mini-right"><span class="po-mini-val">' + esc(p.value) + '</span><span class="health-pill" style="background:' + pm.bg + '; color:' + pm.color + ';">' + pm.label + '</span></div></div>';
     }).join('');
   }
