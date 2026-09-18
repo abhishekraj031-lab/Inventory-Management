@@ -72,6 +72,12 @@
   .special-filter-banner span { font-size: 12.5px; font-weight: 500; color: #1e3a66; line-height: 1.4; }
   .special-filter-banner b { font-weight: 700; }
   .special-filter-banner a.clear-filter { font-size: 12px; font-weight: 700; color: #1960bd; white-space: nowrap; }
+  .bulk-action-bar { display: none; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 10px; background: #151b23; }
+  .bulk-action-bar .bulk-count { font-size: 13px; font-weight: 700; color: #ffffff; margin-right: auto; }
+  .bulk-action-bar .bulk-actions { display: flex; align-items: center; gap: 10px; }
+  .bulk-action-bar .btn { padding: 8px 14px; font-size: 13px; }
+  .bulk-action-bar .bulk-clear { font-size: 12px; font-weight: 700; color: #b2c1d7; background: transparent; border: 0; padding: 6px; cursor: pointer; }
+  .bulk-action-bar .bulk-clear:hover { color: #ffffff; }
   .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chip { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
   .chip .n { opacity: 0.85; font-weight: 600; }
@@ -235,6 +241,15 @@
       </div>
     </div>
 
+    <div class="bulk-action-bar" id="bulkActionBar">
+      <span class="bulk-count" id="bulkCount"></span>
+      <div class="bulk-actions">
+        <button class="btn" type="button" id="bulkMarkInactive">Mark Inactive</button>
+        <button class="btn primary" type="button" id="bulkCreatePo">Create PO</button>
+      </div>
+      <button class="bulk-clear" type="button" id="bulkClear">Clear ✕</button>
+    </div>
+
     <div class="table-card">
       <div class="row head">
         <button class="cb" id="selectAllBtn" type="button"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -354,7 +369,7 @@
     overstock: { label: 'Overstocked', bg: '#fff7ed', color: '#b84509', dot: '#e56106', bar: '#e56106' }
   };
 
-  var state = { search: '', activeFilter: 'all', category: 'all', plants: [], activePage: 1, rowsPerPage: 8, openMenuId: null, categoryOpen: false, plantOpen: false, rowsOpen: false, checked: {} };
+  var state = { search: '', activeFilter: 'all', category: 'all', plants: [], activePage: 1, rowsPerPage: 8, openMenuId: null, categoryOpen: false, plantOpen: false, rowsOpen: false, checked: {}, inactive: {} };
 
   var SPECIAL_FILTERS = {
     reorderIssues: { text: '<b>12 items</b> are low on, or out of, stock — from your Dashboard\u2019s Critical actions.', match: function (it) { return it.status === 'belowReorder' || it.status === 'stockout'; } },
@@ -369,6 +384,7 @@
   function visibleItems() {
     var q = state.search.trim().toLowerCase();
     return items.filter(function (it) {
+      if (state.inactive[it.id]) return false;
       if (state.specialFilter && !SPECIAL_FILTERS[state.specialFilter].match(it)) return false;
       if (!state.specialFilter && state.activeFilter !== 'all' && it.status !== state.activeFilter) return false;
       if (state.category !== 'all' && it.category !== state.category) return false;
@@ -382,6 +398,7 @@
     var totalUnits = 0, totalCost = 0, belowReorder = 0, stockouts = 0, overstocked = 0;
     var categories = {};
     items.forEach(function (it) {
+      if (state.inactive[it.id]) return;
       totalUnits += it.onHand;
       totalCost += it.onHand * (it.cost || 0);
       categories[it.category] = true;
@@ -390,7 +407,7 @@
       if (it.status === 'overstock') overstocked++;
     });
     var catCount = Object.keys(categories).length;
-    document.getElementById('kpiSkuCount').textContent = items.length;
+    document.getElementById('kpiSkuCount').textContent = items.filter(function (it) { return !state.inactive[it.id]; }).length;
     document.getElementById('kpiSkuLabel').textContent = 'SKUs tracked \u00b7 ' + catCount + ' categor' + (catCount === 1 ? 'y' : 'ies');
     document.getElementById('kpiUnitsOnHand').textContent = totalUnits.toLocaleString('en-IN');
     document.getElementById('kpiUnitsLabel').textContent = 'Units on hand \u00b7 \u20b9' + (totalCost / 100000).toFixed(1) + 'L cost';
@@ -399,11 +416,20 @@
     document.getElementById('kpiOverstocked').textContent = overstocked;
   }
 
+  function renderBulkBar() {
+    var selectedCount = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).length;
+    var bar = document.getElementById('bulkActionBar');
+    if (selectedCount === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    document.getElementById('bulkCount').textContent = selectedCount + ' item' + (selectedCount === 1 ? '' : 's') + ' selected';
+  }
+
   function render() {
     renderKpis();
     var visible = visibleItems();
     var visibleIds = visible.map(function (it) { return it.id; });
     var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
+    renderBulkBar();
 
     if (state.specialFilter) {
       document.getElementById('specialFilterText').innerHTML = SPECIAL_FILTERS[state.specialFilter].text;
@@ -413,11 +439,12 @@
     }
 
     // chips
+    var activeItemsList = items.filter(function (i) { return !state.inactive[i.id]; });
     var filterDefs = [
-      { key: 'all', label: 'All', count: items.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
-      { key: 'belowReorder', label: 'Low on stock', count: items.filter(function (i) { return i.status === 'belowReorder'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' },
-      { key: 'stockout', label: 'Out of stock', count: items.filter(function (i) { return i.status === 'stockout'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' },
-      { key: 'overstock', label: 'Overstock', count: items.filter(function (i) { return i.status === 'overstock'; }).length, activeBg: '#e56106', activeBorder: '#e56106', activeColor: '#ffffff', idleBg: '#fff7ed', idleBorder: '#ffe9cc', idleColor: '#b84509' }
+      { key: 'all', label: 'All', count: activeItemsList.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
+      { key: 'belowReorder', label: 'Low on stock', count: activeItemsList.filter(function (i) { return i.status === 'belowReorder'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' },
+      { key: 'stockout', label: 'Out of stock', count: activeItemsList.filter(function (i) { return i.status === 'stockout'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' },
+      { key: 'overstock', label: 'Overstock', count: activeItemsList.filter(function (i) { return i.status === 'overstock'; }).length, activeBg: '#e56106', activeBorder: '#e56106', activeColor: '#ffffff', idleBg: '#fff7ed', idleBorder: '#ffe9cc', idleColor: '#b84509' }
     ];
     document.getElementById('chips').innerHTML = filterDefs.map(function (f) {
       var isActive = !state.specialFilter && state.activeFilter === f.key;
@@ -584,6 +611,37 @@
     document.getElementById(wrapId).style.display = 'block';
     setTimeout(function () { document.getElementById(wrapId).style.display = 'none'; }, 2600);
   }
+
+  document.getElementById('bulkClear').addEventListener('click', function () {
+    state.checked = {};
+    render();
+  });
+
+  document.getElementById('bulkMarkInactive').addEventListener('click', function () {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    if (selectedIds.length === 0) return;
+    selectedIds.forEach(function (id) { state.inactive[id] = true; });
+    var n = selectedIds.length;
+    state.checked = {};
+    render();
+    showToast('addItemToastWrap', 'addItemToastText', n + ' item' + (n === 1 ? '' : 's') + ' marked inactive');
+  });
+
+  document.getElementById('bulkCreatePo').addEventListener('click', function () {
+    var selected = items.filter(function (it) { return !!state.checked[it.id]; });
+    if (selected.length === 0) return;
+    var byVendor = {};
+    selected.forEach(function (it) {
+      if (!byVendor[it.vendor]) byVendor[it.vendor] = { vendor: it.vendor, hasStockout: false, lines: [] };
+      if (it.status === 'stockout') byVendor[it.vendor].hasStockout = true;
+      var qty = Math.max((it.reorder * 2) - it.onHand, it.reorder, 1);
+      byVendor[it.vendor].lines.push({ item: it.name, qty: qty });
+    });
+    var groups = Object.keys(byVendor).map(function (k) { return byVendor[k]; });
+    groups.sort(function (a, b) { return (b.hasStockout ? 1 : 0) - (a.hasStockout ? 1 : 0); });
+    try { localStorage.setItem('stockhouseRecSelection', JSON.stringify({ groups: groups, aiDrafted: false })); } catch (e) {}
+    window.location.href = 'create-po.html';
+  });
 
   document.getElementById('openAddItem').addEventListener('click', openAddItemDrawer);
   document.getElementById('closeAddItem').addEventListener('click', closeAddItemDrawer);
