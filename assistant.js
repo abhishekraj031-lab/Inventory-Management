@@ -94,10 +94,27 @@ var Stockhouse = (function () {
   // ---------------------------------------------------------- data lookups
 
   function findMentioned(list, text, nameKey) {
-    var names = list.map(function (x) { return x[nameKey]; });
-    var found = names.filter(function (n) { return text.indexOf(n.toLowerCase()) !== -1; });
-    found.sort(function (a, b) { return b.length - a.length; });
-    return found[0] || null;
+    // Matches the full name verbatim, or (for compound names like "Central DC \u00b7 Delhi")
+    // the segment before the separator on its own, so a natural mention like "Central DC"
+    // still resolves without the user having to say the full "Site \u00b7 City" form.
+    var best = null, bestLen = 0;
+    list.forEach(function (x) {
+      var full = x[nameKey].toLowerCase();
+      var candidates = [full];
+      if (full.indexOf('\u00b7') !== -1) {
+        full.split('\u00b7').forEach(function (seg) {
+          var s = seg.replace(/^\s+|\s+$/g, '');
+          if (s.length >= 3) candidates.push(s);
+        });
+      }
+      candidates.forEach(function (c) {
+        if (text.indexOf(c) !== -1 && c.length > bestLen) {
+          best = x[nameKey];
+          bestLen = c.length;
+        }
+      });
+    });
+    return best;
   }
   function byName(list, nameKey, name) {
     return list.filter(function (x) { return x[nameKey] === name; })[0];
@@ -394,36 +411,83 @@ var Stockhouse = (function () {
       }
     }
 
-    // 10. Show / filter the item list
-    if (/^(show|filter|list)\b/.test(text) || /show (me|items)/.test(text)) {
-      var filterMap = [
-        { re: /below reorder|reorder point/, key: 'belowReorder', label: 'below reorder' },
-        { re: /stockout|out of stock/, key: 'stockout', label: 'stockouts' },
-        { re: /overstock/, key: 'overstock', label: 'overstocked' },
-        { re: /healthy/, key: 'healthy', label: 'healthy' },
-        { re: /\ball\b|everything/, key: 'all', label: 'all items' }
-      ];
-      var match = filterMap.filter(function (f) { return f.re.test(text); })[0];
-      if (match) {
-        if (DATA.onFilterItems) {
-          var count = DATA.onFilterItems(match.key);
-          addMessage('assistant', 'Showing ' + count + ' item' + (count === 1 ? '' : 's') + (match.key === 'all' ? '' : ' — ' + esc(match.label)) + '.');
-        } else {
-          var matchingItems = match.key === 'all' ? DATA.items : DATA.items.filter(function (it) { return it.status === match.key; });
-          addMessage('assistant', '<b>' + matchingItems.length + '</b> item' + (matchingItems.length === 1 ? '' : 's') + (match.key === 'all' ? '' : ' — ' + esc(match.label)) + (matchingItems.length ? ': ' + matchingItems.map(function (it) { return esc(it.name); }).join(', ') : '') + '.', [
-            { action: 'navigate', href: 'index.html', label: 'View in Inventory' }
-          ]);
-        }
-        return;
+    // 10. Show / filter the item list — matched on topic keywords ANYWHERE in the sentence
+    // (not just when the sentence starts with "show"), so casual phrasing and imperfect voice
+    // transcriptions ("you haven't shown me low stock items") still land here instead of falling
+    // all the way through to the fallback.
+    var filterMap = [
+      { re: /below reorder|reorder point/, key: 'belowReorder', label: 'below reorder' },
+      { re: /stockout|out of stock/, key: 'stockout', label: 'stockouts' },
+      { re: /overstock/, key: 'overstock', label: 'overstocked' },
+      { re: /healthy/, key: 'healthy', label: 'healthy' },
+      { re: /low (on )?stock|running low|what'?s low|short on stock/, key: 'belowReorder', label: 'low on stock' },
+      { re: /\b(inventory|items?)\b.*\ball\b|\ball\b.*\b(inventory|items?)\b|everything/, key: 'all', label: 'all items' }
+    ];
+    var match = filterMap.filter(function (f) { return f.re.test(text); })[0];
+    if (match) {
+      if (DATA.onFilterItems) {
+        var count = DATA.onFilterItems(match.key);
+        addMessage('assistant', 'Showing ' + count + ' item' + (count === 1 ? '' : 's') + (match.key === 'all' ? '' : ' — ' + esc(match.label)) + '.');
+      } else {
+        var matchingItems = match.key === 'all' ? DATA.items : DATA.items.filter(function (it) { return it.status === match.key; });
+        addMessage('assistant', '<b>' + matchingItems.length + '</b> item' + (matchingItems.length === 1 ? '' : 's') + (match.key === 'all' ? '' : ' — ' + esc(match.label)) + (matchingItems.length ? ': ' + matchingItems.map(function (it) { return esc(it.name); }).join(', ') : '') + '.', [
+          { action: 'navigate', href: 'index.html', label: 'View in Inventory' }
+        ]);
       }
+      return;
     }
 
-    // 11. Fallback
-    addMessage('assistant', 'I can help with items, purchase orders, transfers, suppliers or warehouses — try “which supplier is at risk”, “how full is Central DC”, “status of PO-3082”, or one of these:', [
+    // 11. Best-effort real-data lookup: the message didn't match a specific keyworded intent
+    // above, but if it names a real item, supplier or warehouse, answer with that entity's
+    // actual data anyway rather than punting straight to "I don't understand".
+    var fbItemName = findMentioned(DATA.items, text, 'name');
+    if (fbItemName) {
+      var fbItm = byName(DATA.items, 'name', fbItemName);
+      addMessage('assistant', '<b>' + esc(fbItemName) + '</b> (' + esc(fbItm.sku) + ') — <b>' + fbItm.onHand + ' units</b> on hand at ' + esc(fbItm.plant) + ', reorder point ' + fbItm.reorder + ', unit cost ' + fmtCr(fbItm.cost) + '. Status: ' + esc(fbItm.status) + '.', [
+        { action: 'navigate', href: 'item-detail.html?id=' + fbItm.id, label: 'View ' + fbItemName }
+      ]);
+      return;
+    }
+    var fbSupplierName = findMentioned(DATA.suppliers, text, 'name');
+    if (fbSupplierName) {
+      var fbSup = byName(DATA.suppliers, 'name', fbSupplierName);
+      var fbHs = stockhouseHealthScore(fbSup);
+      addMessage('assistant', '<b>' + esc(fbSupplierName) + '</b> — health score <b>' + fbHs.score + '/100</b> (' + fbHs.label + '), ' + fbSup.openPOs + ' open PO' + (fbSup.openPOs === 1 ? '' : 's') + ', ' + esc(fbSup.category) + '.', [
+        { action: 'navigate', href: 'supplier-detail.html?id=' + fbSup.id, label: 'View ' + fbSupplierName }
+      ]);
+      return;
+    }
+    var fbWarehouseName = findMentioned(DATA.warehouses, text, 'name');
+    if (fbWarehouseName) {
+      var fbWh = byName(DATA.warehouses, 'name', fbWarehouseName);
+      addMessage('assistant', '<b>' + esc(fbWarehouseName) + '</b> — <b>' + fbWh.units.toLocaleString('en-IN') + '</b> of ' + fbWh.capacity.toLocaleString('en-IN') + ' units stored (' + fbWh.utilPct + '% utilized).', [
+        { action: 'navigate', href: 'warehouses.html', label: 'View Warehouses' }
+      ]);
+      return;
+    }
+
+    // 12. Fallback — rotates between a few phrasings (with a nudge toward typing after repeated
+    // misses) so voice mis-transcriptions or unrecognized phrasing don't read as a stuck, broken
+    // record repeating the exact same sentence.
+    aiChat.missCount = (aiChat.missCount || 0) + 1;
+    var askedQuoted = '\u201c' + esc(raw.length > 60 ? raw.slice(0, 60) + '\u2026' : raw) + '\u201d';
+    var fallbackVariants = [
+      'No data available for ' + askedQuoted + ' — I checked items, suppliers, warehouses, transfers and purchase orders and didn\u2019t find a match. I can help with things like:',
+      'Still no match for ' + askedQuoted + ' in Stockhouse. I can look up stock levels, purchase orders, transfers, supplier health or warehouse capacity — try rephrasing, or one of these:',
+      'Still not landing — if you\u2019re using voice and it keeps mishearing you, try typing the question instead. Here\u2019s what I can reliably answer:'
+    ];
+    var fallbackText = aiChat.missCount >= 3 ? fallbackVariants[2] : fallbackVariants[(aiChat.missCount - 1) % 2];
+    var fallbackChipPool = [
       { action: 'example', text: exampleQueries[0], label: 'Create a PO for items low on stock' },
+      { action: 'example', text: exampleQueries[1], label: 'Show items below reorder point' },
+      { action: 'example', text: exampleQueries[3], label: 'How is Hanover Works doing?' },
+      { action: 'example', text: exampleQueries[4], label: 'Which warehouse is near capacity?' },
       { action: 'example', text: exampleQueries[5], label: 'How many transfers are pending?' },
       { action: 'example', text: exampleQueries[7], label: 'Top vendors by spend' }
-    ]);
+    ];
+    var offset = (aiChat.missCount - 1) % fallbackChipPool.length;
+    var fallbackChips = [fallbackChipPool[offset % 6], fallbackChipPool[(offset + 2) % 6], fallbackChipPool[(offset + 4) % 6]];
+    addMessage('assistant', fallbackText, fallbackChips);
   }
 
   function handleChipClick(el) {
