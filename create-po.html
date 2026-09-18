@@ -77,11 +77,12 @@
   .addr-block { margin-top: 10px; padding: 12px 14px; border-radius: 10px; background: #fafbfd; border: 1px solid #eef1f5; font-size: 13px; font-weight: 500; color: #384352; line-height: 1.5; }
 
   .li-table { border: 1px solid #eef1f5; border-radius: 12px; overflow: hidden; }
-  .li-head { display: grid; grid-template-columns: 2.2fr 1.5fr 0.8fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; background: #fafbfd; border-bottom: 1px solid #eef1f5; }
+  .li-head { display: grid; grid-template-columns: 2.2fr 0.7fr 1.3fr 0.8fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; background: #fafbfd; border-bottom: 1px solid #eef1f5; }
   .li-head span { font-size: 10.5px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
-  .li-row { display: grid; grid-template-columns: 2.2fr 1.5fr 0.8fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #f2f4f7; align-items: center; }
+  .li-row { display: grid; grid-template-columns: 2.2fr 0.7fr 1.3fr 0.8fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #f2f4f7; align-items: center; }
   .li-row:last-child { border-bottom: 0; }
   .li-row select, .li-row input { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 8px; padding: 8px 10px; background: #ffffff; outline: 0; width: 100%; }
+  .li-row .li-uom { font-size: 13px; font-weight: 600; color: #8da4be; text-align: center; }
   .li-row select:focus, .li-row input:focus { border-color: #1960bd; }
   .li-amount { font-size: 13px; font-weight: 700; text-align: right; padding-right: 4px; }
   .li-remove { width: 28px; height: 28px; border-radius: 8px; border: 0; background: transparent; color: #b2c1d7; display: flex; align-items: center; justify-content: center; }
@@ -223,7 +224,7 @@
         <div>
           <p class="section-label">Item Details</p>
           <div class="li-table">
-            <div class="li-head"><span>Item</span><span>Account</span><span>Qty</span><span>Rate</span><span>Amount</span><span></span></div>
+            <div class="li-head"><span>Item</span><span>UOM</span><span>Account</span><span>Qty</span><span>Rate</span><span>Amount</span><span></span></div>
             <div id="liRows"></div>
             <div class="li-foot">
               <button class="li-add-btn" id="liAddRow" type="button">+ Add New Row</button>
@@ -282,31 +283,31 @@
 <script>
 (function () {
   var itemCatalog = [
-    { name: 'Boxy Knit Vest', rate: 950 },
-    { name: 'Canvas Low Top', rate: 850 },
-    { name: 'Canvas Tote', rate: 620 },
-    { name: 'Card Holder', rate: 700 },
-    { name: 'Cargo Pant', rate: 850 },
-    { name: 'Cashmere Scarf', rate: 1450 },
-    { name: 'Ceramic Vase', rate: 540 },
-    { name: 'Chino Short', rate: 780 },
-    { name: 'Denim Jacket', rate: 1450 },
-    { name: 'Leather Belt', rate: 480 },
-    { name: 'Wool Beanie', rate: 260 },
-    { name: 'Linen Shirt', rate: 1100 },
-    { name: 'Suede Loafer', rate: 2100 },
-    { name: 'Corduroy Trouser', rate: 1200 },
-    { name: 'Table Runner', rate: 650 },
-    { name: 'Puffer Vest', rate: 1900 },
-    { name: 'Ankle Boot', rate: 2500 },
-    { name: 'Wide-Leg Jean', rate: 1300 },
-    { name: 'Leather Tote', rate: 2800 },
-    { name: 'Throw Pillow', rate: 420 },
-    { name: 'Fleece Hoodie', rate: 1400 },
-    { name: 'Suede Sneaker', rate: 1900 },
-    { name: 'Straw Tote', rate: 580 },
-    { name: 'Wide Belt', rate: 450 },
-    { name: 'Ceramic Planter', rate: 560 }
+    { name: 'Boxy Knit Vest', rate: 950, uom: 'Piece' },
+    { name: 'Canvas Low Top', rate: 850, uom: 'Pair' },
+    { name: 'Canvas Tote', rate: 620, uom: 'Piece' },
+    { name: 'Card Holder', rate: 700, uom: 'Piece' },
+    { name: 'Cargo Pant', rate: 850, uom: 'Piece' },
+    { name: 'Cashmere Scarf', rate: 1450, uom: 'Piece' },
+    { name: 'Ceramic Vase', rate: 540, uom: 'Piece' },
+    { name: 'Chino Short', rate: 780, uom: 'Piece' },
+    { name: 'Denim Jacket', rate: 1450, uom: 'Piece' },
+    { name: 'Leather Belt', rate: 480, uom: 'Piece' },
+    { name: 'Wool Beanie', rate: 260, uom: 'Piece' },
+    { name: 'Linen Shirt', rate: 1100, uom: 'Piece' },
+    { name: 'Suede Loafer', rate: 2100, uom: 'Pair' },
+    { name: 'Corduroy Trouser', rate: 1200, uom: 'Piece' },
+    { name: 'Table Runner', rate: 650, uom: 'Piece' },
+    { name: 'Puffer Vest', rate: 1900, uom: 'Piece' },
+    { name: 'Ankle Boot', rate: 2500, uom: 'Pair' },
+    { name: 'Wide-Leg Jean', rate: 1300, uom: 'Piece' },
+    { name: 'Leather Tote', rate: 2800, uom: 'Piece' },
+    { name: 'Throw Pillow', rate: 420, uom: 'Piece' },
+    { name: 'Fleece Hoodie', rate: 1400, uom: 'Piece' },
+    { name: 'Suede Sneaker', rate: 1900, uom: 'Pair' },
+    { name: 'Straw Tote', rate: 580, uom: 'Piece' },
+    { name: 'Wide Belt', rate: 450, uom: 'Piece' },
+    { name: 'Ceramic Planter', rate: 560, uom: 'Piece' }
   ];
   var accountOptions = ['Inventory Asset', 'Cost of Goods Sold', 'Raw Materials'];
   var paymentTermsOptions = ['Due on Receipt', 'Net 15', 'Net 30', 'Net 45', 'Net 60'];
@@ -411,9 +412,12 @@
         return '<option value="' + esc(a) + '"' + (a === li.account ? ' selected' : '') + '>' + esc(a) + '</option>';
       }).join('');
       var removeDisabled = poState.lineItems.length <= 1;
+      var liMatch = itemCatalog.filter(function (it) { return it.name === li.item; })[0];
+      var liUom = liMatch ? liMatch.uom : '—';
       return '' +
         '<div class="li-row">' +
           '<select data-li-field="item" data-li-id="' + li.id + '">' + itemOpts + '</select>' +
+          '<span class="li-uom">' + esc(liUom) + '</span>' +
           '<select data-li-field="account" data-li-id="' + li.id + '">' + acctOpts + '</select>' +
           '<input type="number" min="0" value="' + li.qty + '" data-li-field="qty" data-li-id="' + li.id + '">' +
           '<div class="amount-wrap"><span>₹</span><input type="number" min="0" value="' + li.rate + '" data-li-field="rate" data-li-id="' + li.id + '"></div>' +
