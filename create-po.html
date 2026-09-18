@@ -77,9 +77,9 @@
   .addr-block { margin-top: 10px; padding: 12px 14px; border-radius: 10px; background: #fafbfd; border: 1px solid #eef1f5; font-size: 13px; font-weight: 500; color: #384352; line-height: 1.5; }
 
   .li-table { border: 1px solid #eef1f5; border-radius: 12px; overflow: hidden; }
-  .li-head { display: grid; grid-template-columns: 2.2fr 0.7fr 1.3fr 0.8fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; background: #fafbfd; border-bottom: 1px solid #eef1f5; }
+  .li-head { display: grid; grid-template-columns: 2.2fr 1.3fr 0.8fr 0.7fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; background: #fafbfd; border-bottom: 1px solid #eef1f5; }
   .li-head span { font-size: 10.5px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
-  .li-row { display: grid; grid-template-columns: 2.2fr 0.7fr 1.3fr 0.8fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #f2f4f7; align-items: center; }
+  .li-row { display: grid; grid-template-columns: 2.2fr 1.3fr 0.8fr 0.7fr 1fr 1.1fr 32px; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #f2f4f7; align-items: center; }
   .li-row:last-child { border-bottom: 0; }
   .li-row select, .li-row input { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 8px; padding: 8px 10px; background: #ffffff; outline: 0; width: 100%; }
   .li-row .li-uom { font-size: 13px; font-weight: 600; color: #8da4be; text-align: center; }
@@ -226,7 +226,7 @@
         <div>
           <p class="section-label">Item Details</p>
           <div class="li-table">
-            <div class="li-head"><span>Item</span><span>UOM</span><span>Account</span><span>Qty</span><span>Rate</span><span>Amount</span><span></span></div>
+            <div class="li-head"><span>Item</span><span>Account</span><span>Qty</span><span>UOM</span><span>Rate</span><span>Amount</span><span></span></div>
             <div id="liRows"></div>
             <div class="li-foot">
               <button class="li-add-btn" id="liAddRow" type="button">+ Add New Row</button>
@@ -423,9 +423,9 @@
             '<select data-li-field="item" data-li-id="' + li.id + '">' + itemOpts + '</select>' +
             vendorTagHtml +
           '</div>' +
-          '<span class="li-uom">' + esc(liUom) + '</span>' +
           '<select data-li-field="account" data-li-id="' + li.id + '">' + acctOpts + '</select>' +
           '<input type="number" min="0" value="' + li.qty + '" data-li-field="qty" data-li-id="' + li.id + '">' +
+          '<span class="li-uom">' + esc(liUom) + '</span>' +
           '<div class="amount-wrap"><span>₹</span><input type="number" min="0" value="' + li.rate + '" data-li-field="rate" data-li-id="' + li.id + '"></div>' +
           '<span class="li-amount">₹' + liAmount(li).toLocaleString('en-IN') + '</span>' +
           '<button class="li-remove" type="button" data-action="li-remove" data-key="' + li.id + '"' + (removeDisabled ? ' disabled' : '') + '><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>' +
