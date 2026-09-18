@@ -245,7 +245,7 @@ var Stockhouse = (function () {
     }
 
     // 4. Supplier health
-    var supplierHealthKeywords = /(health|risk|reliab|score|doing|status|rating|perform)/.test(text);
+    var supplierHealthKeywords = /(health|risk|reliab|score|doing|status|rating|perform|trust|issue|problem|trouble)/.test(text);
     var mentionedSupplierEarly = supplierHealthKeywords ? findMentioned(DATA.suppliers, text, 'name') : null;
     var isSupplierIntent = supplierHealthKeywords && (mentionedSupplierEarly || /\b(supplier|vendor)\b/.test(text));
     if (isSupplierIntent) {
@@ -285,7 +285,7 @@ var Stockhouse = (function () {
     }
 
     // 5. Warehouse capacity / utilization
-    var isWarehouseIntent = /(capacity|utiliz|near capacity|underutil|low utilization|how full|warehouse status)/.test(text);
+    var isWarehouseIntent = /(capacity|utiliz|near capacity|underutil|low utilization|how full|warehouse status|space left|room (left|available)|how much space|full up|any room)/.test(text);
     if (isWarehouseIntent) {
       var mentionedWh = findMentioned(DATA.warehouses, text, 'name');
       if (mentionedWh) {
@@ -400,7 +400,7 @@ var Stockhouse = (function () {
     }
 
     // 9. Item lookup (stock level, SKU, reorder point, cost)
-    if (/(how much|stock level|sku|reorder point|cost of|price of|do we have|on hand)/.test(text)) {
+    if (/(how much|how many|stock level|sku|reorder point|cost of|price of|do we have|on hand|units of|quantity of|inventory of|units left|in stock)/.test(text)) {
       var lookedUpItem = findMentioned(DATA.items, text, 'name');
       if (lookedUpItem) {
         var itm = byName(DATA.items, 'name', lookedUpItem);
@@ -416,12 +416,12 @@ var Stockhouse = (function () {
     // transcriptions ("you haven't shown me low stock items") still land here instead of falling
     // all the way through to the fallback.
     var filterMap = [
-      { re: /below reorder|reorder point/, key: 'belowReorder', label: 'below reorder' },
-      { re: /stockout|out of stock/, key: 'stockout', label: 'stockouts' },
-      { re: /overstock/, key: 'overstock', label: 'overstocked' },
-      { re: /healthy/, key: 'healthy', label: 'healthy' },
-      { re: /low (on )?stock|running low|what'?s low|short on stock/, key: 'belowReorder', label: 'low on stock' },
-      { re: /\b(inventory|items?)\b.*\ball\b|\ball\b.*\b(inventory|items?)\b|everything/, key: 'all', label: 'all items' }
+      { re: /below reorder|reorder point|need(s)? to reorder|reorder soon|due for reorder/, key: 'belowReorder', label: 'below reorder' },
+      { re: /stock[\s-]?out|out of stock|no stock left|zero stock|not in stock|sold out|nothing left/, key: 'stockout', label: 'stockouts' },
+      { re: /over[\s-]?stock(ed)?|excess (stock|inventory)|surplus stock|too much stock|extra stock/, key: 'overstock', label: 'overstocked' },
+      { re: /\bhealthy\b|well stocked|good stock levels?|in good shape|stock (is|looks) (fine|good|ok)/, key: 'healthy', label: 'healthy' },
+      { re: /low (on )?stock|running low|what'?s low|short on stock|almost out|nearly out|about to run out|low inventory/, key: 'belowReorder', label: 'low on stock' },
+      { re: /\b(inventory|items?|products?|stock)\b.*\ball\b|\ball\b.*\b(inventory|items?|products?|stock)\b|everything|full inventory|complete list/, key: 'all', label: 'all items' }
     ];
     var match = filterMap.filter(function (f) { return f.re.test(text); })[0];
     if (match) {
