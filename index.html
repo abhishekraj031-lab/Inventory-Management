@@ -139,8 +139,8 @@
   .backdrop { position: fixed; inset: 0; z-index: 25; }
 
   /* drawer (Add Item) */
-  .drawer-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
-  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: calc(100vw - 24px); background: #ffffff; z-index: 71; box-shadow: -12px 0 32px rgba(21,27,35,0.12); display: none; flex-direction: column; }
+  .drawer-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 82; display: none; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: calc(100vw - 24px); background: #ffffff; z-index: 83; box-shadow: -12px 0 32px rgba(21,27,35,0.12); display: none; flex-direction: column; }
   .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; }
   .drawer-title { font-size: 18px; font-weight: 800; margin: 0; }
   .drawer-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
@@ -237,11 +237,11 @@
     </div>
 
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div><span class="kpi-delta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>4%</span></div><div class="kpi-body"><span class="kpi-num">47</span><span class="kpi-label">SKUs tracked · 6 categories</span></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg></div><span class="kpi-delta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>2%</span></div><div class="kpi-body"><span class="kpi-num">21,023</span><span class="kpi-label">Units on hand · $866k cost</span></div></div>
-      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.6" r="0.9" fill="#dc2626" stroke="none"/></svg></div><span class="kpi-delta down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 7l10 10"/><path d="M17 8v9H8"/></svg>6%</span></div><div class="kpi-body"><span class="kpi-num warn">25</span><span class="kpi-label">Below reorder · lines</span></div></div>
-      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3l5.4 5.4M14.7 9.3l-5.4 5.4"/></svg></div><span class="kpi-delta down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 7l10 10"/><path d="M17 8v9H8"/></svg>1%</span></div><div class="kpi-body"><span class="kpi-num warn">5</span><span class="kpi-label">Stockouts · lines at zero</span></div></div>
-      <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg></div><span class="kpi-delta warn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>3%</span></div><div class="kpi-body"><span class="kpi-num caution">11</span><span class="kpi-label">Overstocked · SKUs</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div><span class="kpi-delta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>4%</span></div><div class="kpi-body"><span class="kpi-num" id="kpiSkuCount">47</span><span class="kpi-label" id="kpiSkuLabel">SKUs tracked · 6 categories</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg></div><span class="kpi-delta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>2%</span></div><div class="kpi-body"><span class="kpi-num" id="kpiUnitsOnHand">21,023</span><span class="kpi-label" id="kpiUnitsLabel">Units on hand · $866k cost</span></div></div>
+      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.6" r="0.9" fill="#dc2626" stroke="none"/></svg></div><span class="kpi-delta down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 7l10 10"/><path d="M17 8v9H8"/></svg>6%</span></div><div class="kpi-body"><span class="kpi-num warn" id="kpiBelowReorder">25</span><span class="kpi-label">Below reorder · lines</span></div></div>
+      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3l5.4 5.4M14.7 9.3l-5.4 5.4"/></svg></div><span class="kpi-delta down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 7l10 10"/><path d="M17 8v9H8"/></svg>1%</span></div><div class="kpi-body"><span class="kpi-num warn" id="kpiStockouts">5</span><span class="kpi-label">Stockouts · lines at zero</span></div></div>
+      <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg></div><span class="kpi-delta warn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>3%</span></div><div class="kpi-body"><span class="kpi-num caution" id="kpiOverstocked">11</span><span class="kpi-label">Overstocked · SKUs</span></div></div>
     </div>
 
     <div class="special-filter-banner" id="specialFilterBanner">
@@ -356,14 +356,14 @@
 <script>
 (function () {
   var items = [
-    { id: 1, name: 'Boxy Knit Vest', sku: 'TOP-1096', vendor: 'Hanover Works', category: 'Tops', plant: 'Plant A · Gurgaon', onHand: 444, reorder: 126, status: 'healthy', cover: '3.5x', coverPct: 70, dailyDemand: 16 },
-    { id: 2, name: 'Canvas Low Top', sku: 'FTW-1215', vendor: 'Verado Mills', category: 'Footwear', plant: 'Plant B · Pune', onHand: 259, reorder: 66, status: 'healthy', cover: '3.9x', coverPct: 78, dailyDemand: 42 },
-    { id: 3, name: 'Canvas Tote', sku: 'ACC-1285', vendor: 'Pergola Goods', category: 'Accessories', plant: 'Plant A · Gurgaon', onHand: 470, reorder: 150, status: 'healthy', cover: '3.1x', coverPct: 62, dailyDemand: 20 },
-    { id: 4, name: 'Card Holder', sku: 'ACC-1292', vendor: 'Hanover Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 98, reorder: 120, status: 'belowReorder', cover: '1.6x', coverPct: 33, dailyDemand: 22 },
-    { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', vendor: 'Kestrel Supply Co.', category: 'Bottoms', plant: 'Plant B · Pune', onHand: 0, reorder: 126, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 15 },
-    { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', vendor: 'Northline Textile', category: 'Accessories', plant: 'Plant D · Bhiwandi', onHand: 272, reorder: 78, status: 'healthy', cover: '3.5x', coverPct: 70, dailyDemand: 9 },
-    { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, status: 'overstock', cover: '4.1x', coverPct: 100, dailyDemand: 6 },
-    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24 }
+    { id: 1, name: 'Boxy Knit Vest', sku: 'TOP-1096', vendor: 'Hanover Works', category: 'Tops', plant: 'Plant A · Gurgaon', onHand: 444, reorder: 126, status: 'healthy', cover: '3.5x', coverPct: 70, dailyDemand: 16, cost: 1240 },
+    { id: 2, name: 'Canvas Low Top', sku: 'FTW-1215', vendor: 'Verado Mills', category: 'Footwear', plant: 'Plant B · Pune', onHand: 259, reorder: 66, status: 'healthy', cover: '3.9x', coverPct: 78, dailyDemand: 42, cost: 2150 },
+    { id: 3, name: 'Canvas Tote', sku: 'ACC-1285', vendor: 'Pergola Goods', category: 'Accessories', plant: 'Plant A · Gurgaon', onHand: 470, reorder: 150, status: 'healthy', cover: '3.1x', coverPct: 62, dailyDemand: 20, cost: 890 },
+    { id: 4, name: 'Card Holder', sku: 'ACC-1292', vendor: 'Hanover Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 98, reorder: 120, status: 'belowReorder', cover: '1.6x', coverPct: 33, dailyDemand: 22, cost: 420 },
+    { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', vendor: 'Kestrel Supply Co.', category: 'Bottoms', plant: 'Plant B · Pune', onHand: 0, reorder: 126, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 15, cost: 1560 },
+    { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', vendor: 'Northline Textile', category: 'Accessories', plant: 'Plant D · Bhiwandi', onHand: 272, reorder: 78, status: 'healthy', cover: '3.5x', coverPct: 70, dailyDemand: 9, cost: 3200 },
+    { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, status: 'overstock', cover: '4.1x', coverPct: 100, dailyDemand: 6, cost: 680 },
+    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24, cost: 1180 }
   ];
 
   function stockoutRisk(it) {
@@ -410,7 +410,29 @@
     });
   }
 
+  function renderKpis() {
+    var totalUnits = 0, totalCost = 0, belowReorder = 0, stockouts = 0, overstocked = 0;
+    var categories = {};
+    items.forEach(function (it) {
+      totalUnits += it.onHand;
+      totalCost += it.onHand * (it.cost || 0);
+      categories[it.category] = true;
+      if (it.status === 'belowReorder') belowReorder++;
+      if (it.status === 'stockout') stockouts++;
+      if (it.status === 'overstock') overstocked++;
+    });
+    var catCount = Object.keys(categories).length;
+    document.getElementById('kpiSkuCount').textContent = items.length;
+    document.getElementById('kpiSkuLabel').textContent = 'SKUs tracked \u00b7 ' + catCount + ' categor' + (catCount === 1 ? 'y' : 'ies');
+    document.getElementById('kpiUnitsOnHand').textContent = totalUnits.toLocaleString('en-IN');
+    document.getElementById('kpiUnitsLabel').textContent = 'Units on hand \u00b7 \u20b9' + (totalCost / 100000).toFixed(1) + 'L cost';
+    document.getElementById('kpiBelowReorder').textContent = belowReorder;
+    document.getElementById('kpiStockouts').textContent = stockouts;
+    document.getElementById('kpiOverstocked').textContent = overstocked;
+  }
+
   function render() {
+    renderKpis();
     var visible = visibleItems();
     var visibleIds = visible.map(function (it) { return it.id; });
     var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
@@ -606,7 +628,8 @@
     'Create a PO by selecting items which are low on stock',
     'Show items below reorder point',
     'Show stockouts',
-    'What are our top vendors by spend?'
+    'What are our top vendors by spend?',
+    'Which plant has the most Cargo Pant stock?'
   ];
 
   // ---- Spend data for the AI chat's spend-query intent — mirrors purchasing.html's pos records ----
@@ -649,6 +672,21 @@
     return found[0] || null;
   }
 
+  // ---- Location-aware queries: per-plant stock split, mirroring the Dashboard's recommendation-modal logic ----
+  function findMentionedItem(text) {
+    var names = items.map(function (it) { return it.name; });
+    var found = names.filter(function (n) { return text.indexOf(n.toLowerCase()) !== -1; });
+    found.sort(function (a, b) { return b.length - a.length; });
+    return found[0] || null;
+  }
+
+  function plantSplitForItem(it) {
+    var others = plantNames.filter(function (p) { return p !== it.plant; }).slice(0, 2);
+    var splitPlants = [it.plant].concat(others);
+    var fractions = [0.55, 0.30, 0.15];
+    return splitPlants.map(function (p, i) { return { plant: p, units: Math.round(it.onHand * fractions[i]) }; });
+  }
+
   function addMessage(role, html, chips) {
     var id = aiChat.nextId++;
     aiChat.messages.push({ id: id, role: role, html: html, chips: chips || null });
@@ -657,7 +695,7 @@
 
   function ensureGreeting() {
     if (aiChat.messages.length > 0) return;
-    addMessage('assistant', 'Hi Mira — I can draft a purchase order for low-stock items, filter this list, or answer spend questions. Nothing gets sent without your review. Try one of these, or type your own:', [
+    addMessage('assistant', 'Hi Abhishek — I can draft a purchase order for low-stock items, filter this list, answer spend questions, or tell you what’s where across plants. Nothing gets sent without your review. Try one of these, or type your own:', [
       { action: 'example', text: voiceExamples[0], label: 'Create a PO for items low on stock' },
       { action: 'example', text: voiceExamples[1], label: 'Show items below reorder point' },
       { action: 'example', text: voiceExamples[3], label: 'Top vendors by spend' }
@@ -767,6 +805,30 @@
       return;
     }
 
+    var isLocationIntent = /(which plant|which location|which warehouse|what plant|what location|by plant|by location)/.test(text);
+    if (isLocationIntent) {
+      var mentionedItem = findMentionedItem(text);
+      if (mentionedItem) {
+        var mi = items.filter(function (x) { return x.name === mentionedItem; })[0];
+        if (mi.onHand === 0) {
+          addMessage('assistant', '<b>' + esc(mentionedItem) + '</b> is currently out of stock at every plant (0 units on hand, primarily stocked at ' + esc(mi.plant) + ').');
+          return;
+        }
+        var split = plantSplitForItem(mi);
+        var top = split[0];
+        var breakdown = split.map(function (s) { return esc(s.plant) + ': ' + s.units + ' units'; }).join(', ');
+        var locMsg = '<b>' + esc(top.plant) + '</b> has the most ' + esc(mentionedItem) + ' stock, with <b>' + top.units + ' units</b>. Full breakdown \u2014 ' + breakdown + '.';
+        addMessage('assistant', locMsg);
+        return;
+      }
+      var byPlant = {};
+      plantNames.forEach(function (p) { byPlant[p] = 0; });
+      items.forEach(function (it) { byPlant[it.plant] = (byPlant[it.plant] || 0) + it.onHand; });
+      var plantMsg = plantNames.map(function (p) { return esc(p) + ': ' + byPlant[p] + ' units'; }).join(', ');
+      addMessage('assistant', 'Total units on hand by plant \u2014 ' + plantMsg + '. Ask about a specific item (e.g. \u201cwhich plant has the most Cargo Pant stock?\u201d) for a per-item breakdown.');
+      return;
+    }
+
     if (/^(show|filter|list)\b/.test(text) || /show (me|items)/.test(text)) {
       var filterMap = [
         { re: /below reorder|reorder point/, key: 'belowReorder', label: 'below reorder' },
@@ -839,7 +901,8 @@
       reorder: reorder,
       status: status,
       cover: coverRatio,
-      coverPct: coverPct
+      coverPct: coverPct,
+      cost: parseFloat(document.getElementById('aiCost').value) || 0
     });
     closeAddItemDrawer();
     render();

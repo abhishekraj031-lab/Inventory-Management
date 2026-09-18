@@ -824,12 +824,44 @@
   document.getElementById('moveStockBackdrop').addEventListener('click', closeMoveStockModal);
   document.getElementById('mvFrom').addEventListener('change', renderMoveStockState);
   document.getElementById('mvTo').addEventListener('change', renderMoveStockState);
+  // ---- Persist the created transfer so it actually shows up on the Transfers page (shares the same
+  //      localStorage handoff transfers.html's own Create Transfer modal uses) ----
+  function getNextTransferNumber() {
+    var n = parseInt(localStorage.getItem('stockhouseNextTransferNumber'), 10);
+    if (!n || isNaN(n)) n = 2049;
+    return n;
+  }
+  function bumpNextTransferNumber(used) {
+    try { localStorage.setItem('stockhouseNextTransferNumber', String(used + 1)); } catch (e) {}
+  }
+  function queueNewTransfer(t) {
+    var queue = [];
+    try { queue = JSON.parse(localStorage.getItem('stockhouseNewTransfers') || '[]'); } catch (e) {}
+    queue.push(t);
+    try { localStorage.setItem('stockhouseNewTransfers', JSON.stringify(queue)); } catch (e) {}
+  }
+
   document.getElementById('submitMoveStock').addEventListener('click', function () {
     var from = document.getElementById('mvFrom').value;
     var to = document.getElementById('mvTo').value;
     if (from === to) return;
+    var qty = parseInt(document.getElementById('mvQty').value, 10) || 0;
+    var nextNum = getNextTransferNumber();
+    var tid = 'TRF-' + nextNum;
+    bumpNextTransferNumber(nextNum);
+    queueNewTransfer({
+      id: Date.now(),
+      tid: tid,
+      item: item.name,
+      from: from,
+      to: to,
+      qty: qty,
+      status: 'pending',
+      requestedBy: 'Abhishek Gupta',
+      date: 'Sep 16, 2026'
+    });
     closeMoveStockModal();
-    showFlowToast('Stock transfer created');
+    showFlowToast(tid + ' created \u2014 view it on the Transfers page');
   });
 })();
 </script>

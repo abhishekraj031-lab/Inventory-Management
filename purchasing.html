@@ -209,14 +209,14 @@
 <script>
 (function () {
   var pos = [
-    { id: 1, poId: 'PO-3081', vendor: 'Hanover Works', itemsCount: 6, value: '₹4,82,000', status: 'received', orderDate: 'Aug 20, 2026', expectedDate: 'Aug 30, 2026' },
-    { id: 2, poId: 'PO-3082', vendor: 'Verado Mills', itemsCount: 9, value: '₹6,15,500', status: 'inTransit', orderDate: 'Sep 5, 2026', expectedDate: 'Sep 18, 2026' },
-    { id: 3, poId: 'PO-3083', vendor: 'Pergola Goods', itemsCount: 4, value: '₹1,84,200', status: 'pending', orderDate: 'Sep 12, 2026', expectedDate: 'Sep 25, 2026' },
-    { id: 4, poId: 'PO-3084', vendor: 'Kestrel Supply Co.', itemsCount: 7, value: '₹3,40,000', status: 'draft', orderDate: '—', expectedDate: '—' },
-    { id: 5, poId: 'PO-3085', vendor: 'Northline Textile', itemsCount: 3, value: '₹92,400', status: 'received', orderDate: 'Aug 15, 2026', expectedDate: 'Aug 22, 2026' },
-    { id: 6, poId: 'PO-3086', vendor: 'Hanover Works', itemsCount: 11, value: '₹7,88,900', status: 'inTransit', orderDate: 'Sep 8, 2026', expectedDate: 'Sep 20, 2026' },
-    { id: 7, poId: 'PO-3087', vendor: 'Verado Mills', itemsCount: 5, value: '₹2,64,750', status: 'pending', orderDate: 'Sep 14, 2026', expectedDate: 'Sep 28, 2026' },
-    { id: 8, poId: 'PO-3088', vendor: 'Pergola Goods', itemsCount: 2, value: '₹1,12,300', status: 'draft', orderDate: '—', expectedDate: '—' }
+    { id: 1, poId: 'PO-3081', vendor: 'Hanover Works', itemsCount: 6, lineCount: 2, value: '₹4,82,000', status: 'received', orderDate: 'Aug 20, 2026', expectedDate: 'Aug 30, 2026' },
+    { id: 2, poId: 'PO-3082', vendor: 'Verado Mills', itemsCount: 9, lineCount: 2, value: '₹6,15,500', status: 'inTransit', orderDate: 'Sep 5, 2026', expectedDate: 'Sep 18, 2026' },
+    { id: 3, poId: 'PO-3083', vendor: 'Pergola Goods', itemsCount: 4, lineCount: 1, value: '₹1,84,200', status: 'pending', orderDate: 'Sep 12, 2026', expectedDate: 'Sep 25, 2026' },
+    { id: 4, poId: 'PO-3084', vendor: 'Kestrel Supply Co.', itemsCount: 7, lineCount: 2, value: '₹3,40,000', status: 'draft', orderDate: '—', expectedDate: '—' },
+    { id: 5, poId: 'PO-3085', vendor: 'Northline Textile', itemsCount: 3, lineCount: 1, value: '₹92,400', status: 'received', orderDate: 'Aug 15, 2026', expectedDate: 'Aug 22, 2026' },
+    { id: 6, poId: 'PO-3086', vendor: 'Hanover Works', itemsCount: 11, lineCount: 3, value: '₹7,88,900', status: 'inTransit', orderDate: 'Sep 8, 2026', expectedDate: 'Sep 20, 2026' },
+    { id: 7, poId: 'PO-3087', vendor: 'Verado Mills', itemsCount: 5, lineCount: 2, value: '₹2,64,750', status: 'pending', orderDate: 'Sep 14, 2026', expectedDate: 'Sep 28, 2026' },
+    { id: 8, poId: 'PO-3088', vendor: 'Pergola Goods', itemsCount: 2, lineCount: 1, value: '₹1,12,300', status: 'draft', orderDate: '—', expectedDate: '—' }
   ];
 
   (function applyPoStatusOverrides() {
@@ -311,7 +311,7 @@
         return '' +
           '<div class="row">' +
             '<button class="cb' + (isChecked ? ' checked' : '') + '" type="button" data-action="check" data-key="' + it.id + '"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
-            '<div class="item-cell"><span class="nm">' + esc(it.poId) + '</span><span class="meta">' + it.itemsCount + ' items</span></div>' +
+            '<div class="item-cell"><span class="nm">' + esc(it.poId) + '</span><span class="meta">' + (it.lineCount || 1) + ' product' + ((it.lineCount || 1) === 1 ? '' : 's') + ' \u00b7 ' + it.itemsCount + ' units</span></div>' +
             '<span class="vendor">' + esc(it.vendor) + '</span>' +
             '<span class="value">' + esc(it.value) + '</span>' +
             '<span class="status-pill" style="background:' + meta.bg + '; color:' + meta.color + ';"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="' + meta.dot + '"/></svg>' + meta.label + '</span>' +
@@ -405,18 +405,28 @@
     showToast(po.poId + ' cancelled');
   }
 
-  // ---- Pick up any POs created on the Create Purchase Order page and merge them into the list ----
+  // ---- Pick up any POs created on the Create Purchase Order page and merge them into the list.
+  //      This is a PERSISTENT merge (the queue is never cleared) so newly created POs survive a
+  //      reload instead of vanishing; a one-time "toasted up to" counter keeps the confirmation
+  //      toast from repeating on every subsequent load. ----
   (function mergeQueuedPos() {
     var raw = null;
     try { raw = localStorage.getItem('stockhouseNewPos'); } catch (e) {}
     if (!raw) return;
-    try { localStorage.removeItem('stockhouseNewPos'); } catch (e) {}
     var queue;
     try { queue = JSON.parse(raw); } catch (e) { return; }
     if (!queue || !queue.length) return;
+    var existingIds = {};
+    pos.forEach(function (po) { existingIds[po.id] = true; });
     // queue is in creation order; unshifting in that order puts the most recently created PO on top
-    queue.forEach(function (po) { pos.unshift(po); });
-    showToast(queue.length === 1 ? (queue[0].poId + ' added') : (queue.length + ' purchase orders added'));
+    queue.forEach(function (po) { if (!existingIds[po.id]) pos.unshift(po); });
+    var toastedUpTo = 0;
+    try { toastedUpTo = parseInt(localStorage.getItem('stockhousePosToastedUpTo') || '0', 10); } catch (e) {}
+    if (queue.length > toastedUpTo) {
+      var justCreated = queue.slice(toastedUpTo);
+      showToast(justCreated.length === 1 ? (justCreated[0].poId + ' added') : (justCreated.length + ' purchase orders added'));
+      try { localStorage.setItem('stockhousePosToastedUpTo', String(queue.length)); } catch (e) {}
+    }
   })();
 
   render();

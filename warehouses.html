@@ -115,6 +115,25 @@
   .rows-trigger span { font-size: 13px; font-weight: 600; color: #384352; }
 
   .backdrop { position: fixed; inset: 0; z-index: 25; }
+
+  /* Add Warehouse modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
+  .modal-wrap { position: fixed; inset: 0; z-index: 71; display: none; align-items: center; justify-content: center; pointer-events: none; padding: 20px; }
+  .modal-card { pointer-events: auto; width: 480px; max-width: 100%; background: #ffffff; border-radius: 16px; box-shadow: 0 24px 48px rgba(21,27,35,0.18); max-height: calc(100vh - 60px); overflow-y: auto; }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px 16px; }
+  .modal-title { font-size: 18px; font-weight: 800; margin: 0; }
+  .modal-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
+  .modal-close { width: 30px; height: 30px; border-radius: 9px; border: 0; background: #f4f7fa; color: #8da4be; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #eef1f5; color: #384352; }
+  .modal-body { padding: 0 24px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .modal-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; font-weight: 700; color: #384352; }
+  .field input, .field select { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; width: 100%; }
+  .field input:focus, .field select:focus { border-color: #1960bd; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
+  .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -148,15 +167,15 @@
     <div class="page-head">
       <div><h1>Warehouses</h1><p>Manage your storage locations and facility capacity.</p></div>
       <div class="head-actions">
-        <button class="btn primary" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Warehouse</button>
+        <button class="btn primary" id="openAddWarehouse" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Warehouse</button>
       </div>
     </div>
 
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/><path d="M4 21h16"/></svg></div></div><div class="kpi-body"><span class="kpi-num">6</span><span class="kpi-label">Warehouses · 4 states</span></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num">26,023</span><span class="kpi-label">Units stored across all sites</span></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M6 21V10l6-5 6 5v11"/><path d="M10 21v-6h4v6"/></svg></div></div><div class="kpi-body"><span class="kpi-num">68%</span><span class="kpi-label">Avg. capacity utilization</span></div></div>
-      <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><circle cx="12" cy="16.6" r="0.9" fill="#e56106" stroke="none"/><path d="M10.3 3.9 2.5 18.5a1.8 1.8 0 0 0 1.6 2.6h15.8a1.8 1.8 0 0 0 1.6-2.6L13.7 3.9a1.8 1.8 0 0 0-3.4 0Z"/></svg></div></div><div class="kpi-body"><span class="kpi-num caution">1</span><span class="kpi-label">Warehouse near capacity</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/><path d="M4 21h16"/></svg></div></div><div class="kpi-body"><span class="kpi-num" id="kpiWhCount">6</span><span class="kpi-label" id="kpiWhStatesLabel">Warehouses · 4 states</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num" id="kpiUnitsStored">26,023</span><span class="kpi-label">Units stored across all sites</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M6 21V10l6-5 6 5v11"/><path d="M10 21v-6h4v6"/></svg></div></div><div class="kpi-body"><span class="kpi-num" id="kpiAvgUtil">68%</span><span class="kpi-label">Avg. capacity utilization</span></div></div>
+      <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><circle cx="12" cy="16.6" r="0.9" fill="#e56106" stroke="none"/><path d="M10.3 3.9 2.5 18.5a1.8 1.8 0 0 0 1.6 2.6h15.8a1.8 1.8 0 0 0 1.6-2.6L13.7 3.9a1.8 1.8 0 0 0-3.4 0Z"/></svg></div></div><div class="kpi-body"><span class="kpi-num caution" id="kpiNearCapacity">1</span><span class="kpi-label">Warehouse near capacity</span></div></div>
     </div>
 
     <div class="special-filter-banner" id="specialFilterBanner">
@@ -204,6 +223,33 @@
   </main>
 </div>
 
+<div class="modal-backdrop" id="addWhBackdrop"></div>
+<div class="modal-wrap" id="addWhWrap">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><p class="modal-title">Add Warehouse</p><p class="modal-sub">Register a new storage location.</p></div>
+      <button class="modal-close" id="closeAddWh" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Warehouse name</label><input id="whName" type="text" placeholder="e.g. Plant E \u00b7 Nagpur"></div>
+      <div class="field-row">
+        <div class="field"><label>Code</label><input id="whCode" type="text" placeholder="e.g. WH-NGP-07"></div>
+        <div class="field"><label>Manager</label><input id="whManager" type="text" placeholder="e.g. Devika Rao"></div>
+      </div>
+      <div class="field"><label>Location</label><input id="whLocation" type="text" placeholder="e.g. Nagpur, Maharashtra"></div>
+      <div class="field"><label>Capacity (units)</label><input id="whCapacity" type="number" placeholder="0"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="cancelAddWh" type="button">Cancel</button>
+      <button class="btn primary" id="submitAddWh" type="button">Add Warehouse</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="whToastWrap">
+  <div class="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="whToastText"></span></div>
+</div>
+
 <script>
 (function () {
   var warehouses = [
@@ -214,6 +260,8 @@
     { id: 5, name: 'Central DC · Delhi', code: 'WH-DEL-05', location: 'Delhi NCR', manager: 'Rahul Mehta', units: 4690, capacity: 5000, utilPct: 94, status: 'nearCapacity' },
     { id: 6, name: 'Returns Hub · Mumbai', code: 'WH-MUM-06', location: 'Mumbai, Maharashtra', manager: 'Mira Delgado', units: 948, capacity: 3000, utilPct: 32, status: 'lowUtilization' }
   ];
+
+  var nextWhId = 7;
 
   var statusMeta = {
     normal: { label: 'Operating normally', bg: '#ecfdf1', color: '#047857', dot: '#10bc83', bar: '#1960bd' },
@@ -242,7 +290,28 @@
     });
   }
 
+  function renderKpis() {
+    var states = {};
+    var totalUnits = 0, totalCapacity = 0, nearCapacityCount = 0;
+    warehouses.forEach(function (w) {
+      var parts = w.location.split(',');
+      var st = parts[parts.length - 1].trim();
+      states[st] = true;
+      totalUnits += w.units;
+      totalCapacity += w.capacity;
+      if (w.status === 'nearCapacity') nearCapacityCount++;
+    });
+    var stateCount = Object.keys(states).length;
+    document.getElementById('kpiWhCount').textContent = warehouses.length;
+    document.getElementById('kpiWhStatesLabel').textContent = 'Warehouses \u00b7 ' + stateCount + ' state' + (stateCount === 1 ? '' : 's');
+    document.getElementById('kpiUnitsStored').textContent = totalUnits.toLocaleString('en-IN');
+    var avgUtil = totalCapacity > 0 ? Math.round((totalUnits / totalCapacity) * 100) : 0;
+    document.getElementById('kpiAvgUtil').textContent = avgUtil + '%';
+    document.getElementById('kpiNearCapacity').textContent = nearCapacityCount;
+  }
+
   function render() {
+    renderKpis();
     var visible = visibleItems();
     var visibleIds = visible.map(function (it) { return it.id; });
     var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
@@ -350,6 +419,49 @@
 
   document.getElementById('search').addEventListener('input', function (e) {
     state.search = e.target.value; render();
+  });
+
+  // ---- Add Warehouse modal ----
+  function showWhToast(msg) {
+    document.getElementById('whToastText').textContent = msg;
+    document.getElementById('whToastWrap').style.display = 'block';
+    setTimeout(function () { document.getElementById('whToastWrap').style.display = 'none'; }, 2600);
+  }
+  function openAddWhModal() {
+    document.getElementById('whName').value = '';
+    document.getElementById('whCode').value = '';
+    document.getElementById('whManager').value = '';
+    document.getElementById('whLocation').value = '';
+    document.getElementById('whCapacity').value = '';
+    document.getElementById('addWhBackdrop').style.display = 'block';
+    document.getElementById('addWhWrap').style.display = 'flex';
+  }
+  function closeAddWhModal() {
+    document.getElementById('addWhBackdrop').style.display = 'none';
+    document.getElementById('addWhWrap').style.display = 'none';
+  }
+  document.getElementById('openAddWarehouse').addEventListener('click', openAddWhModal);
+  document.getElementById('closeAddWh').addEventListener('click', closeAddWhModal);
+  document.getElementById('cancelAddWh').addEventListener('click', closeAddWhModal);
+  document.getElementById('addWhBackdrop').addEventListener('click', closeAddWhModal);
+  document.getElementById('submitAddWh').addEventListener('click', function () {
+    var name = document.getElementById('whName').value.trim();
+    if (!name) { document.getElementById('whName').focus(); return; }
+    var capacity = parseInt(document.getElementById('whCapacity').value, 10) || 0;
+    warehouses.push({
+      id: nextWhId++,
+      name: name,
+      code: document.getElementById('whCode').value.trim() || ('WH-NEW-' + nextWhId),
+      location: document.getElementById('whLocation').value.trim() || '\u2014',
+      manager: document.getElementById('whManager').value.trim() || '\u2014',
+      units: 0,
+      capacity: capacity,
+      utilPct: 0,
+      status: 'lowUtilization'
+    });
+    closeAddWhModal();
+    render();
+    showWhToast(name + ' added to your warehouses');
   });
 
   render();

@@ -285,7 +285,7 @@
     var totalAmount = po.lines.reduce(function (sum, li) { return sum + li.qty * li.rate; }, 0);
 
     document.getElementById('metaVendor').textContent = po.vendor;
-    document.getElementById('metaItems').textContent = totalQty + (totalQty === 1 ? ' item' : ' items');
+    document.getElementById('metaItems').textContent = po.lines.length + (po.lines.length === 1 ? ' product' : ' products') + ' \u00b7 ' + totalQty + ' units';
     document.getElementById('metaDates').textContent = po.orderDate === '—' ? 'Not yet ordered' : (po.orderDate + ' → ' + po.expectedDate);
 
     document.getElementById('headActions').innerHTML = headActionsHtml();

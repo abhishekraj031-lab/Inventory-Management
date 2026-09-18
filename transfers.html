@@ -173,10 +173,10 @@
     </div>
 
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l3 4 3-4h6"/><path d="M4 17h4l3-4 3 4h6"/><path d="M17 4l3 3-3 3"/><path d="M17 14l3 3-3 3"/></svg></div></div><div class="kpi-body"><span class="kpi-num">156</span><span class="kpi-label">Total transfers · all time</span></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg></div></div><div class="kpi-body"><span class="kpi-num">12</span><span class="kpi-label">In transit · active shipments</span></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><circle cx="12" cy="16.6" r="0.9" fill="#e56106" stroke="none"/><circle cx="12" cy="12" r="9"/></svg></div></div><div class="kpi-body"><span class="kpi-num">5</span><span class="kpi-label">Pending approval</span></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num">34</span><span class="kpi-label">Completed this month</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l3 4 3-4h6"/><path d="M4 17h4l3-4 3 4h6"/><path d="M17 4l3 3-3 3"/><path d="M17 14l3 3-3 3"/></svg></div></div><div class="kpi-body"><span class="kpi-num" id="kpiTotalTransfers">156</span><span class="kpi-label">Total transfers · all time</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg></div></div><div class="kpi-body"><span class="kpi-num" id="kpiInTransit">12</span><span class="kpi-label">In transit · active shipments</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><circle cx="12" cy="16.6" r="0.9" fill="#e56106" stroke="none"/><circle cx="12" cy="12" r="9"/></svg></div></div><div class="kpi-body"><span class="kpi-num" id="kpiPendingApproval">5</span><span class="kpi-label">Pending approval</span></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num" id="kpiCompleted">34</span><span class="kpi-label">Completed this month</span></div></div>
     </div>
 
     <div class="toolbar">
@@ -257,7 +257,14 @@
 (function () {
   var itemNames = ['Boxy Knit Vest', 'Canvas Low Top', 'Cashmere Scarf', 'Chino Short', 'Ceramic Vase', 'Canvas Tote', 'Card Holder', 'Cargo Pant'];
   var plantNames = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai', 'Plant D · Bhiwandi'];
-  var nextTransferNum = 2049;
+  function getNextTransferNumber() {
+    var n = parseInt(localStorage.getItem('stockhouseNextTransferNumber'), 10);
+    if (!n || isNaN(n)) n = 2049;
+    return n;
+  }
+  function bumpNextTransferNumber(used) {
+    try { localStorage.setItem('stockhouseNextTransferNumber', String(used + 1)); } catch (e) {}
+  }
 
   var transfers = [
     { id: 1, tid: 'TRF-2041', item: 'Boxy Knit Vest', from: 'Plant A · Gurgaon', to: 'Plant B · Pune', qty: 30, status: 'completed', requestedBy: 'Priya Nair', date: 'Sep 6, 2026' },
@@ -290,7 +297,21 @@
     });
   }
 
+  function renderKpis() {
+    var inTransit = 0, pending = 0, completed = 0;
+    transfers.forEach(function (t) {
+      if (t.status === 'inTransit') inTransit++;
+      if (t.status === 'pending') pending++;
+      if (t.status === 'completed') completed++;
+    });
+    document.getElementById('kpiTotalTransfers').textContent = transfers.length;
+    document.getElementById('kpiInTransit').textContent = inTransit;
+    document.getElementById('kpiPendingApproval').textContent = pending;
+    document.getElementById('kpiCompleted').textContent = completed;
+  }
+
   function render() {
+    renderKpis();
     var visible = visibleItems();
     var visibleIds = visible.map(function (it) { return it.id; });
     var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
@@ -442,14 +463,47 @@
   document.getElementById('trFrom').addEventListener('change', checkSamePlant);
   document.getElementById('trTo').addEventListener('change', checkSamePlant);
 
+  // ---- Persist created transfers across reloads (mirrors the PO creation queue on Purchasing) ----
+  function queueNewTransfer(t) {
+    var queue = [];
+    try { queue = JSON.parse(localStorage.getItem('stockhouseNewTransfers') || '[]'); } catch (e) {}
+    queue.push(t);
+    try { localStorage.setItem('stockhouseNewTransfers', JSON.stringify(queue)); } catch (e) {}
+    try { localStorage.setItem('stockhouseTransfersToastedUpTo', String(queue.length)); } catch (e) {}
+  }
+
+  // ---- Pick up any transfers created here or from Item Detail's Create Stock Transfer modal ----
+  (function mergeQueuedTransfers() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhouseNewTransfers'); } catch (e) {}
+    if (!raw) return;
+    var queue;
+    try { queue = JSON.parse(raw); } catch (e) { return; }
+    if (!queue || !queue.length) return;
+    var existingIds = {};
+    transfers.forEach(function (t) { existingIds[t.id] = true; });
+    for (var i = queue.length - 1; i >= 0; i--) {
+      if (!existingIds[queue[i].id]) transfers.unshift(queue[i]);
+    }
+    var toastedUpTo = 0;
+    try { toastedUpTo = parseInt(localStorage.getItem('stockhouseTransfersToastedUpTo') || '0', 10); } catch (e) {}
+    if (queue.length > toastedUpTo) {
+      var justCreated = queue.slice(toastedUpTo);
+      showToast('transferToastWrap', 'transferToastText', justCreated.length === 1 ? (justCreated[0].tid + ' created and awaiting approval') : (justCreated.length + ' transfers created and awaiting approval'));
+      try { localStorage.setItem('stockhouseTransfersToastedUpTo', String(queue.length)); } catch (e) {}
+    }
+  })();
+
   document.getElementById('submitTransfer').addEventListener('click', function () {
     var from = document.getElementById('trFrom').value;
     var to = document.getElementById('trTo').value;
     if (from === to) return;
     var item = document.getElementById('trItem').value;
     var qty = parseInt(document.getElementById('trQty').value, 10) || 0;
-    var tid = 'TRF-' + (nextTransferNum++);
-    transfers.unshift({
+    var nextNum = getNextTransferNumber();
+    var tid = 'TRF-' + nextNum;
+    bumpNextTransferNumber(nextNum);
+    var newTransfer = {
       id: Date.now(),
       tid: tid,
       item: item,
@@ -457,9 +511,11 @@
       to: to,
       qty: qty,
       status: 'pending',
-      requestedBy: 'Mira Delgado',
+      requestedBy: 'Abhishek Gupta',
       date: 'Sep 16, 2026'
-    });
+    };
+    transfers.unshift(newTransfer);
+    queueNewTransfer(newTransfer);
     closeTransferModal();
     render();
     showToast('transferToastWrap', 'transferToastText', tid + ' created and awaiting approval');
