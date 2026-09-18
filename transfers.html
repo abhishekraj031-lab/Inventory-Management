@@ -109,6 +109,7 @@
   .pg-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; font-size: 13px; font-weight: 700; color: #384352; cursor: pointer; }
   .pg-btn.active { background: #1960bd; color: #ffffff; }
   .pg-arrow { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: 1px solid #cbd6e6; color: #576a84; }
+  .pg-arrow.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
   .rows-trigger { display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; border: 1px solid #cbd6e6; background: #ffffff; margin-left: 14px; }
   .rows-trigger span { font-size: 13px; font-weight: 600; color: #384352; }
 
@@ -206,12 +207,11 @@
     <div class="pagination">
       <span class="count" id="resultCount">Showing 8 of 8 transfers</span>
       <div class="pg">
-        <div class="pg-arrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+        <div class="pg-arrow" id="pgPrev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
         <div id="pages" style="display:flex; gap:6px;"></div>
-        <span style="padding:0 4px; color:#8da4be; font-size:13px;">…</span>
-        <div class="pg-arrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        <div class="pg-arrow" id="pgNext"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
         <div class="dd" id="rowsDd" style="margin-left:14px;">
-          <button class="rows-trigger" id="rowsTrigger" type="button"><span id="rowsLabel">8 per page</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+          <button class="rows-trigger" id="rowsTrigger" type="button"><span id="rowsLabel">10 per page</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
           <div class="dd-menu" id="rowsMenu" style="display:none; bottom:40px; right:0; width:140px;"></div>
         </div>
       </div>
@@ -289,7 +289,7 @@
     cancelled: { label: 'Cancelled', bg: '#eef1f5', color: '#576a84', dot: '#8da4be' }
   };
 
-  var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false, checked: {} };
+  var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 10, openMenuId: null, rowsOpen: false, checked: {} };
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
@@ -320,6 +320,11 @@
     var visible = visibleItems();
     var visibleIds = visible.map(function (it) { return it.id; });
     var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
+    var totalPages = Math.max(1, Math.ceil(visible.length / state.rowsPerPage));
+    if (state.activePage > totalPages) state.activePage = totalPages;
+    if (state.activePage < 1) state.activePage = 1;
+    var pageStart = (state.activePage - 1) * state.rowsPerPage;
+    var pageItems = visible.slice(pageStart, pageStart + state.rowsPerPage);
 
     var filterDefs = [
       { key: 'all', label: 'All', count: transfers.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
@@ -333,16 +338,20 @@
       return '<button type="button" class="chip" data-action="filter" data-key="' + f.key + '" style="background:' + bg + '; border-color:' + border + '; color:' + color + ';">' + f.label + ' <span class="n">' + f.count + '</span></button>';
     }).join('');
 
-    var rowsDefs = [8, 25, 50];
+    var rowsDefs = [10, 25, 50];
     document.getElementById('rowsMenu').innerHTML = rowsDefs.map(function (n) {
       return '<div class="opt' + (state.rowsPerPage === n ? ' active' : '') + '" data-action="rows" data-key="' + n + '">' + n + ' per page</div>';
     }).join('');
     document.getElementById('rowsLabel').textContent = state.rowsPerPage + ' per page';
     document.getElementById('rowsMenu').style.display = state.rowsOpen ? 'block' : 'none';
 
-    document.getElementById('pages').innerHTML = [1, 2, 3, 4].map(function (n) {
+    var pageNums = [];
+    for (var pn = 1; pn <= totalPages; pn++) pageNums.push(pn);
+    document.getElementById('pages').innerHTML = pageNums.map(function (n) {
       return '<div class="pg-btn' + (state.activePage === n ? ' active' : '') + '" data-action="page" data-key="' + n + '">' + n + '</div>';
     }).join('');
+    document.getElementById('pgPrev').classList.toggle('disabled', state.activePage <= 1);
+    document.getElementById('pgNext').classList.toggle('disabled', state.activePage >= totalPages);
 
     var selectAllBtn = document.getElementById('selectAllBtn');
     selectAllBtn.className = 'cb' + (allChecked ? ' checked' : '');
@@ -353,7 +362,7 @@
       document.getElementById('emptyState').style.display = 'flex';
     } else {
       document.getElementById('emptyState').style.display = 'none';
-      rowsEl.innerHTML = visible.map(function (it) {
+      rowsEl.innerHTML = pageItems.map(function (it) {
         var meta = statusMeta[it.status];
         var isChecked = !!state.checked[it.id];
         var menuOpen = state.openMenuId === it.id;
@@ -381,7 +390,7 @@
       }).join('');
     }
 
-    document.getElementById('resultCount').textContent = 'Showing ' + visible.length + ' of ' + transfers.length + ' transfers';
+    document.getElementById('resultCount').textContent = visible.length === 0 ? 'Showing 0 transfers' : ('Showing ' + (pageStart + 1) + '–' + Math.min(pageStart + state.rowsPerPage, visible.length) + ' of ' + visible.length + ' transfers');
 
     var anyPopoverOpen = state.rowsOpen || state.openMenuId !== null;
     document.getElementById('backdrop').style.display = anyPopoverOpen ? 'block' : 'none';
@@ -393,7 +402,7 @@
       var action = el.getAttribute('data-action');
       var key = el.getAttribute('data-key');
       if (action === 'filter') { state.activeFilter = key; state.openMenuId = null; }
-      else if (action === 'rows') { if (el.closest('#rowsMenu')) { state.rowsPerPage = parseInt(key, 10); state.rowsOpen = false; } }
+      else if (action === 'rows') { if (el.closest('#rowsMenu')) { state.rowsPerPage = parseInt(key, 10); state.rowsOpen = false; state.activePage = 1; } }
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
       else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }
       else if (action === 'menu') { var mid = parseInt(key, 10); state.openMenuId = state.openMenuId === mid ? null : mid; state.rowsOpen = false; }
@@ -524,6 +533,13 @@
     closeTransferModal();
     render();
     showToast('transferToastWrap', 'transferToastText', tid + ' created and awaiting approval');
+  });
+
+  document.getElementById('pgPrev').addEventListener('click', function () {
+    if (state.activePage > 1) { state.activePage -= 1; render(); }
+  });
+  document.getElementById('pgNext').addEventListener('click', function () {
+    state.activePage += 1; render();
   });
 
   render();
