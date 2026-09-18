@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stockhouse — Purchasing</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assistant.css">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #f4f7fa; font-family: 'Albert Sans', system-ui, sans-serif; color: #151b23; }
@@ -206,6 +207,8 @@
   <div class="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="poToastText"></span></div>
 </div>
 
+<script src="assistant-data.js"></script>
+<script src="assistant.js"></script>
 <script>
 (function () {
   var pos = [
@@ -430,6 +433,8 @@
   })();
 
   render();
+
+  Stockhouse.init({ purchaseOrders: pos });
 })();
 </script>
 </body>

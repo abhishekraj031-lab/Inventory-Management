@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stockhouse — Dashboard</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assistant.css">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #f4f7fa; font-family: 'Albert Sans', system-ui, sans-serif; color: #151b23; }
@@ -134,8 +135,8 @@
   .mc-custom-range input[type="date"] { padding: 7px 9px; border-radius: 8px; border: 1px solid #cbd6e6; font-family: inherit; font-size: 12.5px; font-weight: 500; color: #151b23; outline: 0; }
   .mc-apply-btn { padding: 7px 14px; border-radius: 8px; border: 1px solid #1960bd; background: #1960bd; color: #ffffff; font-size: 12.5px; font-weight: 700; }
 
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 70; display: none; }
-  .modal-wrap { position: fixed; inset: 0; z-index: 71; display: none; align-items: flex-start; justify-content: center; pointer-events: none; padding: 28px 16px; overflow-y: auto; }
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 85; display: none; }
+  .modal-wrap { position: fixed; inset: 0; z-index: 86; display: none; align-items: flex-start; justify-content: center; pointer-events: none; padding: 28px 16px; overflow-y: auto; }
   .modal-card { pointer-events: auto; width: 760px; max-width: calc(100vw - 32px); background: #ffffff; border-radius: 16px; box-shadow: 0 24px 64px rgba(21,27,35,0.24); display: flex; flex-direction: column; max-height: calc(100vh - 56px); }
   .modal-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; gap: 16px; }
   .modal-title { font-size: 18px; font-weight: 800; margin: 0; }
@@ -328,6 +329,8 @@
   </div>
 </div>
 
+<script src="assistant-data.js"></script>
+<script src="assistant.js"></script>
 <script>
   // ---- Inventory health & Cash locked donut charts ----
   (function () {
@@ -822,7 +825,9 @@
     });
 
     renderCriticalActions();
-  })();
+  
+  Stockhouse.init({});
+})();
 </script>
 </body>
 </html>

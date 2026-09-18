@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stockhouse — Suppliers</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assistant.css">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #f4f7fa; font-family: 'Albert Sans', system-ui, sans-serif; color: #151b23; }
@@ -204,6 +205,8 @@
   </main>
 </div>
 
+<script src="assistant-data.js"></script>
+<script src="assistant.js"></script>
 <script>
 (function () {
   var suppliers = [
@@ -355,6 +358,8 @@
   });
 
   render();
+
+  Stockhouse.init({ suppliers: suppliers });
 })();
 </script>
 </body>

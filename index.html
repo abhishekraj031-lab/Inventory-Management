@@ -139,8 +139,8 @@
   .backdrop { position: fixed; inset: 0; z-index: 25; }
 
   /* drawer (Add Item) */
-  .drawer-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 82; display: none; }
-  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: calc(100vw - 24px); background: #ffffff; z-index: 83; box-shadow: -12px 0 32px rgba(21,27,35,0.12); display: none; flex-direction: column; }
+  .drawer-backdrop { position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 85; display: none; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: calc(100vw - 24px); background: #ffffff; z-index: 86; box-shadow: -12px 0 32px rgba(21,27,35,0.12); display: none; flex-direction: column; }
   .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #eef1f5; }
   .drawer-title { font-size: 18px; font-weight: 800; margin: 0; }
   .drawer-sub { font-size: 13px; font-weight: 500; color: #8da4be; margin: 4px 0 0; }
@@ -165,39 +165,6 @@
   .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
   .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
 
-  /* AI Command Chat */
-  .ai-fab { position: fixed; right: 28px; bottom: 28px; z-index: 80; display: flex; align-items: center; gap: 8px; padding: 13px 18px 13px 14px; border-radius: 999px; border: 0; background: #1960bd; color: #ffffff; font-size: 13.5px; font-weight: 700; box-shadow: 0 12px 28px rgba(25,96,189,0.32); }
-  .ai-fab:hover { background: #124287; }
-  .ai-chat-panel { position: fixed; right: 28px; bottom: 96px; z-index: 81; width: 380px; max-width: calc(100vw - 32px); height: 520px; max-height: calc(100vh - 140px); background: #ffffff; border-radius: 18px; box-shadow: 0 24px 64px rgba(21,27,35,0.24); border: 1px solid #eef1f5; display: none; flex-direction: column; overflow: hidden; }
-  .ai-chat-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid #eef1f5; background: #fafbfd; flex-shrink: 0; }
-  .ai-chat-head-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
-  .ai-chat-head-text .t { font-size: 14px; font-weight: 800; }
-  .ai-chat-head-text .s { font-size: 11px; font-weight: 500; color: #8da4be; }
-  .ai-chat-close { flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; }
-  .ai-chat-close:hover { background: #eef1f5; color: #384352; }
-  .ai-chat-body { flex: 1; overflow-y: auto; padding: 16px 16px 6px; display: flex; flex-direction: column; gap: 12px; }
-  .ai-msg { display: flex; flex-direction: column; gap: 8px; }
-  .ai-msg.user { align-items: flex-end; }
-  .ai-msg.assistant { align-items: flex-start; }
-  .ai-bubble { max-width: 88%; padding: 10px 13px; border-radius: 14px; font-size: 13px; font-weight: 500; line-height: 1.45; }
-  .ai-msg.assistant .ai-bubble { background: #f4f7fa; color: #151b23; border-bottom-left-radius: 4px; }
-  .ai-msg.user .ai-bubble { background: #1960bd; color: #ffffff; border-bottom-right-radius: 4px; }
-  .ai-chip-row { display: flex; flex-wrap: wrap; gap: 6px; max-width: 92%; }
-  .ai-chip { padding: 7px 12px; border-radius: 999px; border: 1px solid #cbd6e6; background: #ffffff; color: #1960bd; font-size: 12px; font-weight: 700; }
-  .ai-chip:hover { background: #e8f0fc; }
-  .spend-bar-row { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
-  .spend-bar-row:first-of-type { margin-top: 10px; }
-  .spend-bar-name { flex: 0 0 108px; font-size: 11.5px; font-weight: 700; color: #384352; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .spend-bar-track { flex: 1; height: 7px; border-radius: 999px; background: #e5eaf1; overflow: hidden; }
-  .spend-bar-fill { height: 100%; border-radius: 999px; background: #1960bd; }
-  .spend-bar-val { flex: 0 0 auto; font-size: 11.5px; font-weight: 700; color: #576a84; white-space: nowrap; }
-  .ai-chat-foot { padding: 12px 14px; border-top: 1px solid #eef1f5; flex-shrink: 0; }
-  .ai-input-row { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 14px; border-radius: 999px; border: 1px solid #cbd6e6; background: #ffffff; }
-  .ai-input-row input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 13px; font-weight: 500; color: #151b23; font-family: inherit; }
-  .ai-mic-btn { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border: 0; background: #eef1f5; color: #576a84; display: flex; align-items: center; justify-content: center; }
-  .ai-mic-btn.listening { background: #feecec; color: #dc2626; animation: aiPulse 1s ease-in-out infinite; }
-  .ai-send-btn { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border: 0; background: #1960bd; color: #ffffff; display: flex; align-items: center; justify-content: center; }
-  @keyframes aiPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.35); } 50% { box-shadow: 0 0 0 6px rgba(220,38,38,0); } }
 </style>
 </head>
 <body>
@@ -333,26 +300,9 @@
   <div class="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="addItemToastText"></span></div>
 </div>
 
-<button class="ai-fab" type="button" data-action="ai-toggle">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/><path d="M9 21h6"/></svg>
-  Ask Stockhouse AI
-</button>
 
-<div class="ai-chat-panel" id="aiChatPanel">
-  <div class="ai-chat-head">
-    <div class="ai-chat-head-text"><span class="t">Stockhouse AI</span><span class="s">Command chat · human review required before any PO sends</span></div>
-    <button class="ai-chat-close" type="button" data-action="ai-close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  </div>
-  <div class="ai-chat-body" id="aiChatMessages"></div>
-  <div class="ai-chat-foot">
-    <div class="ai-input-row">
-      <input id="aiChatInput" type="text" placeholder="Ask Stockhouse AI…" autocomplete="off">
-      <button class="ai-mic-btn" id="aiMicBtn" type="button" data-action="ai-mic" title="Voice command (demo)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></button>
-      <button class="ai-send-btn" id="aiSendBtn" type="button" data-action="ai-send"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-    </div>
-  </div>
-</div>
-
+<script src="assistant-data.js"></script>
+<script src="assistant.js"></script>
 <script>
 (function () {
   var items = [
@@ -542,11 +492,6 @@
     if (el) {
       var action = el.getAttribute('data-action');
       var key = el.getAttribute('data-key');
-      if (action === 'ai-toggle') { aiChat.open = !aiChat.open; if (aiChat.open) ensureGreeting(); renderChat(); return; }
-      if (action === 'ai-close') { aiChat.open = false; renderChat(); return; }
-      if (action === 'ai-mic') { simulateVoice(); return; }
-      if (action === 'ai-send') { sendChatMessage(); return; }
-      if (action === 'ai-chip') { handleChipClick(el); return; }
       if (action === 'filter') { state.activeFilter = key; state.specialFilter = null; state.openMenuId = null; }
       else if (action === 'category') { if (el.closest('#categoryMenu')) { state.category = key; state.categoryOpen = false; } }
       else if (action === 'plant') {
@@ -622,261 +567,6 @@
     setTimeout(function () { document.getElementById(wrapId).style.display = 'none'; }, 2600);
   }
 
-  // ---- AI Command Chat ----
-  var aiChat = { open: false, listening: false, messages: [], nextId: 1 };
-  var voiceExamples = [
-    'Create a PO by selecting items which are low on stock',
-    'Show items below reorder point',
-    'Show stockouts',
-    'What are our top vendors by spend?',
-    'Which plant has the most Cargo Pant stock?'
-  ];
-
-  // ---- Spend data for the AI chat's spend-query intent — mirrors purchasing.html's pos records ----
-  var PO_SPEND = [
-    { poId: 'PO-3081', vendor: 'Hanover Works', amount: 482000 },
-    { poId: 'PO-3082', vendor: 'Verado Mills', amount: 615500 },
-    { poId: 'PO-3083', vendor: 'Pergola Goods', amount: 184200 },
-    { poId: 'PO-3084', vendor: 'Kestrel Supply Co.', amount: 340000 },
-    { poId: 'PO-3085', vendor: 'Northline Textile', amount: 92400 },
-    { poId: 'PO-3086', vendor: 'Hanover Works', amount: 788900 },
-    { poId: 'PO-3087', vendor: 'Verado Mills', amount: 264750 },
-    { poId: 'PO-3088', vendor: 'Pergola Goods', amount: 112300 }
-  ];
-
-  function fmtCr(n) { return '\u20B9' + Math.round(n).toLocaleString('en-IN'); }
-
-  function vendorSpendTotals() {
-    var byVendor = {};
-    PO_SPEND.forEach(function (p) {
-      if (!byVendor[p.vendor]) byVendor[p.vendor] = { vendor: p.vendor, total: 0, count: 0 };
-      byVendor[p.vendor].total += p.amount;
-      byVendor[p.vendor].count += 1;
-    });
-    return Object.keys(byVendor).map(function (k) { return byVendor[k]; }).sort(function (a, b) { return b.total - a.total; });
-  }
-
-  function spendBarChartHtml(rows) {
-    var max = rows.reduce(function (m, r) { return Math.max(m, r.total); }, 1);
-    return rows.map(function (r) {
-      var pct = Math.max(4, Math.round((r.total / max) * 100));
-      return '<div class="spend-bar-row"><span class="spend-bar-name">' + esc(r.vendor) + '</span>' +
-        '<div class="spend-bar-track"><div class="spend-bar-fill" style="width:' + pct + '%;"></div></div>' +
-        '<span class="spend-bar-val">' + fmtCr(r.total) + '</span></div>';
-    }).join('');
-  }
-
-  function findMentionedVendor(text) {
-    var vendors = vendorSpendTotals().map(function (r) { return r.vendor; });
-    var found = vendors.filter(function (v) { return text.indexOf(v.toLowerCase()) !== -1; });
-    return found[0] || null;
-  }
-
-  // ---- Location-aware queries: per-plant stock split, mirroring the Dashboard's recommendation-modal logic ----
-  function findMentionedItem(text) {
-    var names = items.map(function (it) { return it.name; });
-    var found = names.filter(function (n) { return text.indexOf(n.toLowerCase()) !== -1; });
-    found.sort(function (a, b) { return b.length - a.length; });
-    return found[0] || null;
-  }
-
-  function plantSplitForItem(it) {
-    var others = plantNames.filter(function (p) { return p !== it.plant; }).slice(0, 2);
-    var splitPlants = [it.plant].concat(others);
-    var fractions = [0.55, 0.30, 0.15];
-    return splitPlants.map(function (p, i) { return { plant: p, units: Math.round(it.onHand * fractions[i]) }; });
-  }
-
-  function addMessage(role, html, chips) {
-    var id = aiChat.nextId++;
-    aiChat.messages.push({ id: id, role: role, html: html, chips: chips || null });
-    renderChat();
-  }
-
-  function ensureGreeting() {
-    if (aiChat.messages.length > 0) return;
-    addMessage('assistant', 'Hi Abhishek — I can draft a purchase order for low-stock items, filter this list, answer spend questions, or tell you what’s where across plants. Nothing gets sent without your review. Try one of these, or type your own:', [
-      { action: 'example', text: voiceExamples[0], label: 'Create a PO for items low on stock' },
-      { action: 'example', text: voiceExamples[1], label: 'Show items below reorder point' },
-      { action: 'example', text: voiceExamples[3], label: 'Top vendors by spend' }
-    ]);
-  }
-
-  function renderChat() {
-    document.getElementById('aiChatPanel').style.display = aiChat.open ? 'flex' : 'none';
-    var list = document.getElementById('aiChatMessages');
-    list.innerHTML = aiChat.messages.map(function (m) {
-      var chipsHtml = '';
-      if (m.chips && m.chips.length) {
-        chipsHtml = '<div class="ai-chip-row">' + m.chips.map(function (c, i) {
-          return '<button type="button" class="ai-chip" data-action="ai-chip" data-mid="' + m.id + '" data-ci="' + i + '">' + esc(c.label) + '</button>';
-        }).join('') + '</div>';
-      }
-      return '<div class="ai-msg ' + m.role + '"><div class="ai-bubble">' + m.html + '</div>' + chipsHtml + '</div>';
-    }).join('');
-    list.scrollTop = list.scrollHeight;
-    var micBtn = document.getElementById('aiMicBtn');
-    if (micBtn) micBtn.classList.toggle('listening', aiChat.listening);
-    var input = document.getElementById('aiChatInput');
-    if (input) input.placeholder = aiChat.listening ? 'Listening…' : 'Ask Stockhouse AI…';
-  }
-
-  function groupLowStockByVendor() {
-    var lowStock = items.filter(function (it) { return it.status === 'belowReorder' || it.status === 'stockout'; });
-    var byVendor = {};
-    lowStock.forEach(function (it) {
-      if (!byVendor[it.vendor]) byVendor[it.vendor] = { vendor: it.vendor, hasStockout: false, lines: [] };
-      if (it.status === 'stockout') byVendor[it.vendor].hasStockout = true;
-      var qty = Math.max(it.reorder * 2 - it.onHand, it.reorder);
-      byVendor[it.vendor].lines.push({ item: it.name, qty: qty });
-    });
-    var groups = Object.keys(byVendor).map(function (k) { return byVendor[k]; });
-    groups.sort(function (a, b) { return (b.hasStockout ? 1 : 0) - (a.hasStockout ? 1 : 0); });
-    return groups;
-  }
-
-  function openGroupedPoDraft(groups) {
-    try { localStorage.setItem('stockhouseRecSelection', JSON.stringify({ groups: groups, aiDrafted: true })); } catch (e) {}
-    window.location.href = 'create-po.html';
-  }
-
-  function handleChipClick(el) {
-    var mid = parseInt(el.getAttribute('data-mid'), 10);
-    var ci = parseInt(el.getAttribute('data-ci'), 10);
-    var m = aiChat.messages.filter(function (x) { return x.id === mid; })[0];
-    if (!m || !m.chips || !m.chips[ci]) return;
-    var chip = m.chips[ci];
-    if (chip.action === 'example') {
-      document.getElementById('aiChatInput').value = chip.text;
-      sendChatMessage();
-    } else if (chip.action === 'viewItems') {
-      window.location.href = 'index.html?filter=reorderIssues';
-    } else if (chip.action === 'createPoGroups') {
-      openGroupedPoDraft(chip.groups);
-    }
-  }
-
-  function processCommand(raw) {
-    addMessage('user', esc(raw));
-    var text = raw.toLowerCase();
-    var isPoIntent = /\b(po|purchase order)\b/.test(text);
-    var isLowStockIntent = /(low.*stock|below reorder|reorder point|stockout|out of stock)/.test(text);
-
-    if (isPoIntent && isLowStockIntent) {
-      var groups = groupLowStockByVendor();
-      if (groups.length === 0) {
-        addMessage('assistant', "Good news — nothing is currently at or below its reorder point, so there's nothing to draft a PO for.");
-        return;
-      }
-      var totalCount = groups.reduce(function (s, g) { return s + g.lines.length; }, 0);
-      var msgHtml = '<b>' + totalCount + ' item' + (totalCount === 1 ? '' : 's') + '</b> ' + (totalCount === 1 ? 'is' : 'are') +
-        ' currently low on stock (at or below reorder point), across ' + groups.length + ' vendor' + (groups.length === 1 ? '' : 's') + '. ' +
-        'Nothing sends automatically — review the items or go straight to a grouped PO for your approval.';
-      var chips = [
-        { action: 'viewItems', label: 'View Items' },
-        { action: 'createPoGroups', groups: groups, label: 'Create PO' }
-      ];
-      addMessage('assistant', msgHtml, chips);
-      return;
-    }
-
-    var isSpendIntent = /\bspen(d|t|ding)\b/.test(text);
-    if (isSpendIntent) {
-      var totals = vendorSpendTotals();
-      var grandTotal = totals.reduce(function (s, r) { return s + r.total; }, 0);
-      var mentionedVendor = findMentionedVendor(text);
-
-      if (mentionedVendor) {
-        var row = totals.filter(function (r) { return r.vendor === mentionedVendor; })[0];
-        var msg = 'You\u2019ve spent <b>' + fmtCr(row.total) + '</b> with <b>' + esc(mentionedVendor) + '</b> across ' + row.count + ' purchase order' + (row.count === 1 ? '' : 's') + ' — ' + Math.round((row.total / grandTotal) * 100) + '% of total spend.';
-        addMessage('assistant', msg);
-        return;
-      }
-
-      if (/top|highest|biggest|most\b/.test(text) || /by vendor/.test(text)) {
-        var top = totals.slice(0, 5);
-        var msg2 = 'Here\u2019s spend by vendor, ranked, across your ' + PO_SPEND.length + ' purchase orders on record:' + spendBarChartHtml(top);
-        addMessage('assistant', msg2);
-        return;
-      }
-
-      var msg3 = 'Total spend across all purchase orders on record is <b>' + fmtCr(grandTotal) + '</b>. Ask about a specific vendor (e.g. \u201cHow much have we spent with Verado Mills?\u201d) or say \u201ctop vendors by spend\u201d for the full breakdown.';
-      addMessage('assistant', msg3);
-      return;
-    }
-
-    var isLocationIntent = /(which plant|which location|which warehouse|what plant|what location|by plant|by location)/.test(text);
-    if (isLocationIntent) {
-      var mentionedItem = findMentionedItem(text);
-      if (mentionedItem) {
-        var mi = items.filter(function (x) { return x.name === mentionedItem; })[0];
-        if (mi.onHand === 0) {
-          addMessage('assistant', '<b>' + esc(mentionedItem) + '</b> is currently out of stock at every plant (0 units on hand, primarily stocked at ' + esc(mi.plant) + ').');
-          return;
-        }
-        var split = plantSplitForItem(mi);
-        var top = split[0];
-        var breakdown = split.map(function (s) { return esc(s.plant) + ': ' + s.units + ' units'; }).join(', ');
-        var locMsg = '<b>' + esc(top.plant) + '</b> has the most ' + esc(mentionedItem) + ' stock, with <b>' + top.units + ' units</b>. Full breakdown \u2014 ' + breakdown + '.';
-        addMessage('assistant', locMsg);
-        return;
-      }
-      var byPlant = {};
-      plantNames.forEach(function (p) { byPlant[p] = 0; });
-      items.forEach(function (it) { byPlant[it.plant] = (byPlant[it.plant] || 0) + it.onHand; });
-      var plantMsg = plantNames.map(function (p) { return esc(p) + ': ' + byPlant[p] + ' units'; }).join(', ');
-      addMessage('assistant', 'Total units on hand by plant \u2014 ' + plantMsg + '. Ask about a specific item (e.g. \u201cwhich plant has the most Cargo Pant stock?\u201d) for a per-item breakdown.');
-      return;
-    }
-
-    if (/^(show|filter|list)\b/.test(text) || /show (me|items)/.test(text)) {
-      var filterMap = [
-        { re: /below reorder|reorder point/, key: 'belowReorder', label: 'below reorder' },
-        { re: /stockout|out of stock/, key: 'stockout', label: 'stockouts' },
-        { re: /overstock/, key: 'overstock', label: 'overstocked' },
-        { re: /healthy/, key: 'healthy', label: 'healthy' },
-        { re: /\ball\b|everything/, key: 'all', label: 'all items' }
-      ];
-      var match = filterMap.filter(function (f) { return f.re.test(text); })[0];
-      if (match) {
-        state.activeFilter = match.key; state.search = ''; state.activePage = 1; render();
-        var count = visibleItems().length;
-        addMessage('assistant', 'Showing ' + count + ' item' + (count === 1 ? '' : 's') + (match.key === 'all' ? '' : ' — ' + esc(match.label)) + '.');
-        return;
-      }
-    }
-
-    addMessage('assistant', 'I can draft a purchase order for low-stock items (e.g. "create a PO for items low on stock"), filter this list (e.g. "show stockouts"), or answer spend questions (e.g. "top vendors by spend"). Try one of the examples below.', [
-      { action: 'example', text: voiceExamples[0], label: 'Create a PO for items low on stock' },
-      { action: 'example', text: voiceExamples[3], label: 'Top vendors by spend' }
-    ]);
-  }
-
-  function sendChatMessage() {
-    var input = document.getElementById('aiChatInput');
-    var raw = input.value.trim();
-    if (!raw) return;
-    input.value = '';
-    processCommand(raw);
-  }
-
-  function simulateVoice() {
-    if (aiChat.listening) return;
-    aiChat.listening = true;
-    renderChat();
-    setTimeout(function () {
-      aiChat.listening = false;
-      var example = voiceExamples[Math.floor(Math.random() * voiceExamples.length)];
-      document.getElementById('aiChatInput').value = example;
-      renderChat();
-      setTimeout(function () { sendChatMessage(); }, 450);
-    }, 1300);
-  }
-
-  document.getElementById('aiChatInput').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); sendChatMessage(); }
-  });
-
   document.getElementById('openAddItem').addEventListener('click', openAddItemDrawer);
   document.getElementById('closeAddItem').addEventListener('click', closeAddItemDrawer);
   document.getElementById('cancelAddItem').addEventListener('click', closeAddItemDrawer);
@@ -910,7 +600,14 @@
   });
 
   render();
-  renderChat();
+
+  Stockhouse.init({
+    items: items,
+    onFilterItems: function (key) {
+      state.activeFilter = key; state.search = ''; state.activePage = 1; render();
+      return visibleItems().length;
+    }
+  });
 })();
 </script>
 </body>
