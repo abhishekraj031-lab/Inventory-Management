@@ -74,13 +74,9 @@
   .dd-menu .opt.active { background: #e8f0fc; color: #1960bd; }
 
   .table-card { position: relative; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); overflow: visible; }
-  .row { display: grid; grid-template-columns: 40px 1.7fr 1.5fr 0.8fr 1fr 1.1fr 1.1fr 52px; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
+  .row { display: grid; grid-template-columns: 1.7fr 1.5fr 0.8fr 1fr 1.1fr 1.1fr 52px; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
   .row.head { background: #fafbfd; border-radius: 14px 14px 0 0; }
   .row.head span { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
-  .cb { width: 18px; height: 18px; border-radius: 6px; border: 1.6px solid #b2c1d7; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; }
-  .cb.checked { border-color: #1960bd; background: #1960bd; }
-  .cb svg { opacity: 0; }
-  .cb.checked svg { opacity: 1; }
   .item-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .item-cell .nm { font-size: 14px; font-weight: 700; }
   .item-cell .meta { font-size: 12px; font-weight: 500; color: #8da4be; }
@@ -174,7 +170,6 @@
 
     <div class="table-card">
       <div class="row head">
-        <button class="cb" id="selectAllBtn" type="button"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <span>PO Number</span><span>Vendor</span><span>Value</span><span>Status</span><span>Order date</span><span>Expected</span><span></span>
       </div>
       <div id="rows"></div>
@@ -241,7 +236,7 @@
     cancelled: { label: 'Cancelled', bg: '#feecec', color: '#b91c1c', dot: '#dc2626' }
   };
 
-  var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false, checked: {}, specialFilterPo: null };
+  var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false, specialFilterPo: null };
   (function applyStatusUrlParam() {
     var urlParams = new URLSearchParams(window.location.search);
     var statusParam = urlParams.get('status');
@@ -265,7 +260,6 @@
   function render() {
     var visible = visibleItems();
     var visibleIds = visible.map(function (it) { return it.id; });
-    var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
 
     if (state.specialFilterPo) {
       document.getElementById('specialFilterText').innerHTML = 'Showing just <b>' + esc(state.specialFilterPo) + '</b> — flagged on your Dashboard\u2019s Critical actions for a price variance vs. your last order.';
@@ -298,9 +292,6 @@
       return '<div class="pg-btn' + (state.activePage === n ? ' active' : '') + '" data-action="page" data-key="' + n + '">' + n + '</div>';
     }).join('');
 
-    var selectAllBtn = document.getElementById('selectAllBtn');
-    selectAllBtn.className = 'cb' + (allChecked ? ' checked' : '');
-
     var rowsEl = document.getElementById('rows');
     if (visible.length === 0) {
       rowsEl.innerHTML = '';
@@ -309,11 +300,9 @@
       document.getElementById('emptyState').style.display = 'none';
       rowsEl.innerHTML = visible.map(function (it) {
         var meta = statusMeta[it.status];
-        var isChecked = !!state.checked[it.id];
         var menuOpen = state.openMenuId === it.id;
         return '' +
           '<div class="row">' +
-            '<button class="cb' + (isChecked ? ' checked' : '') + '" type="button" data-action="check" data-key="' + it.id + '"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
             '<div class="item-cell"><span class="nm">' + esc(it.poId) + '</span><span class="meta">' + (it.lineCount || 1) + ' product' + ((it.lineCount || 1) === 1 ? '' : 's') + ' \u00b7 ' + it.itemsCount + ' units</span></div>' +
             '<span class="vendor">' + esc(it.vendor) + '</span>' +
             '<span class="value">' + esc(it.value) + '</span>' +
@@ -351,7 +340,6 @@
       if (action === 'filter') { state.activeFilter = key; state.specialFilterPo = null; state.openMenuId = null; }
       else if (action === 'rows') { if (el.closest('#rowsMenu')) { state.rowsPerPage = parseInt(key, 10); state.rowsOpen = false; } }
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
-      else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }
       else if (action === 'menu') { var mid = parseInt(key, 10); state.openMenuId = state.openMenuId === mid ? null : mid; state.rowsOpen = false; }
       else if (action === 'approve') { approvePo(parseInt(key, 10)); }
       else if (action === 'cancel') { cancelPo(parseInt(key, 10)); }
@@ -360,14 +348,6 @@
     }
     if (e.target.id === 'rowsTrigger' || e.target.closest('#rowsTrigger')) {
       state.rowsOpen = !state.rowsOpen; state.openMenuId = null; render(); return;
-    }
-    if (e.target.id === 'selectAllBtn' || e.target.closest('#selectAllBtn')) {
-      var visible = visibleItems();
-      var ids = visible.map(function (it) { return it.id; });
-      var allChecked = ids.length > 0 && ids.every(function (id) { return state.checked[id]; });
-      var next = !allChecked;
-      ids.forEach(function (id) { state.checked[id] = next; });
-      render(); return;
     }
     if (e.target.id === 'backdrop') {
       state.rowsOpen = false; state.openMenuId = null; render(); return;
