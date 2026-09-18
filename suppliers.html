@@ -77,9 +77,13 @@
   .dd-menu .opt.active { background: #e8f0fc; color: #1960bd; }
 
   .table-card { position: relative; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); overflow: visible; }
-  .row { display: grid; grid-template-columns: 2.1fr 1.5fr 1fr 1.2fr 1.1fr 52px; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
+  .row { display: grid; grid-template-columns: 40px 2.1fr 1.5fr 1fr 1.2fr 1.1fr 52px; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
   .row.head { background: #fafbfd; border-radius: 14px 14px 0 0; }
   .row.head span { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
+  .cb { width: 18px; height: 18px; border-radius: 6px; border: 1.6px solid #b2c1d7; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; }
+  .cb.checked { border-color: #1960bd; background: #1960bd; }
+  .cb svg { opacity: 0; }
+  .cb.checked svg { opacity: 1; }
   .item-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .item-cell .nm { font-size: 14px; font-weight: 700; }
   .item-cell .meta { font-size: 12px; font-weight: 500; color: #8da4be; }
@@ -173,6 +177,7 @@
 
     <div class="table-card">
       <div class="row head">
+        <button class="cb" id="selectAllBtn" type="button"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <span>Supplier</span><span>Contact</span><span>Open POs</span><span>On-time rate</span><span>Status</span><span></span>
       </div>
       <div id="rows"></div>
@@ -223,7 +228,7 @@
     inactive: { label: 'Inactive', bg: '#eef1f5', color: '#576a84', dot: '#8da4be', bar: '#8da4be' }
   };
 
-  var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false };
+  var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 8, openMenuId: null, rowsOpen: false, checked: {} };
 
   var SPECIAL_FILTERS = {
     delayed: { text: '<b>2 suppliers</b> have deliveries running behind schedule this week — from your Dashboard\u2019s Critical actions.', match: function (it) { return !!it.lateDelivery; } }
@@ -247,6 +252,7 @@
   function render() {
     var visible = visibleItems();
     var visibleIds = visible.map(function (it) { return it.id; });
+    var allChecked = visibleIds.length > 0 && visibleIds.every(function (id) { return state.checked[id]; });
 
     if (state.specialFilter) {
       document.getElementById('specialFilterText').innerHTML = SPECIAL_FILTERS[state.specialFilter].text;
@@ -278,6 +284,9 @@
       return '<div class="pg-btn' + (state.activePage === n ? ' active' : '') + '" data-action="page" data-key="' + n + '">' + n + '</div>';
     }).join('');
 
+    var selectAllBtn = document.getElementById('selectAllBtn');
+    selectAllBtn.className = 'cb' + (allChecked ? ' checked' : '');
+
     var rowsEl = document.getElementById('rows');
     if (visible.length === 0) {
       rowsEl.innerHTML = '';
@@ -286,9 +295,11 @@
       document.getElementById('emptyState').style.display = 'none';
       rowsEl.innerHTML = visible.map(function (it) {
         var meta = statusMeta[it.status];
+        var isChecked = !!state.checked[it.id];
         var menuOpen = state.openMenuId === it.id;
         return '' +
           '<div class="row">' +
+            '<button class="cb' + (isChecked ? ' checked' : '') + '" type="button" data-action="check" data-key="' + it.id + '"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
             '<div class="item-cell"><span class="nm">' + esc(it.name) + '</span><span class="meta">' + esc(it.category) + '</span></div>' +
             '<span class="contact">' + esc(it.contact) + '</span>' +
             '<span class="openpos">' + it.openPOs + '</span>' +
@@ -323,12 +334,21 @@
       if (action === 'filter') { state.activeFilter = key; state.specialFilter = null; state.openMenuId = null; }
       else if (action === 'rows') { if (el.closest('#rowsMenu')) { state.rowsPerPage = parseInt(key, 10); state.rowsOpen = false; } }
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
+      else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }
       else if (action === 'menu') { var mid = parseInt(key, 10); state.openMenuId = state.openMenuId === mid ? null : mid; state.rowsOpen = false; }
       render();
       return;
     }
     if (e.target.id === 'rowsTrigger' || e.target.closest('#rowsTrigger')) {
       state.rowsOpen = !state.rowsOpen; state.openMenuId = null; render(); return;
+    }
+    if (e.target.id === 'selectAllBtn' || e.target.closest('#selectAllBtn')) {
+      var visible = visibleItems();
+      var ids = visible.map(function (it) { return it.id; });
+      var allChecked = ids.length > 0 && ids.every(function (id) { return state.checked[id]; });
+      var next = !allChecked;
+      ids.forEach(function (id) { state.checked[id] = next; });
+      render(); return;
     }
     if (e.target.id === 'backdrop') {
       state.rowsOpen = false; state.openMenuId = null; render(); return;
