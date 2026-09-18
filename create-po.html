@@ -599,6 +599,9 @@
     var poId = 'PO-' + nextPoNumber;
     bumpNextPoNumber(nextPoNumber);
     nextPoNumber++;
+    var lines = poState.lineItems.filter(function (li) { return li.item; }).map(function (li) {
+      return { item: li.item, qty: parseFloat(li.qty) || 0, rate: parseFloat(li.rate) || 0 };
+    });
     return {
       id: Date.now(),
       poId: poId,
@@ -608,7 +611,8 @@
       value: '₹' + total.toLocaleString('en-IN'),
       status: status,
       orderDate: status === 'draft' ? '—' : formattedOrder,
-      expectedDate: status === 'draft' ? '—' : formattedExpected
+      expectedDate: status === 'draft' ? '—' : formattedExpected,
+      lines: lines
     };
   }
 

@@ -254,11 +254,27 @@
     setTimeout(function () { document.getElementById('toastWrap').style.display = 'none'; }, 2600);
   }
 
+  // Pick up any POs created on the Create Purchase Order page (same persistent queue
+  // purchasing.html merges in) so a PO created there resolves to its real data here too,
+  // instead of silently falling back to the first seed PO.
+  (function mergeQueuedPos() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhouseNewPos'); } catch (e) {}
+    if (!raw) return;
+    var queue;
+    try { queue = JSON.parse(raw); } catch (e) { return; }
+    if (!queue || !queue.length) return;
+    var existingIds = {};
+    pos.forEach(function (po) { existingIds[po.id] = true; });
+    queue.forEach(function (po) { if (!existingIds[po.id]) pos.unshift(po); });
+  })();
+
   applyStatusOverrides();
 
   var urlParams = new URLSearchParams(window.location.search);
   var reqPoId = urlParams.get('po');
   var po = pos.filter(function (p) { return p.poId === reqPoId; })[0] || pos[0];
+  if (!po.lines) po.lines = [];
   var sup = suppliers.filter(function (s) { return s.name === po.vendor; })[0];
 
   function headActionsHtml() {
