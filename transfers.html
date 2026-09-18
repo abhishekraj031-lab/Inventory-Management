@@ -257,7 +257,7 @@
   var plantNames = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai', 'Plant D · Bhiwandi'];
   function getNextTransferNumber() {
     var n = parseInt(localStorage.getItem('stockhouseNextTransferNumber'), 10);
-    if (!n || isNaN(n)) n = 2049;
+    if (!n || isNaN(n)) n = 2051;
     return n;
   }
   function bumpNextTransferNumber(used) {
@@ -272,7 +272,9 @@
     { id: 5, tid: 'TRF-2045', item: 'Ceramic Vase', from: 'Plant C · Chennai', to: 'Plant B · Pune', qty: 25, status: 'inTransit', requestedBy: 'Rahul Mehta', date: 'Sep 15, 2026' },
     { id: 6, tid: 'TRF-2046', item: 'Canvas Tote', from: 'Plant A · Gurgaon', to: 'Plant C · Chennai', qty: 50, status: 'cancelled', requestedBy: 'Mira Delgado', date: 'Aug 30, 2026' },
     { id: 7, tid: 'TRF-2047', item: 'Card Holder', from: 'Plant C · Chennai', to: 'Plant A · Gurgaon', qty: 40, status: 'pending', requestedBy: 'Priya Nair', date: 'Sep 15, 2026' },
-    { id: 8, tid: 'TRF-2048', item: 'Cargo Pant', from: 'Plant B · Pune', to: 'Plant D · Bhiwandi', qty: 35, status: 'completed', requestedBy: 'Rahul Mehta', date: 'Sep 8, 2026' }
+    { id: 8, tid: 'TRF-2048', item: 'Cargo Pant', from: 'Plant B · Pune', to: 'Plant D · Bhiwandi', qty: 35, status: 'completed', requestedBy: 'Rahul Mehta', date: 'Sep 8, 2026' },
+    { id: 9, tid: 'TRF-2049', item: 'Denim Jacket', from: 'Plant B · Pune', to: 'Plant A · Gurgaon', qty: 20, status: 'inTransit', requestedBy: 'Rahul Mehta', date: 'Sep 16, 2026' },
+    { id: 10, tid: 'TRF-2050', item: 'Leather Belt', from: 'Plant C · Chennai', to: 'Plant D · Bhiwandi', qty: 15, status: 'completed', requestedBy: 'Mira Delgado', date: 'Sep 10, 2026' }
   ];
 
   var statusMeta = {

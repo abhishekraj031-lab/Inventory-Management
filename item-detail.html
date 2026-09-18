@@ -472,7 +472,9 @@
     { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', category: 'Bottoms', vendor: 'Kestrel Supply Co.', plant: 'Plant B · Pune', onHand: 0, reorder: 126, dailyDemand: 15, uom: 'Piece', cost: 1560, leadTime: 18, description: 'Six-pocket cotton cargo pant, relaxed fit. Currently out of stock pending the next shipment from Kestrel Supply Co.' },
     { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', category: 'Accessories', vendor: 'Northline Textile', plant: 'Plant D · Bhiwandi', onHand: 272, reorder: 78, dailyDemand: 9, uom: 'Piece', cost: 3200, leadTime: 20, description: 'Pure cashmere scarf with hand-finished edges. Premium accessory with modest, steady demand from Northline Textile.' },
     { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', category: 'Home', vendor: 'Verado Mills', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, dailyDemand: 6, uom: 'Piece', cost: 680, leadTime: 25, description: 'Hand-thrown ceramic vase with a matte glaze finish. Home range item currently holding well above typical demand.' },
-    { id: 8, name: 'Chino Short', sku: 'BTM-1131', category: 'Bottoms', vendor: 'Hanover Works', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, dailyDemand: 24, uom: 'Piece', cost: 1180, leadTime: 14, description: 'Cotton-twill chino short, tailored fit. Reliable core seller across the Bottoms range from Hanover Works.' }
+    { id: 8, name: 'Chino Short', sku: 'BTM-1131', category: 'Bottoms', vendor: 'Hanover Works', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, dailyDemand: 24, uom: 'Piece', cost: 1180, leadTime: 14, description: 'Cotton-twill chino short, tailored fit. Reliable core seller across the Bottoms range from Hanover Works.' },
+    { id: 9, name: 'Denim Jacket', sku: 'TOP-1103', category: 'Tops', vendor: 'Verado Mills', plant: 'Plant B · Pune', onHand: 180, reorder: 90, dailyDemand: 12, uom: 'Piece', cost: 1850, leadTime: 16, description: 'Mid-wash denim jacket with a classic collar and button-front closure. Recently added to the Tops range, sourced from Verado Mills.' },
+    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', category: 'Accessories', vendor: 'Meridian Leather Works', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, dailyDemand: 8, uom: 'Piece', cost: 540, leadTime: 11, description: 'Full-grain leather belt with a brushed metal buckle. Pairs with several Accessories bestsellers — sourced from Meridian Leather Works.' }
   ];
 
   var reqParams = new URLSearchParams(window.location.search);
@@ -828,7 +830,7 @@
   //      localStorage handoff transfers.html's own Create Transfer modal uses) ----
   function getNextTransferNumber() {
     var n = parseInt(localStorage.getItem('stockhouseNextTransferNumber'), 10);
-    if (!n || isNaN(n)) n = 2049;
+    if (!n || isNaN(n)) n = 2051;
     return n;
   }
   function bumpNextTransferNumber(used) {

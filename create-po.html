@@ -289,12 +289,14 @@
     { name: 'Cargo Pant', rate: 850 },
     { name: 'Cashmere Scarf', rate: 1450 },
     { name: 'Ceramic Vase', rate: 540 },
-    { name: 'Chino Short', rate: 780 }
+    { name: 'Chino Short', rate: 780 },
+    { name: 'Denim Jacket', rate: 1450 },
+    { name: 'Leather Belt', rate: 480 }
   ];
   var accountOptions = ['Inventory Asset', 'Cost of Goods Sold', 'Raw Materials'];
   var paymentTermsOptions = ['Due on Receipt', 'Net 15', 'Net 30', 'Net 45', 'Net 60'];
   var shipmentOptions = ['Standard Ground', 'Express Air', 'Sea Freight', 'Vendor Pickup'];
-  var vendorNames = ['Hanover Works', 'Verado Mills', 'Pergola Goods', 'Kestrel Supply Co.', 'Northline Textile', 'Solano Freight & Textiles', 'Ridgeview Apparel Co.', 'Meridian Leather Works'];
+  var vendorNames = ['Hanover Works', 'Verado Mills', 'Pergola Goods', 'Kestrel Supply Co.', 'Northline Textile', 'Solano Freight & Textiles', 'Ridgeview Apparel Co.', 'Meridian Leather Works', 'Bellweather Textiles', 'Coral Bay Footwear'];
 
   var poState = { addr: 'organization', lineItems: [], nextLiId: 1, aiDrafted: false, aiReviewed: false };
   var pendingRecGroups = [];
@@ -321,7 +323,7 @@
 
   function getNextPoNumber() {
     var n = parseInt(localStorage.getItem('stockhouseNextPoNumber'), 10);
-    if (!n || isNaN(n)) n = 3089;
+    if (!n || isNaN(n)) n = 3091;
     return n;
   }
   function bumpNextPoNumber(used) {

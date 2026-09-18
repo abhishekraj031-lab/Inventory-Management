@@ -15,7 +15,9 @@ var STOCKHOUSE_KB = {
     { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', vendor: 'Kestrel Supply Co.', category: 'Bottoms', plant: 'Plant B · Pune', onHand: 0, reorder: 126, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 15, cost: 1560 },
     { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', vendor: 'Northline Textile', category: 'Accessories', plant: 'Plant D · Bhiwandi', onHand: 272, reorder: 78, status: 'healthy', cover: '3.5x', coverPct: 70, dailyDemand: 9, cost: 3200 },
     { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, status: 'overstock', cover: '4.1x', coverPct: 100, dailyDemand: 6, cost: 680 },
-    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24, cost: 1180 }
+    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24, cost: 1180 },
+    { id: 9, name: 'Denim Jacket', sku: 'TOP-1103', vendor: 'Verado Mills', category: 'Tops', plant: 'Plant B · Pune', onHand: 180, reorder: 90, status: 'healthy', cover: '2.0x', coverPct: 40, dailyDemand: 12, cost: 1850 },
+    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, status: 'healthy', cover: '1.8x', coverPct: 36, dailyDemand: 8, cost: 540 }
   ],
 
   warehouses: [
@@ -24,7 +26,11 @@ var STOCKHOUSE_KB = {
     { id: 3, name: 'Plant C · Chennai', code: 'WH-CHN-03', location: 'Chennai, Tamil Nadu', manager: 'Mira Delgado', units: 3860, capacity: 6000, utilPct: 64, status: 'normal' },
     { id: 4, name: 'Plant D · Bhiwandi', code: 'WH-BHW-04', location: 'Bhiwandi, Maharashtra', manager: 'Priya Nair', units: 2975, capacity: 4500, utilPct: 66, status: 'normal' },
     { id: 5, name: 'Central DC · Delhi', code: 'WH-DEL-05', location: 'Delhi NCR', manager: 'Rahul Mehta', units: 4690, capacity: 5000, utilPct: 94, status: 'nearCapacity' },
-    { id: 6, name: 'Returns Hub · Mumbai', code: 'WH-MUM-06', location: 'Mumbai, Maharashtra', manager: 'Mira Delgado', units: 948, capacity: 3000, utilPct: 32, status: 'lowUtilization' }
+    { id: 6, name: 'Returns Hub · Mumbai', code: 'WH-MUM-06', location: 'Mumbai, Maharashtra', manager: 'Mira Delgado', units: 948, capacity: 3000, utilPct: 32, status: 'lowUtilization' },
+    { id: 7, name: 'Plant E · Nagpur', code: 'WH-NGP-07', location: 'Nagpur, Maharashtra', manager: 'Devika Rao', units: 3355, capacity: 5500, utilPct: 61, status: 'normal' },
+    { id: 8, name: 'Plant F · Kochi', code: 'WH-KCH-08', location: 'Kochi, Kerala', manager: 'Arjun Menon', units: 2310, capacity: 4200, utilPct: 55, status: 'normal' },
+    { id: 9, name: 'Hub · Kolkata', code: 'WH-KOL-09', location: 'Kolkata, West Bengal', manager: 'Ishaan Verma', units: 2660, capacity: 3800, utilPct: 70, status: 'normal' },
+    { id: 10, name: 'Depot · Jaipur', code: 'WH-JAI-10', location: 'Jaipur, Rajasthan', manager: 'Kabir Malhotra', units: 1536, capacity: 3200, utilPct: 48, status: 'normal' }
   ],
 
   suppliers: [
@@ -35,7 +41,9 @@ var STOCKHOUSE_KB = {
     { id: 5, name: 'Northline Textile', category: 'Accessories', contact: 'Sana Iqbal', openPOs: 1, ratePct: 97, status: 'active', priceVariancePct: -3, fulfillmentAccuracyPct: 98, complianceStatus: 'current', volumeTrend: 'up' },
     { id: 6, name: 'Solano Freight & Textiles', category: 'Raw Materials', contact: 'Marco Solano', openPOs: 0, ratePct: 92, status: 'inactive', priceVariancePct: 1, fulfillmentAccuracyPct: 90, complianceStatus: 'current', volumeTrend: 'down' },
     { id: 7, name: 'Ridgeview Apparel Co.', category: 'Apparel', contact: 'Farah Khan', openPOs: 2, ratePct: 85, status: 'active', priceVariancePct: 7, fulfillmentAccuracyPct: 91, complianceStatus: 'expiring', volumeTrend: 'stable' },
-    { id: 8, name: 'Meridian Leather Works', category: 'Leather Goods', contact: 'Tomas Rivera', openPOs: 0, ratePct: 90, status: 'inactive', priceVariancePct: 0, fulfillmentAccuracyPct: 93, complianceStatus: 'current', volumeTrend: 'down' }
+    { id: 8, name: 'Meridian Leather Works', category: 'Leather Goods', contact: 'Tomas Rivera', openPOs: 0, ratePct: 90, status: 'inactive', priceVariancePct: 0, fulfillmentAccuracyPct: 93, complianceStatus: 'current', volumeTrend: 'down' },
+    { id: 9, name: 'Bellweather Textiles', category: 'Raw Materials', contact: 'Priyanka Shah', openPOs: 1, ratePct: 94, status: 'active', priceVariancePct: 3, fulfillmentAccuracyPct: 96, complianceStatus: 'current', volumeTrend: 'stable' },
+    { id: 10, name: 'Coral Bay Footwear', category: 'Footwear', contact: 'Neel Bhatt', openPOs: 2, ratePct: 82, status: 'active', priceVariancePct: 11, fulfillmentAccuracyPct: 88, complianceStatus: 'expiring', volumeTrend: 'down' }
   ],
 
   transfers: [
@@ -46,7 +54,9 @@ var STOCKHOUSE_KB = {
     { id: 5, tid: 'TRF-2045', item: 'Ceramic Vase', from: 'Plant C · Chennai', to: 'Plant B · Pune', qty: 25, status: 'inTransit', requestedBy: 'Rahul Mehta', date: 'Sep 15, 2026' },
     { id: 6, tid: 'TRF-2046', item: 'Canvas Tote', from: 'Plant A · Gurgaon', to: 'Plant C · Chennai', qty: 50, status: 'cancelled', requestedBy: 'Abhishek Gupta', date: 'Aug 30, 2026' },
     { id: 7, tid: 'TRF-2047', item: 'Card Holder', from: 'Plant C · Chennai', to: 'Plant A · Gurgaon', qty: 40, status: 'pending', requestedBy: 'Priya Nair', date: 'Sep 15, 2026' },
-    { id: 8, tid: 'TRF-2048', item: 'Cargo Pant', from: 'Plant B · Pune', to: 'Plant D · Bhiwandi', qty: 35, status: 'completed', requestedBy: 'Rahul Mehta', date: 'Sep 8, 2026' }
+    { id: 8, tid: 'TRF-2048', item: 'Cargo Pant', from: 'Plant B · Pune', to: 'Plant D · Bhiwandi', qty: 35, status: 'completed', requestedBy: 'Rahul Mehta', date: 'Sep 8, 2026' },
+    { id: 9, tid: 'TRF-2049', item: 'Denim Jacket', from: 'Plant B · Pune', to: 'Plant A · Gurgaon', qty: 20, status: 'inTransit', requestedBy: 'Abhishek Gupta', date: 'Sep 16, 2026' },
+    { id: 10, tid: 'TRF-2050', item: 'Leather Belt', from: 'Plant C · Chennai', to: 'Plant D · Bhiwandi', qty: 15, status: 'completed', requestedBy: 'Abhishek Gupta', date: 'Sep 10, 2026' }
   ],
 
   purchaseOrders: [
@@ -57,7 +67,9 @@ var STOCKHOUSE_KB = {
     { id: 5, poId: 'PO-3085', vendor: 'Northline Textile', itemsCount: 3, lineCount: 1, value: '₹92,400', valueNum: 92400, status: 'received', orderDate: 'Aug 15, 2026', expectedDate: 'Aug 22, 2026' },
     { id: 6, poId: 'PO-3086', vendor: 'Hanover Works', itemsCount: 11, lineCount: 3, value: '₹7,88,900', valueNum: 788900, status: 'inTransit', orderDate: 'Sep 8, 2026', expectedDate: 'Sep 20, 2026' },
     { id: 7, poId: 'PO-3087', vendor: 'Verado Mills', itemsCount: 5, lineCount: 2, value: '₹2,64,750', valueNum: 264750, status: 'pending', orderDate: 'Sep 14, 2026', expectedDate: 'Sep 28, 2026' },
-    { id: 8, poId: 'PO-3088', vendor: 'Pergola Goods', itemsCount: 2, lineCount: 1, value: '₹1,12,300', valueNum: 112300, status: 'draft', orderDate: '—', expectedDate: '—' }
+    { id: 8, poId: 'PO-3088', vendor: 'Pergola Goods', itemsCount: 2, lineCount: 1, value: '₹1,12,300', valueNum: 112300, status: 'draft', orderDate: '—', expectedDate: '—' },
+    { id: 9, poId: 'PO-3089', vendor: 'Ridgeview Apparel Co.', itemsCount: 9, lineCount: 2, value: '₹5,77,500', valueNum: 577500, status: 'inTransit', orderDate: 'Sep 10, 2026', expectedDate: 'Sep 24, 2026' },
+    { id: 10, poId: 'PO-3090', vendor: 'Meridian Leather Works', itemsCount: 8, lineCount: 1, value: '₹1,72,000', valueNum: 172000, status: 'draft', orderDate: '—', expectedDate: '—' }
   ]
 };
 

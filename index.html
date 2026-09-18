@@ -309,7 +309,9 @@
     { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', vendor: 'Kestrel Supply Co.', category: 'Bottoms', plant: 'Plant B · Pune', onHand: 0, reorder: 126, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 15, cost: 1560 },
     { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', vendor: 'Northline Textile', category: 'Accessories', plant: 'Plant D · Bhiwandi', onHand: 272, reorder: 78, status: 'healthy', cover: '3.5x', coverPct: 70, dailyDemand: 9, cost: 3200 },
     { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, status: 'overstock', cover: '4.1x', coverPct: 100, dailyDemand: 6, cost: 680 },
-    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24, cost: 1180 }
+    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24, cost: 1180 },
+    { id: 9, name: 'Denim Jacket', sku: 'TOP-1103', vendor: 'Verado Mills', category: 'Tops', plant: 'Plant B · Pune', onHand: 180, reorder: 90, status: 'healthy', cover: '2.0x', coverPct: 40, dailyDemand: 12, cost: 1850 },
+    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, status: 'healthy', cover: '1.8x', coverPct: 36, dailyDemand: 8, cost: 540 }
   ];
 
   function stockoutRisk(it) {
@@ -323,7 +325,7 @@
   var plantNames = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai', 'Plant D · Bhiwandi'];
   var categoryNames = ['Tops', 'Footwear', 'Accessories', 'Bottoms', 'Home'];
   var uomNames = ['Piece', 'Pair', 'Set', 'Kg'];
-  var nextItemId = 9;
+  var nextItemId = 11;
 
   var statusMeta = {
     healthy: { label: 'Healthy', bg: '#ecfdf1', color: '#047857', dot: '#10bc83', bar: '#1960bd' },
