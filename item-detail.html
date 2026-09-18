@@ -91,6 +91,8 @@
   .info-sep { grid-column: 1 / -1; height: 1px; background: #f2f4f7; margin: 2px 0; }
 
   .card-title-row { display: flex; align-items: center; justify-content: space-between; }
+  .plant-filter-select { font-family: inherit; font-size: 12px; font-weight: 700; color: #384352; border: 1px solid #cbd6e6; border-radius: 8px; padding: 6px 10px; background: #ffffff; outline: 0; cursor: pointer; }
+  .plant-filter-select:focus { border-color: #1960bd; }
   .view-all { font-size: 13px; font-weight: 700; color: #1960bd; cursor: pointer; }
 
   .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-top: 1px solid #f2f4f7; }
@@ -241,7 +243,8 @@
       <div class="two-col">
         <div class="col">
           <div class="card card-pad">
-            <p class="card-title">Stock by plant</p>
+            <div class="card-title-row"><p class="card-title">Stock by plant</p><select id="stockValuePlantFilter" class="plant-filter-select"></select></div>
+            <div class="stat" style="margin-bottom:16px;"><span class="lbl">Stock value</span><span class="val" id="stockValueAmount">₹0</span><span class="unit" id="stockValueUnits"></span></div>
             <div id="plantRows">
             <div class="plant-row"><span class="dot" style="background:#1960bd;"></span><span class="nm">Plant A · Gurgaon</span><span class="units">260 units</span><div class="track"><div class="fill" style="width:59%; background:#1960bd;"></div></div><span class="pct">59%</span></div>
             <div class="plant-row"><span class="dot" style="background:#2577e5;"></span><span class="nm">Plant B · Pune</span><span class="units">104 units</span><div class="track"><div class="fill" style="width:23%; background:#2577e5;"></div></div><span class="pct">23%</span></div>
@@ -474,7 +477,22 @@
     { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', category: 'Home', vendor: 'Verado Mills', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, dailyDemand: 6, uom: 'Piece', cost: 680, leadTime: 25, description: 'Hand-thrown ceramic vase with a matte glaze finish. Home range item currently holding well above typical demand.' },
     { id: 8, name: 'Chino Short', sku: 'BTM-1131', category: 'Bottoms', vendor: 'Hanover Works', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, dailyDemand: 24, uom: 'Piece', cost: 1180, leadTime: 14, description: 'Cotton-twill chino short, tailored fit. Reliable core seller across the Bottoms range from Hanover Works.' },
     { id: 9, name: 'Denim Jacket', sku: 'TOP-1103', category: 'Tops', vendor: 'Verado Mills', plant: 'Plant B · Pune', onHand: 180, reorder: 90, dailyDemand: 12, uom: 'Piece', cost: 1850, leadTime: 16, description: 'Mid-wash denim jacket with a classic collar and button-front closure. Recently added to the Tops range, sourced from Verado Mills.' },
-    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', category: 'Accessories', vendor: 'Meridian Leather Works', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, dailyDemand: 8, uom: 'Piece', cost: 540, leadTime: 11, description: 'Full-grain leather belt with a brushed metal buckle. Pairs with several Accessories bestsellers — sourced from Meridian Leather Works.' }
+    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', category: 'Accessories', vendor: 'Meridian Leather Works', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, dailyDemand: 8, uom: 'Piece', cost: 540, leadTime: 11, description: 'Full-grain leather belt with a brushed metal buckle. Pairs with several Accessories bestsellers — sourced from Meridian Leather Works.' },
+    { id: 11, name: 'Wool Beanie', sku: 'ACC-1327', category: 'Accessories', vendor: 'Northline Textile', plant: 'Plant D · Bhiwandi', onHand: 150, reorder: 210, dailyDemand: 8, uom: 'Piece', cost: 340, leadTime: 13, description: 'Ribbed wool beanie in a relaxed fit. Seasonal accessory currently running below its reorder point.' },
+    { id: 12, name: 'Linen Shirt', sku: 'TOP-1140', category: 'Tops', vendor: 'Hanover Works', plant: 'Plant A · Gurgaon', onHand: 210, reorder: 260, dailyDemand: 14, uom: 'Piece', cost: 1420, leadTime: 12, description: 'Breathable linen shirt with a relaxed collar. Popular warm-weather style from Hanover Works.' },
+    { id: 13, name: 'Suede Loafer', sku: 'FTW-1228', category: 'Footwear', vendor: 'Verado Mills', plant: 'Plant B · Pune', onHand: 95, reorder: 140, dailyDemand: 5, uom: 'Pair', cost: 2680, leadTime: 9, description: 'Soft suede loafer with a stacked leather heel. Premium Footwear style from Verado Mills.' },
+    { id: 14, name: 'Corduroy Trouser', sku: 'BTM-1148', category: 'Bottoms', vendor: 'Kestrel Supply Co.', plant: 'Plant C · Chennai', onHand: 175, reorder: 230, dailyDemand: 10, uom: 'Piece', cost: 1560, leadTime: 18, description: 'Wide-wale corduroy trouser, relaxed tapered fit. Seasonal Bottoms style from Kestrel Supply Co.' },
+    { id: 15, name: 'Table Runner', sku: 'HOM-1375', category: 'Home', vendor: 'Pergola Goods', plant: 'Plant A · Gurgaon', onHand: 120, reorder: 160, dailyDemand: 6, uom: 'Piece', cost: 890, leadTime: 15, description: 'Woven cotton table runner with a fringed edge. Home range item from Pergola Goods.' },
+    { id: 16, name: 'Puffer Vest', sku: 'TOP-1152', category: 'Tops', vendor: 'Verado Mills', plant: 'Plant B · Pune', onHand: 0, reorder: 140, dailyDemand: 11, uom: 'Piece', cost: 2450, leadTime: 9, description: 'Quilted puffer vest with a packable hood. Currently out of stock pending the next shipment from Verado Mills.' },
+    { id: 17, name: 'Ankle Boot', sku: 'FTW-1241', category: 'Footwear', vendor: 'Kestrel Supply Co.', plant: 'Plant D · Bhiwandi', onHand: 0, reorder: 95, dailyDemand: 7, uom: 'Pair', cost: 3120, leadTime: 18, description: 'Leather ankle boot with a block heel. Currently out of stock pending the next shipment from Kestrel Supply Co.' },
+    { id: 18, name: 'Wide-Leg Jean', sku: 'BTM-1155', category: 'Bottoms', vendor: 'Hanover Works', plant: 'Plant A · Gurgaon', onHand: 0, reorder: 180, dailyDemand: 18, uom: 'Piece', cost: 1680, leadTime: 12, description: 'High-rise wide-leg denim jean. Currently out of stock pending the next shipment from Hanover Works.' },
+    { id: 19, name: 'Leather Tote', sku: 'ACC-1334', category: 'Accessories', vendor: 'Meridian Leather Works', plant: 'Plant C · Chennai', onHand: 0, reorder: 85, dailyDemand: 6, uom: 'Piece', cost: 3450, leadTime: 11, description: 'Structured full-grain leather tote. Currently out of stock pending the next shipment from Meridian Leather Works.' },
+    { id: 20, name: 'Throw Pillow', sku: 'HOM-1382', category: 'Home', vendor: 'Pergola Goods', plant: 'Plant B · Pune', onHand: 0, reorder: 110, dailyDemand: 9, uom: 'Piece', cost: 560, leadTime: 15, description: 'Woven cotton throw pillow cover. Currently out of stock pending the next shipment from Pergola Goods.' },
+    { id: 21, name: 'Fleece Hoodie', sku: 'TOP-1167', category: 'Tops', vendor: 'Hanover Works', plant: 'Plant A · Gurgaon', onHand: 520, reorder: 140, dailyDemand: 7, uom: 'Piece', cost: 1780, leadTime: 12, description: 'Heavyweight fleece hoodie. Home range item currently holding well above typical demand.' },
+    { id: 22, name: 'Suede Sneaker', sku: 'FTW-1254', category: 'Footwear', vendor: 'Verado Mills', plant: 'Plant B · Pune', onHand: 610, reorder: 160, dailyDemand: 9, uom: 'Pair', cost: 2340, leadTime: 9, description: 'Low-profile suede sneaker. Footwear style currently holding well above typical demand.' },
+    { id: 23, name: 'Straw Tote', sku: 'ACC-1341', category: 'Accessories', vendor: 'Pergola Goods', plant: 'Plant A · Gurgaon', onHand: 480, reorder: 130, dailyDemand: 6, uom: 'Piece', cost: 760, leadTime: 15, description: 'Woven straw tote with leather trim. Accessories style currently holding well above typical demand.' },
+    { id: 24, name: 'Wide Belt', sku: 'ACC-1348', category: 'Accessories', vendor: 'Meridian Leather Works', plant: 'Plant C · Chennai', onHand: 390, reorder: 100, dailyDemand: 5, uom: 'Piece', cost: 580, leadTime: 11, description: 'Wide leather belt with a statement buckle. Accessories style currently holding well above typical demand.' },
+    { id: 25, name: 'Ceramic Planter', sku: 'HOM-1389', category: 'Home', vendor: 'Verado Mills', plant: 'Plant D · Bhiwandi', onHand: 560, reorder: 145, dailyDemand: 8, uom: 'Piece', cost: 720, leadTime: 25, description: 'Hand-thrown ceramic planter with a matte glaze. Home range item currently holding well above typical demand.' }
   ];
 
   var reqParams = new URLSearchParams(window.location.search);
@@ -514,7 +532,7 @@
 
   var statusPillMeta = {
     healthy: { label: 'Healthy', bg: '#ecfdf1', fg: '#047857', dot: '#10bc83' },
-    belowReorder: { label: 'Below Reorder Point', bg: '#fff7ed', fg: '#b84509', dot: '#e56106' },
+    belowReorder: { label: 'Low on Stock', bg: '#fff7ed', fg: '#b84509', dot: '#e56106' },
     stockout: { label: 'Out of Stock', bg: '#feecec', fg: '#b91c1c', dot: '#dc2626' },
     overstock: { label: 'Overstocked', bg: '#efeaff', fg: '#6d4fd1', dot: '#8b6ff0' }
   };
@@ -611,6 +629,25 @@
     }).join('');
   }
 
+  function fillStockValueFilter() {
+    var sel = document.getElementById('stockValuePlantFilter');
+    var prev = sel.value;
+    var opts = [{ v: 'all', l: 'All plants' }].concat(plantNames.map(function (n) { return { v: n, l: n }; }));
+    sel.innerHTML = opts.map(function (o) {
+      return '<option value="' + o.v.replace(/"/g, '&quot;') + '"' + (o.v === prev ? ' selected' : '') + '>' + o.l + '</option>';
+    }).join('');
+    if (!prev) sel.value = 'all';
+  }
+
+  function renderStockValue(it) {
+    var sel = document.getElementById('stockValuePlantFilter');
+    var filterVal = sel.value || 'all';
+    var qty = filterVal === 'all' ? it.onHand : (plantStock[filterVal] || 0);
+    var value = qty * (it.cost || 0);
+    document.getElementById('stockValueAmount').textContent = fmtMoney(value);
+    document.getElementById('stockValueUnits').textContent = qty.toLocaleString('en-IN') + ' units \u00d7 ' + fmtMoney(it.cost || 0);
+  }
+
   var iconHtml = {
     adjust: { bg: '#e8f0fc', svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/></svg>' },
     'adjust-neg': { bg: '#feecec', svg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2"/></svg>' },
@@ -704,11 +741,14 @@
   function renderItemFull() {
     renderItemHeader();
     renderPlants(item);
+    fillStockValueFilter();
+    renderStockValue(item);
     var tl = buildTimeline(item);
     renderActivity(tl.activity);
     renderAudit(tl.audit);
   }
   renderItemFull();
+  document.getElementById('stockValuePlantFilter').addEventListener('change', function () { renderStockValue(item); });
 
   // ---- Edit Item drawer ----
   function openEditItemDrawer() {
@@ -744,6 +784,7 @@
     item.leadTime = parseInt(document.getElementById('eiLeadTime').value, 10) || 0;
     item.description = document.getElementById('eiDescription').value.trim();
     renderItemHeader();
+    renderStockValue(item);
     closeEditItemDrawer();
     showFlowToast('Item changes saved');
   });
@@ -788,6 +829,8 @@
     item.onHand = Math.max(0, item.onHand + delta);
     renderItemHeader();
     renderPlants(item);
+    fillStockValueFilter();
+    renderStockValue(item);
     closeAdjustStockModal();
     showFlowToast('Stock adjustment saved');
   });

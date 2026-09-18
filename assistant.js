@@ -154,6 +154,9 @@ var Stockhouse = (function () {
     }).join('');
   }
 
+  var STATUS_LABELS = { healthy: 'Healthy', belowReorder: 'Low on stock', stockout: 'Out of stock', overstock: 'Overstocked' };
+  function statusLabel(s) { return STATUS_LABELS[s] || s; }
+
   function groupLowStockByVendor() {
     var lowStock = DATA.items.filter(function (it) { return it.status === 'belowReorder' || it.status === 'stockout'; });
     var byVendor = {};
@@ -404,7 +407,7 @@ var Stockhouse = (function () {
       var lookedUpItem = findMentioned(DATA.items, text, 'name');
       if (lookedUpItem) {
         var itm = byName(DATA.items, 'name', lookedUpItem);
-        addMessage('assistant', '<b>' + esc(lookedUpItem) + '</b> (' + esc(itm.sku) + ') — <b>' + itm.onHand + ' units</b> on hand at ' + esc(itm.plant) + ', reorder point ' + itm.reorder + ', unit cost ' + fmtCr(itm.cost) + '. Status: ' + esc(itm.status) + '.', [
+        addMessage('assistant', '<b>' + esc(lookedUpItem) + '</b> (' + esc(itm.sku) + ') — <b>' + itm.onHand + ' units</b> on hand at ' + esc(itm.plant) + ', reorder point ' + itm.reorder + ', unit cost ' + fmtCr(itm.cost) + '. Status: ' + esc(statusLabel(itm.status)) + '.', [
           { action: 'navigate', href: 'item-detail.html?id=' + itm.id, label: 'View ' + lookedUpItem }
         ]);
         return;
@@ -416,8 +419,8 @@ var Stockhouse = (function () {
     // transcriptions ("you haven't shown me low stock items") still land here instead of falling
     // all the way through to the fallback.
     var filterMap = [
-      { re: /below reorder|reorder point|need(s)? to reorder|reorder soon|due for reorder/, key: 'belowReorder', label: 'below reorder' },
-      { re: /stock[\s-]?out|out of stock|no stock left|zero stock|not in stock|sold out|nothing left/, key: 'stockout', label: 'stockouts' },
+      { re: /below reorder|reorder point|need(s)? to reorder|reorder soon|due for reorder/, key: 'belowReorder', label: 'low on stock' },
+      { re: /stock[\s-]?out|out of stock|no stock left|zero stock|not in stock|sold out|nothing left/, key: 'stockout', label: 'out of stock' },
       { re: /over[\s-]?stock(ed)?|excess (stock|inventory)|surplus stock|too much stock|extra stock/, key: 'overstock', label: 'overstocked' },
       { re: /\bhealthy\b|well stocked|good stock levels?|in good shape|stock (is|looks) (fine|good|ok)/, key: 'healthy', label: 'healthy' },
       { re: /low (on )?stock|running low|what'?s low|short on stock|almost out|nearly out|about to run out|low inventory/, key: 'belowReorder', label: 'low on stock' },
@@ -443,7 +446,7 @@ var Stockhouse = (function () {
     var fbItemName = findMentioned(DATA.items, text, 'name');
     if (fbItemName) {
       var fbItm = byName(DATA.items, 'name', fbItemName);
-      addMessage('assistant', '<b>' + esc(fbItemName) + '</b> (' + esc(fbItm.sku) + ') — <b>' + fbItm.onHand + ' units</b> on hand at ' + esc(fbItm.plant) + ', reorder point ' + fbItm.reorder + ', unit cost ' + fmtCr(fbItm.cost) + '. Status: ' + esc(fbItm.status) + '.', [
+      addMessage('assistant', '<b>' + esc(fbItemName) + '</b> (' + esc(fbItm.sku) + ') — <b>' + fbItm.onHand + ' units</b> on hand at ' + esc(fbItm.plant) + ', reorder point ' + fbItm.reorder + ', unit cost ' + fmtCr(fbItm.cost) + '. Status: ' + esc(statusLabel(fbItm.status)) + '.', [
         { action: 'navigate', href: 'item-detail.html?id=' + fbItm.id, label: 'View ' + fbItemName }
       ]);
       return;

@@ -203,8 +203,8 @@
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div><span class="kpi-delta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>4%</span></div><div class="kpi-body"><span class="kpi-num" id="kpiSkuCount">47</span><span class="kpi-label" id="kpiSkuLabel">SKUs tracked · 6 categories</span></div></div>
       <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg></div><span class="kpi-delta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>2%</span></div><div class="kpi-body"><span class="kpi-num" id="kpiUnitsOnHand">21,023</span><span class="kpi-label" id="kpiUnitsLabel">Units on hand · $866k cost</span></div></div>
-      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.6" r="0.9" fill="#dc2626" stroke="none"/></svg></div><span class="kpi-delta down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 7l10 10"/><path d="M17 8v9H8"/></svg>6%</span></div><div class="kpi-body"><span class="kpi-num warn" id="kpiBelowReorder">25</span><span class="kpi-label">Below reorder · lines</span></div></div>
-      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3l5.4 5.4M14.7 9.3l-5.4 5.4"/></svg></div><span class="kpi-delta down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 7l10 10"/><path d="M17 8v9H8"/></svg>1%</span></div><div class="kpi-body"><span class="kpi-num warn" id="kpiStockouts">5</span><span class="kpi-label">Stockouts · lines at zero</span></div></div>
+      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.6" r="0.9" fill="#dc2626" stroke="none"/></svg></div><span class="kpi-delta down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 7l10 10"/><path d="M17 8v9H8"/></svg>6%</span></div><div class="kpi-body"><span class="kpi-num warn" id="kpiBelowReorder">25</span><span class="kpi-label">Low on stock · lines</span></div></div>
+      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3l5.4 5.4M14.7 9.3l-5.4 5.4"/></svg></div><span class="kpi-delta down"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 7l10 10"/><path d="M17 8v9H8"/></svg>1%</span></div><div class="kpi-body"><span class="kpi-num warn" id="kpiStockouts">5</span><span class="kpi-label">Out of stock · lines at zero</span></div></div>
       <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg></div><span class="kpi-delta warn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>3%</span></div><div class="kpi-body"><span class="kpi-num caution" id="kpiOverstocked">11</span><span class="kpi-label">Overstocked · SKUs</span></div></div>
     </div>
 
@@ -311,7 +311,22 @@
     { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, status: 'overstock', cover: '4.1x', coverPct: 100, dailyDemand: 6, cost: 680 },
     { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24, cost: 1180 },
     { id: 9, name: 'Denim Jacket', sku: 'TOP-1103', vendor: 'Verado Mills', category: 'Tops', plant: 'Plant B · Pune', onHand: 180, reorder: 90, status: 'healthy', cover: '2.0x', coverPct: 40, dailyDemand: 12, cost: 1850 },
-    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, status: 'healthy', cover: '1.8x', coverPct: 36, dailyDemand: 8, cost: 540 }
+    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, status: 'healthy', cover: '1.8x', coverPct: 36, dailyDemand: 8, cost: 540 },
+    { id: 11, name: 'Wool Beanie', sku: 'ACC-1327', vendor: 'Northline Textile', category: 'Accessories', plant: 'Plant D · Bhiwandi', onHand: 150, reorder: 210, status: 'belowReorder', cover: '0.7x', coverPct: 14, dailyDemand: 8, cost: 340 },
+    { id: 12, name: 'Linen Shirt', sku: 'TOP-1140', vendor: 'Hanover Works', category: 'Tops', plant: 'Plant A · Gurgaon', onHand: 210, reorder: 260, status: 'belowReorder', cover: '0.8x', coverPct: 16, dailyDemand: 14, cost: 1420 },
+    { id: 13, name: 'Suede Loafer', sku: 'FTW-1228', vendor: 'Verado Mills', category: 'Footwear', plant: 'Plant B · Pune', onHand: 95, reorder: 140, status: 'belowReorder', cover: '0.7x', coverPct: 14, dailyDemand: 5, cost: 2680 },
+    { id: 14, name: 'Corduroy Trouser', sku: 'BTM-1148', vendor: 'Kestrel Supply Co.', category: 'Bottoms', plant: 'Plant C · Chennai', onHand: 175, reorder: 230, status: 'belowReorder', cover: '0.8x', coverPct: 15, dailyDemand: 10, cost: 1560 },
+    { id: 15, name: 'Table Runner', sku: 'HOM-1375', vendor: 'Pergola Goods', category: 'Home', plant: 'Plant A · Gurgaon', onHand: 120, reorder: 160, status: 'belowReorder', cover: '0.8x', coverPct: 15, dailyDemand: 6, cost: 890 },
+    { id: 16, name: 'Puffer Vest', sku: 'TOP-1152', vendor: 'Verado Mills', category: 'Tops', plant: 'Plant B · Pune', onHand: 0, reorder: 140, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 11, cost: 2450 },
+    { id: 17, name: 'Ankle Boot', sku: 'FTW-1241', vendor: 'Kestrel Supply Co.', category: 'Footwear', plant: 'Plant D · Bhiwandi', onHand: 0, reorder: 95, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 7, cost: 3120 },
+    { id: 18, name: 'Wide-Leg Jean', sku: 'BTM-1155', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 0, reorder: 180, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 18, cost: 1680 },
+    { id: 19, name: 'Leather Tote', sku: 'ACC-1334', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 0, reorder: 85, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 6, cost: 3450 },
+    { id: 20, name: 'Throw Pillow', sku: 'HOM-1382', vendor: 'Pergola Goods', category: 'Home', plant: 'Plant B · Pune', onHand: 0, reorder: 110, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 9, cost: 560 },
+    { id: 21, name: 'Fleece Hoodie', sku: 'TOP-1167', vendor: 'Hanover Works', category: 'Tops', plant: 'Plant A · Gurgaon', onHand: 520, reorder: 140, status: 'overstock', cover: '3.7x', coverPct: 100, dailyDemand: 7, cost: 1780 },
+    { id: 22, name: 'Suede Sneaker', sku: 'FTW-1254', vendor: 'Verado Mills', category: 'Footwear', plant: 'Plant B · Pune', onHand: 610, reorder: 160, status: 'overstock', cover: '3.8x', coverPct: 100, dailyDemand: 9, cost: 2340 },
+    { id: 23, name: 'Straw Tote', sku: 'ACC-1341', vendor: 'Pergola Goods', category: 'Accessories', plant: 'Plant A · Gurgaon', onHand: 480, reorder: 130, status: 'overstock', cover: '3.7x', coverPct: 100, dailyDemand: 6, cost: 760 },
+    { id: 24, name: 'Wide Belt', sku: 'ACC-1348', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 390, reorder: 100, status: 'overstock', cover: '3.9x', coverPct: 100, dailyDemand: 5, cost: 580 },
+    { id: 25, name: 'Ceramic Planter', sku: 'HOM-1389', vendor: 'Verado Mills', category: 'Home', plant: 'Plant D · Bhiwandi', onHand: 560, reorder: 145, status: 'overstock', cover: '3.9x', coverPct: 100, dailyDemand: 8, cost: 720 }
   ];
 
   function stockoutRisk(it) {
@@ -325,20 +340,20 @@
   var plantNames = ['Plant A · Gurgaon', 'Plant B · Pune', 'Plant C · Chennai', 'Plant D · Bhiwandi'];
   var categoryNames = ['Tops', 'Footwear', 'Accessories', 'Bottoms', 'Home'];
   var uomNames = ['Piece', 'Pair', 'Set', 'Kg'];
-  var nextItemId = 11;
+  var nextItemId = 26;
 
   var statusMeta = {
     healthy: { label: 'Healthy', bg: '#ecfdf1', color: '#047857', dot: '#10bc83', bar: '#1960bd' },
-    belowReorder: { label: 'Below reorder', bg: '#feecec', color: '#b91c1c', dot: '#dc2626', bar: '#1960bd' },
-    stockout: { label: 'Stockout · 1 site', bg: '#feecec', color: '#b91c1c', dot: '#dc2626', bar: '#dc2626' },
+    belowReorder: { label: 'Low on stock', bg: '#feecec', color: '#b91c1c', dot: '#dc2626', bar: '#1960bd' },
+    stockout: { label: 'Out of stock', bg: '#feecec', color: '#b91c1c', dot: '#dc2626', bar: '#dc2626' },
     overstock: { label: 'Overstocked', bg: '#fff7ed', color: '#b84509', dot: '#e56106', bar: '#e56106' }
   };
 
   var state = { search: '', activeFilter: 'all', category: 'all', plants: [], activePage: 1, rowsPerPage: 8, openMenuId: null, categoryOpen: false, plantOpen: false, rowsOpen: false };
 
   var SPECIAL_FILTERS = {
-    reorderIssues: { text: '<b>2 items</b> are out of, or below, reorder stock — from your Dashboard\u2019s Critical actions.', match: function (it) { return it.status === 'belowReorder' || it.status === 'stockout'; } },
-    predictedStockout: { text: '<b>3 items</b> are predicted to stock out within 7 days — from your Dashboard\u2019s Critical actions.', match: function (it) { return stockoutRisk(it) !== null; } }
+    reorderIssues: { text: '<b>12 items</b> are low on, or out of, stock — from your Dashboard\u2019s Critical actions.', match: function (it) { return it.status === 'belowReorder' || it.status === 'stockout'; } },
+    predictedStockout: { text: '<b>8 items</b> are predicted to stock out within 7 days — from your Dashboard\u2019s Critical actions.', match: function (it) { return stockoutRisk(it) !== null; } }
   };
   var urlParams = new URLSearchParams(window.location.search);
   var specialFilterKey = urlParams.get('filter');
@@ -394,8 +409,8 @@
     // chips
     var filterDefs = [
       { key: 'all', label: 'All', count: items.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
-      { key: 'belowReorder', label: 'Below reorder', count: items.filter(function (i) { return i.status === 'belowReorder'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' },
-      { key: 'stockout', label: 'Stockouts', count: items.filter(function (i) { return i.status === 'stockout'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' },
+      { key: 'belowReorder', label: 'Low on stock', count: items.filter(function (i) { return i.status === 'belowReorder'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' },
+      { key: 'stockout', label: 'Out of stock', count: items.filter(function (i) { return i.status === 'stockout'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' },
       { key: 'overstock', label: 'Overstock', count: items.filter(function (i) { return i.status === 'overstock'; }).length, activeBg: '#e56106', activeBorder: '#e56106', activeColor: '#ffffff', idleBg: '#fff7ed', idleBorder: '#ffe9cc', idleColor: '#b84509' }
     ];
     document.getElementById('chips').innerHTML = filterDefs.map(function (f) {

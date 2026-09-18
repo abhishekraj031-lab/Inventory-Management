@@ -202,7 +202,7 @@
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.5 1.3 6 1.6 8 1.5 0 8-3.2 12.4-8 14.5-4.8-2.1-8-6.5-8-14.5 2 .1 4.5-.2 8-1.5Z"/><path d="M9 12.2l2 2 4-4.4"/></svg></div><span class="kpi-delta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>4 pts</span></div><div class="kpi-body"><span class="kpi-num">82<span style="font-size:14px; font-weight:700; color:#8da4be;">/100</span></span><span class="kpi-label">Inventory Health Score</span></div></div>
 
-      <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.6" r="0.9" fill="#e56106" stroke="none"/></svg></div></div><div class="kpi-body"><span class="kpi-num caution">3</span><span class="kpi-label">Predicted stockouts · within 7 days</span></div></div>
+      <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.6" r="0.9" fill="#e56106" stroke="none"/></svg></div></div><div class="kpi-body"><span class="kpi-num caution">8</span><span class="kpi-label">Predicted stockouts · within 7 days</span></div></div>
 
       <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num">₹38.4L</span><span class="kpi-label">Cash locked · ₹8.8L recoverable</span></div></div>
 
@@ -699,15 +699,15 @@
 
     var CRIT_ACTIONS = [
       { id: 'inv-reorder', module: 'Inventory', dot: '#dc2626',
-        title: 'Cargo Pant and Card Holder are out of, or below, reorder stock',
-        sub: '2 SKUs · immediate reorder recommended',
+        title: '12 items are low on, or out of, stock',
+        sub: '12 SKUs · immediate reorder recommended',
         href: 'index.html?filter=reorderIssues', linkLabel: 'Review inventory →',
-        resolveType: 'covered', coverItems: ['Cargo Pant', 'Card Holder'] },
+        resolveType: 'covered', coverItems: ['Card Holder', 'Wool Beanie', 'Linen Shirt', 'Suede Loafer', 'Corduroy Trouser', 'Table Runner', 'Cargo Pant', 'Puffer Vest', 'Ankle Boot', 'Wide-Leg Jean', 'Leather Tote', 'Throw Pillow'] },
       { id: 'inv-predictive', module: 'Inventory', dot: '#dc2626',
-        title: 'Canvas Low Top, Card Holder and Cargo Pant are predicted to stock out within 7 days',
-        sub: 'Canvas Low Top isn’t flagged by reorder point yet — demand is up 40% this month',
+        title: '8 items are predicted to stock out within 7 days',
+        sub: 'Canvas Low Top isn’t flagged by reorder point yet — demand is up 40% this month. The other 7 are already at zero on hand.',
         href: 'index.html?filter=predictedStockout', linkLabel: 'View inventory →',
-        resolveType: 'covered', coverItems: ['Canvas Low Top', 'Card Holder', 'Cargo Pant'] },
+        resolveType: 'covered', coverItems: ['Canvas Low Top', 'Card Holder', 'Cargo Pant', 'Puffer Vest', 'Ankle Boot', 'Wide-Leg Jean', 'Leather Tote', 'Throw Pillow'] },
       { id: 'inv-overstock', module: 'Inventory', dot: '#e5c022',
         title: 'Ceramic Vase is overstocked at 100% cover — ₹5.2L tied up',
         sub: 'No sales velocity increase forecast this quarter',

@@ -17,7 +17,22 @@ var STOCKHOUSE_KB = {
     { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', plant: 'Plant C · Chennai', onHand: 444, reorder: 108, status: 'overstock', cover: '4.1x', coverPct: 100, dailyDemand: 6, cost: 680 },
     { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 566, reorder: 198, status: 'healthy', cover: '2.9x', coverPct: 66, dailyDemand: 24, cost: 1180 },
     { id: 9, name: 'Denim Jacket', sku: 'TOP-1103', vendor: 'Verado Mills', category: 'Tops', plant: 'Plant B · Pune', onHand: 180, reorder: 90, status: 'healthy', cover: '2.0x', coverPct: 40, dailyDemand: 12, cost: 1850 },
-    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, status: 'healthy', cover: '1.8x', coverPct: 36, dailyDemand: 8, cost: 540 }
+    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 140, reorder: 80, status: 'healthy', cover: '1.8x', coverPct: 36, dailyDemand: 8, cost: 540 },
+    { id: 11, name: 'Wool Beanie', sku: 'ACC-1327', vendor: 'Northline Textile', category: 'Accessories', plant: 'Plant D · Bhiwandi', onHand: 150, reorder: 210, status: 'belowReorder', cover: '0.7x', coverPct: 14, dailyDemand: 8, cost: 340 },
+    { id: 12, name: 'Linen Shirt', sku: 'TOP-1140', vendor: 'Hanover Works', category: 'Tops', plant: 'Plant A · Gurgaon', onHand: 210, reorder: 260, status: 'belowReorder', cover: '0.8x', coverPct: 16, dailyDemand: 14, cost: 1420 },
+    { id: 13, name: 'Suede Loafer', sku: 'FTW-1228', vendor: 'Verado Mills', category: 'Footwear', plant: 'Plant B · Pune', onHand: 95, reorder: 140, status: 'belowReorder', cover: '0.7x', coverPct: 14, dailyDemand: 5, cost: 2680 },
+    { id: 14, name: 'Corduroy Trouser', sku: 'BTM-1148', vendor: 'Kestrel Supply Co.', category: 'Bottoms', plant: 'Plant C · Chennai', onHand: 175, reorder: 230, status: 'belowReorder', cover: '0.8x', coverPct: 15, dailyDemand: 10, cost: 1560 },
+    { id: 15, name: 'Table Runner', sku: 'HOM-1375', vendor: 'Pergola Goods', category: 'Home', plant: 'Plant A · Gurgaon', onHand: 120, reorder: 160, status: 'belowReorder', cover: '0.8x', coverPct: 15, dailyDemand: 6, cost: 890 },
+    { id: 16, name: 'Puffer Vest', sku: 'TOP-1152', vendor: 'Verado Mills', category: 'Tops', plant: 'Plant B · Pune', onHand: 0, reorder: 140, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 11, cost: 2450 },
+    { id: 17, name: 'Ankle Boot', sku: 'FTW-1241', vendor: 'Kestrel Supply Co.', category: 'Footwear', plant: 'Plant D · Bhiwandi', onHand: 0, reorder: 95, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 7, cost: 3120 },
+    { id: 18, name: 'Wide-Leg Jean', sku: 'BTM-1155', vendor: 'Hanover Works', category: 'Bottoms', plant: 'Plant A · Gurgaon', onHand: 0, reorder: 180, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 18, cost: 1680 },
+    { id: 19, name: 'Leather Tote', sku: 'ACC-1334', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 0, reorder: 85, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 6, cost: 3450 },
+    { id: 20, name: 'Throw Pillow', sku: 'HOM-1382', vendor: 'Pergola Goods', category: 'Home', plant: 'Plant B · Pune', onHand: 0, reorder: 110, status: 'stockout', cover: '0x', coverPct: 4, dailyDemand: 9, cost: 560 },
+    { id: 21, name: 'Fleece Hoodie', sku: 'TOP-1167', vendor: 'Hanover Works', category: 'Tops', plant: 'Plant A · Gurgaon', onHand: 520, reorder: 140, status: 'overstock', cover: '3.7x', coverPct: 100, dailyDemand: 7, cost: 1780 },
+    { id: 22, name: 'Suede Sneaker', sku: 'FTW-1254', vendor: 'Verado Mills', category: 'Footwear', plant: 'Plant B · Pune', onHand: 610, reorder: 160, status: 'overstock', cover: '3.8x', coverPct: 100, dailyDemand: 9, cost: 2340 },
+    { id: 23, name: 'Straw Tote', sku: 'ACC-1341', vendor: 'Pergola Goods', category: 'Accessories', plant: 'Plant A · Gurgaon', onHand: 480, reorder: 130, status: 'overstock', cover: '3.7x', coverPct: 100, dailyDemand: 6, cost: 760 },
+    { id: 24, name: 'Wide Belt', sku: 'ACC-1348', vendor: 'Meridian Leather Works', category: 'Accessories', plant: 'Plant C · Chennai', onHand: 390, reorder: 100, status: 'overstock', cover: '3.9x', coverPct: 100, dailyDemand: 5, cost: 580 },
+    { id: 25, name: 'Ceramic Planter', sku: 'HOM-1389', vendor: 'Verado Mills', category: 'Home', plant: 'Plant D · Bhiwandi', onHand: 560, reorder: 145, status: 'overstock', cover: '3.9x', coverPct: 100, dailyDemand: 8, cost: 720 }
   ],
 
   warehouses: [
