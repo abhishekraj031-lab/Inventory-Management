@@ -637,10 +637,42 @@
       if (!byVendor[it.vendor]) byVendor[it.vendor] = { vendor: it.vendor, hasStockout: false, lines: [] };
       if (it.status === 'stockout') byVendor[it.vendor].hasStockout = true;
       var qty = Math.max((it.reorder * 2) - it.onHand, it.reorder, 1);
-      byVendor[it.vendor].lines.push({ item: it.name, qty: qty });
+      byVendor[it.vendor].lines.push({ item: it.name, qty: qty, vendor: it.vendor });
     });
-    var groups = Object.keys(byVendor).map(function (k) { return byVendor[k]; });
-    groups.sort(function (a, b) { return (b.hasStockout ? 1 : 0) - (a.hasStockout ? 1 : 0); });
+    var vendorGroups = Object.keys(byVendor).map(function (k) { return byVendor[k]; });
+    vendorGroups.sort(function (a, b) {
+      var stockoutDiff = (b.hasStockout ? 1 : 0) - (a.hasStockout ? 1 : 0);
+      if (stockoutDiff !== 0) return stockoutDiff;
+      return b.lines.length - a.lines.length;
+    });
+
+    // Cap the number of POs produced: keep the biggest vendor groups as their
+    // own (vendor-pure) POs, and fold any remaining smaller vendor groups
+    // together into one consolidated multi-vendor PO, rather than spinning
+    // up a separate near-empty PO per vendor.
+    var MAX_POS = 3;
+    var groups;
+    if (vendorGroups.length <= MAX_POS) {
+      groups = vendorGroups;
+    } else {
+      var kept = vendorGroups.slice(0, MAX_POS - 1);
+      var leftover = vendorGroups.slice(MAX_POS - 1);
+      var mergedLines = [];
+      var mergedVendors = [];
+      var mergedHasStockout = false;
+      leftover.forEach(function (g) {
+        if (g.hasStockout) mergedHasStockout = true;
+        mergedVendors.push(g.vendor);
+        g.lines.forEach(function (l) { mergedLines.push(l); });
+      });
+      groups = kept.concat([{
+        vendor: 'Multiple Vendors',
+        vendors: mergedVendors,
+        hasStockout: mergedHasStockout,
+        lines: mergedLines
+      }]);
+    }
+
     try { localStorage.setItem('stockhouseRecSelection', JSON.stringify({ groups: groups, aiDrafted: false })); } catch (e) {}
     window.location.href = 'create-po.html';
   });

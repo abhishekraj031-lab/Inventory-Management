@@ -83,6 +83,8 @@
   .li-row:last-child { border-bottom: 0; }
   .li-row select, .li-row input { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 8px; padding: 8px 10px; background: #ffffff; outline: 0; width: 100%; }
   .li-row .li-uom { font-size: 13px; font-weight: 600; color: #8da4be; text-align: center; }
+  .li-item-wrap { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .li-vendor-tag { font-size: 10.5px; font-weight: 600; color: #8da4be; padding-left: 2px; }
   .li-row select:focus, .li-row input:focus { border-color: #1960bd; }
   .li-amount { font-size: 13px; font-weight: 700; text-align: right; padding-right: 4px; }
   .li-remove { width: 28px; height: 28px; border-radius: 8px; border: 0; background: transparent; color: #b2c1d7; display: flex; align-items: center; justify-content: center; }
@@ -314,7 +316,7 @@
   var shipmentOptions = ['Standard Ground', 'Express Air', 'Sea Freight', 'Vendor Pickup'];
   var vendorNames = ['Hanover Works', 'Verado Mills', 'Pergola Goods', 'Kestrel Supply Co.', 'Northline Textile', 'Solano Freight & Textiles', 'Ridgeview Apparel Co.', 'Meridian Leather Works', 'Bellweather Textiles', 'Coral Bay Footwear'];
 
-  var poState = { addr: 'organization', lineItems: [], nextLiId: 1, aiDrafted: false, aiReviewed: false };
+  var poState = { addr: 'organization', lineItems: [], nextLiId: 1, aiDrafted: false, aiReviewed: false, mixedVendors: false };
   var pendingRecGroups = [];
   var recGroupsAiDrafted = false;
 
@@ -379,7 +381,7 @@
     var match = itemCatalog.filter(function (it) { return it.name === itemName; })[0] || itemCatalog[0];
     var rate = prefill.rate != null && !isNaN(prefill.rate) ? prefill.rate : match.rate;
     var qty = prefill.qty != null && !isNaN(prefill.qty) ? prefill.qty : 1;
-    return { id: id, item: itemName, account: prefill.account || accountOptions[0], qty: qty, rate: rate };
+    return { id: id, item: itemName, account: prefill.account || accountOptions[0], qty: qty, rate: rate, vendor: prefill.vendor || null };
   }
 
   function liAmount(li) { return (parseFloat(li.qty) || 0) * (parseFloat(li.rate) || 0); }
@@ -414,9 +416,13 @@
       var removeDisabled = poState.lineItems.length <= 1;
       var liMatch = itemCatalog.filter(function (it) { return it.name === li.item; })[0];
       var liUom = liMatch ? liMatch.uom : '—';
+      var vendorTagHtml = (poState.mixedVendors && li.vendor) ? '<span class="li-vendor-tag">' + esc(li.vendor) + '</span>' : '';
       return '' +
         '<div class="li-row">' +
-          '<select data-li-field="item" data-li-id="' + li.id + '">' + itemOpts + '</select>' +
+          '<div class="li-item-wrap">' +
+            '<select data-li-field="item" data-li-id="' + li.id + '">' + itemOpts + '</select>' +
+            vendorTagHtml +
+          '</div>' +
           '<span class="li-uom">' + esc(liUom) + '</span>' +
           '<select data-li-field="account" data-li-id="' + li.id + '">' + acctOpts + '</select>' +
           '<input type="number" min="0" value="' + li.qty + '" data-li-field="qty" data-li-id="' + li.id + '">' +
@@ -438,7 +444,10 @@
 
   function loadForm(prefill) {
     prefill = prefill || {};
-    fillSelect(document.getElementById('poVendor'), vendorNames, prefill.vendor || vendorNames[0]);
+    poState.mixedVendors = prefill.vendor === 'Multiple Vendors';
+    var vendorOptions = vendorNames.slice();
+    if (poState.mixedVendors) vendorOptions.unshift('Multiple Vendors');
+    fillSelect(document.getElementById('poVendor'), vendorOptions, prefill.vendor || vendorNames[0]);
     document.getElementById('poNumber').value = 'PO-' + nextPoNumber;
     poState.addr = 'organization';
     document.getElementById('poReference').value = '';
@@ -494,12 +503,16 @@
   }
 
   function loadRecGroup(group) {
+    var baseNote = recGroupsAiDrafted
+      ? 'Drafted by Stockhouse AI from low-stock signals. Review quantities and vendor before sending.'
+      : 'Auto-recommended: predicted stockout / below reorder point / rising demand, per 30-day demand forecast.';
+    var note = (group.vendor === 'Multiple Vendors' && group.vendors && group.vendors.length)
+      ? baseNote + ' Items below span ' + group.vendors.length + ' vendors (' + group.vendors.join(', ') + ') consolidated into this one PO.'
+      : baseNote;
     loadForm({
       vendor: group.vendor,
       lines: group.lines,
-      notes: recGroupsAiDrafted
-        ? 'Drafted by Stockhouse AI from low-stock signals. Review quantities and vendor before sending.'
-        : 'Auto-recommended: predicted stockout / below reorder point / rising demand, per 30-day demand forecast.',
+      notes: note,
       fromRecommendations: true,
       aiDrafted: recGroupsAiDrafted
     });
@@ -604,7 +617,7 @@
     bumpNextPoNumber(nextPoNumber);
     nextPoNumber++;
     var lines = poState.lineItems.filter(function (li) { return li.item; }).map(function (li) {
-      return { item: li.item, qty: parseFloat(li.qty) || 0, rate: parseFloat(li.rate) || 0 };
+      return { item: li.item, qty: parseFloat(li.qty) || 0, rate: parseFloat(li.rate) || 0, vendor: li.vendor || null };
     });
     return {
       id: Date.now(),
