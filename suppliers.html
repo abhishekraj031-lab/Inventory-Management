@@ -127,6 +127,43 @@
 
   .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
   .toast { display: flex; align-items: center; gap: 8px; background: #191915; color: #ffffff; font-size: 13px; font-weight: 600; padding: 12px 18px; border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); white-space: nowrap; }
+
+  /* ---- Add Supplier drawer ---- */
+  .sup-drawer-backdrop { display: none; position: fixed; inset: 0; background: rgba(21,27,35,0.42); z-index: 85; }
+  .sup-drawer { display: none; flex-direction: column; position: fixed; top: 0; right: 0; bottom: 0; width: 640px; max-width: 94vw; background: #ffffff; box-shadow: -8px 0 32px rgba(21,27,35,0.14); z-index: 86; }
+  .sup-drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 22px 26px; border-bottom: 1px solid #eef1f5; flex-shrink: 0; }
+  .sup-drawer-title { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.2px; }
+  .sup-drawer-sub { margin: 4px 0 0; font-size: 13px; font-weight: 500; color: #6e8aab; }
+  .sup-drawer-close { flex-shrink: 0; width: 32px; height: 32px; border-radius: 9px; border: 0; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; }
+  .sup-drawer-close:hover { background: #f4f7fa; color: #384352; }
+  .sup-drawer-body { flex: 1; overflow-y: auto; padding: 22px 26px 28px; display: flex; flex-direction: column; gap: 18px; }
+  .sup-drawer-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 16px 26px; border-top: 1px solid #eef1f5; flex-shrink: 0; }
+
+  .sup-field { display: flex; flex-direction: column; gap: 6px; }
+  .sup-field label { font-size: 12px; font-weight: 700; color: #384352; }
+  .sup-field .hint { font-size: 11px; font-weight: 500; color: #8da4be; }
+  .sup-field input, .sup-field select { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; width: 100%; }
+  .sup-field input:focus, .sup-field select:focus { border-color: #1960bd; }
+  .sup-field-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .sup-field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .phone-field { display: flex; gap: 8px; }
+  .phone-field select { width: 84px; flex-shrink: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 8px; background: #ffffff; outline: 0; }
+  .phone-field input { flex: 1; min-width: 0; font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; }
+
+  .sup-section-label { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; margin: 0; }
+
+  .checkbox-row { display: flex; align-items: center; gap: 9px; }
+  .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: #1960bd; flex-shrink: 0; }
+  .checkbox-row label { font-size: 13px; font-weight: 600; color: #384352; }
+
+  .sup-tabs { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid #eef1f5; }
+  .sup-tab { padding: 9px 12px; border: 0; background: transparent; font-size: 12.5px; font-weight: 700; color: #8da4be; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .sup-tab.active { color: #1960bd; border-bottom-color: #1960bd; }
+  .sup-tab-panel { display: none; flex-direction: column; gap: 16px; padding-top: 4px; }
+  .sup-tab-panel.active { display: flex; }
+  .sup-tab-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 36px 20px; border-radius: 12px; background: #fafbfd; border: 1px dashed #e5eaf1; text-align: center; }
+  .sup-tab-placeholder .t { font-size: 13px; font-weight: 700; color: #576a84; }
+  .sup-tab-placeholder .s { font-size: 12px; font-weight: 500; color: #8da4be; }
 </style>
 </head>
 <body>
@@ -161,7 +198,7 @@
     <div class="page-head">
       <div><h1>Suppliers</h1><p>Manage vendor relationships and track delivery performance.</p></div>
       <div class="head-actions">
-        <button class="btn primary" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Supplier</button>
+        <button class="btn primary" id="openAddSupplierBtn" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add Supplier</button>
       </div>
     </div>
 
@@ -225,6 +262,76 @@
   </main>
 </div>
 
+<div class="sup-drawer-backdrop" id="addSupplierBackdrop"></div>
+<div class="sup-drawer" id="addSupplierDrawer">
+  <div class="sup-drawer-head">
+    <div><h2 class="sup-drawer-title">Add Supplier</h2><p class="sup-drawer-sub">Add a new vendor to your supplier list.</p></div>
+    <button class="sup-drawer-close" id="closeAddSupplier" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sup-drawer-body">
+    <p class="sup-section-label">Primary Contact</p>
+    <div class="sup-field-row-3">
+      <div class="sup-field"><label>Salutation</label><select id="supSalutation"></select></div>
+      <div class="sup-field"><label>First Name</label><input id="supFirstName" type="text" placeholder="e.g. Ananya"></div>
+      <div class="sup-field"><label>Last Name</label><input id="supLastName" type="text" placeholder="e.g. Bose"></div>
+    </div>
+
+    <div class="sup-field"><label>Company Name</label><input id="supCompanyName" type="text" placeholder="e.g. Hanover Works"></div>
+
+    <div class="sup-field">
+      <label>Display Name *</label>
+      <input id="supDisplayName" type="text" placeholder="How this vendor appears across Stockhouse">
+      <span class="hint">Auto-filled from the company or contact name — edit it any time.</span>
+    </div>
+
+    <div class="sup-field"><label>Email Address</label><input id="supEmail" type="email" placeholder="e.g. accounts@hanoverworks.com"></div>
+
+    <div class="sup-field-row-2">
+      <div class="sup-field"><label>Work Phone</label>
+        <div class="phone-field"><select id="supWorkPhoneCode"></select><input id="supWorkPhone" type="text" placeholder="Phone number"></div>
+      </div>
+      <div class="sup-field"><label>Mobile</label>
+        <div class="phone-field"><select id="supMobilePhoneCode"></select><input id="supMobilePhone" type="text" placeholder="Phone number"></div>
+      </div>
+    </div>
+
+    <div class="sup-field"><label>Vendor Language</label><select id="supLanguage"></select></div>
+
+    <div class="sup-tabs" id="supTabs"></div>
+
+    <div class="sup-tab-panel active" data-tab-panel="other">
+      <div class="sup-field"><label>PAN</label><input id="supPan" type="text" placeholder="e.g. AAACH1234K"></div>
+      <div class="checkbox-row"><input id="supMsme" type="checkbox"><label for="supMsme">This vendor is MSME registered</label></div>
+      <div class="sup-field-row-2">
+        <div class="sup-field"><label>Currency</label><select id="supCurrency"></select></div>
+        <div class="sup-field"><label>Payment Terms</label><select id="supPaymentTerms"></select></div>
+      </div>
+    </div>
+    <div class="sup-tab-panel" data-tab-panel="address">
+      <div class="sup-tab-placeholder"><span class="t">Address details aren't available in this demo</span><span class="s">Billing and shipping addresses would be captured here.</span></div>
+    </div>
+    <div class="sup-tab-panel" data-tab-panel="contacts">
+      <div class="sup-tab-placeholder"><span class="t">Additional contact persons aren't available in this demo</span><span class="s">You'd be able to add more people at this vendor here.</span></div>
+    </div>
+    <div class="sup-tab-panel" data-tab-panel="bank">
+      <div class="sup-tab-placeholder"><span class="t">Bank details aren't available in this demo</span><span class="s">Account and IFSC details for payouts would live here.</span></div>
+    </div>
+    <div class="sup-tab-panel" data-tab-panel="custom">
+      <div class="sup-tab-placeholder"><span class="t">Custom fields aren't available in this demo</span><span class="s">Your org's custom vendor fields would appear here.</span></div>
+    </div>
+    <div class="sup-tab-panel" data-tab-panel="tags">
+      <div class="sup-tab-placeholder"><span class="t">Reporting tags aren't available in this demo</span><span class="s">Tag this vendor for custom reporting here.</span></div>
+    </div>
+    <div class="sup-tab-panel" data-tab-panel="remarks">
+      <div class="sup-tab-placeholder"><span class="t">Remarks aren't available in this demo</span><span class="s">Internal notes about this vendor would go here.</span></div>
+    </div>
+  </div>
+  <div class="sup-drawer-foot">
+    <button class="btn" id="cancelAddSupplier" type="button">Cancel</button>
+    <button class="btn primary" id="submitAddSupplier" type="button">Save</button>
+  </div>
+</div>
+
 <div class="toast-wrap" id="supplierToastWrap">
   <div class="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="supplierToastText"></span></div>
 </div>
@@ -255,6 +362,20 @@
     suppliers.forEach(function (s) {
       if (overrides[s.id]) s.status = overrides[s.id];
     });
+  })();
+
+  // Pick up any suppliers created via the Add Supplier drawer so they survive a reload,
+  // mirroring the stockhouseNewPos / stockhouseNewSos creation-queue pattern used elsewhere.
+  (function mergeQueuedSuppliers() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhouseNewSuppliers'); } catch (e) {}
+    if (!raw) return;
+    var queue;
+    try { queue = JSON.parse(raw); } catch (e) { return; }
+    if (!queue || !queue.length) return;
+    var existingIds = {};
+    suppliers.forEach(function (s) { existingIds[s.id] = true; });
+    queue.forEach(function (s) { if (!existingIds[s.id]) suppliers.unshift(s); });
   })();
 
   var statusMeta = {
@@ -422,6 +543,155 @@
     document.getElementById('supplierToastWrap').style.display = 'block';
     setTimeout(function () { document.getElementById('supplierToastWrap').style.display = 'none'; }, 2600);
   }
+
+  // ---- Add Supplier drawer ----
+  var salutationOptions = ['—', 'Mr.', 'Mrs.', 'Ms.', 'Dr.'];
+  var countryCodeOptions = ['+91', '+1', '+44', '+971', '+65'];
+  var vendorLanguageOptions = ['English', 'Hindi', 'Tamil', 'Bengali', 'Marathi'];
+  var currencyOptions = ['INR - Indian Rupee', 'USD - US Dollar', 'EUR - Euro', 'GBP - British Pound'];
+  var supplierPaymentTermsOptions = ['Due on Receipt', 'Net 15', 'Net 30', 'Net 45', 'Net 60'];
+  var supplierTabs = [
+    { key: 'other', label: 'Other Details' },
+    { key: 'address', label: 'Address' },
+    { key: 'contacts', label: 'Contact Persons' },
+    { key: 'bank', label: 'Bank Details' },
+    { key: 'custom', label: 'Custom Fields' },
+    { key: 'tags', label: 'Reporting Tags' },
+    { key: 'remarks', label: 'Remarks' }
+  ];
+  var supDrawerState = { activeTab: 'other', displayNameTouched: false };
+
+  function supFillSelect(sel, options, selectedVal) {
+    sel.innerHTML = options.map(function (o) {
+      return '<option value="' + esc(o) + '"' + (o === selectedVal ? ' selected' : '') + '>' + esc(o) + '</option>';
+    }).join('');
+  }
+
+  function renderSupplierTabs() {
+    document.getElementById('supTabs').innerHTML = supplierTabs.map(function (t) {
+      return '<button type="button" class="sup-tab' + (supDrawerState.activeTab === t.key ? ' active' : '') + '" data-tab="' + t.key + '">' + t.label + '</button>';
+    }).join('');
+    document.querySelectorAll('.sup-tab-panel').forEach(function (panel) {
+      panel.classList.toggle('active', panel.getAttribute('data-tab-panel') === supDrawerState.activeTab);
+    });
+  }
+
+  function suggestDisplayName() {
+    if (supDrawerState.displayNameTouched) return;
+    var company = document.getElementById('supCompanyName').value.trim();
+    var first = document.getElementById('supFirstName').value.trim();
+    var last = document.getElementById('supLastName').value.trim();
+    var full = (first + ' ' + last).trim();
+    document.getElementById('supDisplayName').value = company || full || '';
+    checkSupplierFormValid();
+  }
+
+  function checkSupplierFormValid() {
+    var valid = document.getElementById('supDisplayName').value.trim().length > 0;
+    document.getElementById('submitAddSupplier').disabled = !valid;
+  }
+
+  function resetAddSupplierForm() {
+    supFillSelect(document.getElementById('supSalutation'), salutationOptions, salutationOptions[0]);
+    document.getElementById('supFirstName').value = '';
+    document.getElementById('supLastName').value = '';
+    document.getElementById('supCompanyName').value = '';
+    document.getElementById('supDisplayName').value = '';
+    document.getElementById('supEmail').value = '';
+    supFillSelect(document.getElementById('supWorkPhoneCode'), countryCodeOptions, '+91');
+    document.getElementById('supWorkPhone').value = '';
+    supFillSelect(document.getElementById('supMobilePhoneCode'), countryCodeOptions, '+91');
+    document.getElementById('supMobilePhone').value = '';
+    supFillSelect(document.getElementById('supLanguage'), vendorLanguageOptions, 'English');
+    document.getElementById('supPan').value = '';
+    document.getElementById('supMsme').checked = false;
+    supFillSelect(document.getElementById('supCurrency'), currencyOptions, 'INR - Indian Rupee');
+    supFillSelect(document.getElementById('supPaymentTerms'), supplierPaymentTermsOptions, 'Due on Receipt');
+    supDrawerState.activeTab = 'other';
+    supDrawerState.displayNameTouched = false;
+    renderSupplierTabs();
+    checkSupplierFormValid();
+  }
+
+  function openAddSupplierDrawer() {
+    resetAddSupplierForm();
+    document.getElementById('addSupplierBackdrop').style.display = 'block';
+    document.getElementById('addSupplierDrawer').style.display = 'flex';
+  }
+  function closeAddSupplierDrawer() {
+    document.getElementById('addSupplierBackdrop').style.display = 'none';
+    document.getElementById('addSupplierDrawer').style.display = 'none';
+  }
+
+  function queueNewSupplier(supplier) {
+    var queue = [];
+    try { queue = JSON.parse(localStorage.getItem('stockhouseNewSuppliers') || '[]'); } catch (e) { queue = []; }
+    queue.push(supplier);
+    try { localStorage.setItem('stockhouseNewSuppliers', JSON.stringify(queue)); } catch (e) {}
+  }
+
+  document.getElementById('openAddSupplierBtn').addEventListener('click', openAddSupplierDrawer);
+  document.getElementById('closeAddSupplier').addEventListener('click', closeAddSupplierDrawer);
+  document.getElementById('cancelAddSupplier').addEventListener('click', closeAddSupplierDrawer);
+  document.getElementById('addSupplierBackdrop').addEventListener('click', closeAddSupplierDrawer);
+
+  document.getElementById('supTabs').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-tab]');
+    if (!btn) return;
+    supDrawerState.activeTab = btn.getAttribute('data-tab');
+    renderSupplierTabs();
+  });
+
+  document.getElementById('supCompanyName').addEventListener('input', suggestDisplayName);
+  document.getElementById('supFirstName').addEventListener('input', suggestDisplayName);
+  document.getElementById('supLastName').addEventListener('input', suggestDisplayName);
+  document.getElementById('supDisplayName').addEventListener('input', function () {
+    supDrawerState.displayNameTouched = true;
+    checkSupplierFormValid();
+  });
+
+  document.getElementById('submitAddSupplier').addEventListener('click', function () {
+    var displayName = document.getElementById('supDisplayName').value.trim();
+    if (!displayName) { checkSupplierFormValid(); return; }
+    var firstName = document.getElementById('supFirstName').value.trim();
+    var lastName = document.getElementById('supLastName').value.trim();
+    var contactName = (firstName + ' ' + lastName).trim();
+    var workPhone = document.getElementById('supWorkPhone').value.trim();
+    var mobilePhone = document.getElementById('supMobilePhone').value.trim();
+
+    var newSupplier = {
+      id: Date.now(),
+      name: displayName,
+      category: 'General',
+      contact: contactName || '—',
+      openPOs: 0,
+      ratePct: 100,
+      status: 'active',
+      lateDelivery: false,
+      priceVariancePct: 0,
+      fulfillmentAccuracyPct: 100,
+      complianceStatus: 'current',
+      volumeTrend: 'stable',
+      salutation: document.getElementById('supSalutation').value,
+      firstName: firstName || null,
+      lastName: lastName || null,
+      companyName: document.getElementById('supCompanyName').value.trim() || null,
+      email: document.getElementById('supEmail').value.trim() || null,
+      workPhone: workPhone ? (document.getElementById('supWorkPhoneCode').value + ' ' + workPhone) : null,
+      mobilePhone: mobilePhone ? (document.getElementById('supMobilePhoneCode').value + ' ' + mobilePhone) : null,
+      vendorLanguage: document.getElementById('supLanguage').value,
+      pan: document.getElementById('supPan').value.trim() || null,
+      msme: document.getElementById('supMsme').checked,
+      currency: document.getElementById('supCurrency').value,
+      paymentTerms: document.getElementById('supPaymentTerms').value
+    };
+
+    suppliers.unshift(newSupplier);
+    queueNewSupplier(newSupplier);
+    closeAddSupplierDrawer();
+    render();
+    showToast(displayName + ' added');
+  });
 
   function setSupplierStatus(supplier, status) {
     supplier.status = status;

@@ -149,6 +149,10 @@
             <div class="info-field"><span class="lbl">Open POs</span><span class="val" id="infoOpenPos">—</span></div>
             <div class="info-field"><span class="lbl">Compliance docs</span><span class="val" id="infoCompliance">—</span></div>
             <div class="info-field"><span class="lbl">Status</span><span class="val" id="infoStatus">—</span></div>
+            <div class="info-field"><span class="lbl">Email</span><span class="val" id="infoEmail">—</span></div>
+            <div class="info-field"><span class="lbl">Phone</span><span class="val" id="infoPhone">—</span></div>
+            <div class="info-field"><span class="lbl">PAN</span><span class="val" id="infoPan">—</span></div>
+            <div class="info-field"><span class="lbl">Payment terms</span><span class="val" id="infoPaymentTerms">—</span></div>
           </div>
         </div>
 
@@ -176,6 +180,20 @@
     { id: 9, name: 'Bellweather Textiles', category: 'Raw Materials', contact: 'Priyanka Shah', openPOs: 1, ratePct: 94, status: 'active', priceVariancePct: 3, fulfillmentAccuracyPct: 96, complianceStatus: 'current', volumeTrend: 'stable' },
     { id: 10, name: 'Coral Bay Footwear', category: 'Footwear', contact: 'Neel Bhatt', openPOs: 2, ratePct: 82, status: 'active', priceVariancePct: 11, fulfillmentAccuracyPct: 88, complianceStatus: 'expiring', volumeTrend: 'down' }
   ];
+
+  // Pick up any suppliers created via the Add Supplier drawer on suppliers.html so a newly
+  // added supplier resolves to its real data here too, instead of falling back to suppliers[0].
+  (function mergeQueuedSuppliers() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhouseNewSuppliers'); } catch (e) {}
+    if (!raw) return;
+    var queue;
+    try { queue = JSON.parse(raw); } catch (e) { return; }
+    if (!queue || !queue.length) return;
+    var existingIds = {};
+    suppliers.forEach(function (s) { existingIds[s.id] = true; });
+    queue.forEach(function (s) { if (!existingIds[s.id]) suppliers.unshift(s); });
+  })();
 
   var pos = [
     { poId: 'PO-3081', vendor: 'Hanover Works', value: '₹4,82,000', status: 'received', orderDate: 'Aug 20, 2026' },
@@ -292,6 +310,10 @@
   document.getElementById('infoOpenPos').textContent = sup.openPOs;
   document.getElementById('infoCompliance').textContent = sup.complianceStatus === 'current' ? 'Up to date' : (sup.complianceStatus === 'expiring' ? 'Renewal due soon' : 'Action required');
   document.getElementById('infoStatus').textContent = sMeta.label + (sup.lateDelivery ? ' · deliveries running late this week' : '');
+  document.getElementById('infoEmail').textContent = sup.email || '—';
+  document.getElementById('infoPhone').textContent = sup.workPhone || sup.mobilePhone || '—';
+  document.getElementById('infoPan').textContent = sup.pan || '—';
+  document.getElementById('infoPaymentTerms').textContent = sup.paymentTerms || '—';
 
   var hs = healthScore(sup);
   var circle = document.getElementById('healthScoreCircle');
