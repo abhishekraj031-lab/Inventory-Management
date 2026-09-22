@@ -84,6 +84,8 @@
   .row { display: grid; grid-template-columns: 40px 1.7fr 1.5fr 0.8fr 1fr 1.1fr 1.1fr 52px; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
   .row.head { background: #fafbfd; border-radius: 14px 14px 0 0; }
   .row.head span { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
+  .row:not(.head) { cursor: pointer; }
+  .row:not(.head):hover { background: #f7f9fc; }
   .cb { width: 18px; height: 18px; border-radius: 6px; border: 1.6px solid #b2c1d7; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; }
   .cb.checked { border-color: #1960bd; background: #1960bd; }
   .cb svg { opacity: 0; }
@@ -352,7 +354,7 @@
         var isChecked = !!state.checked[it.id];
         var menuOpen = state.openMenuId === it.id;
         return '' +
-          '<div class="row">' +
+          '<div class="row" data-poid="' + encodeURIComponent(it.poId) + '">' +
             '<button class="cb' + (isChecked ? ' checked' : '') + '" type="button" data-action="check" data-key="' + it.id + '"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
             '<div class="item-cell"><span class="nm">' + esc(it.poId) + '</span><span class="meta">' + (it.lineCount || 1) + ' product' + ((it.lineCount || 1) === 1 ? '' : 's') + ' \u00b7 ' + it.itemsCount + ' units</span></div>' +
             '<span class="vendor">' + esc(it.vendor) + '</span>' +
@@ -411,6 +413,11 @@
     }
     if (e.target.id === 'backdrop') {
       state.rowsOpen = false; state.openMenuId = null; render(); return;
+    }
+    var clickedRow = e.target.closest('.row:not(.head)');
+    if (clickedRow && clickedRow.dataset.poid && !e.target.closest('a')) {
+      window.location.href = 'po-detail.html?po=' + clickedRow.dataset.poid;
+      return;
     }
   });
 

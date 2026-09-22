@@ -97,6 +97,8 @@
   .row.head { background: #fafbfd; border-radius: 14px 14px 0 0; }
   .row.head span { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
   .row.critical { background: #fffbfb; }
+  .row:not(.head) { cursor: pointer; }
+  .row:not(.head):hover { background: #f7f9fc; }
   .cb { width: 18px; height: 18px; border-radius: 6px; border: 1.6px solid #b2c1d7; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; }
   .cb.checked { border-color: #1960bd; background: #1960bd; }
   .cb svg { opacity: 0; }
@@ -399,7 +401,7 @@
           ? '<button class="cb' + (isChecked ? ' checked' : '') + '" type="button" data-action="check" data-key="' + it.id + '"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
           : '<span></span>';
         return '' +
-          '<div class="row' + (it.tier === 'critical' ? ' critical' : '') + '">' +
+          '<div class="row' + (it.tier === 'critical' ? ' critical' : '') + '" data-itemid="' + it.id + '">' +
             cbHtml +
             '<div class="item-cell"><a class="nm" href="item-detail.html?id=' + it.id + '" style="color:#151b23;">' + esc(it.name) + '</a><span class="meta">' + esc(it.sku) + ' · ' + esc(it.vendor) + '</span>' + riskHtml + '</div>' +
             '<span class="cat-pill">' + esc(it.category) + '</span>' +
@@ -449,6 +451,11 @@
     }
     if (e.target.id === 'backdrop') {
       state.categoryOpen = false; state.rowsOpen = false; render(); return;
+    }
+    var clickedRow = e.target.closest('.row:not(.head)');
+    if (clickedRow && clickedRow.dataset.itemid && !e.target.closest('a')) {
+      window.location.href = 'item-detail.html?id=' + clickedRow.dataset.itemid;
+      return;
     }
   });
 
