@@ -908,6 +908,12 @@
     closeMoveStockModal();
     showFlowToast(tid + ' created \u2014 view it on the Transfers page');
   });
+
+  // ---- Deep link support: ?action=adjust opens the Adjust Stock modal immediately
+  //      (used by the Inventory Health page's "Adjust stock" row action) ----
+  if (reqParams.get('action') === 'adjust') {
+    openAdjustStockModal();
+  }
 })();
 </script>
 </body>

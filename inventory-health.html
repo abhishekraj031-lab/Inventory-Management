@@ -427,7 +427,7 @@
       else if (action === 'rows') { if (el.closest('#rowsMenu')) { state.rowsPerPage = parseInt(key, 10); state.rowsOpen = false; state.activePage = 1; } }
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
       else if (action === 'createPo') { createPoForItem(parseInt(key, 10)); return; }
-      else if (action === 'adjust') { window.location.href = 'item-detail.html?id=' + key; return; }
+      else if (action === 'adjust') { window.location.href = 'item-detail.html?id=' + key + '&action=adjust'; return; }
       else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }
       render();
       return;
