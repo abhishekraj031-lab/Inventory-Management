@@ -71,6 +71,13 @@
   .kpi-label { font-size: 12px; font-weight: 600; color: #6e8aab; }
 
   .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .bulk-action-bar { display: none; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 10px; background: #151b23; }
+  .bulk-action-bar .bulk-count { font-size: 13px; font-weight: 700; color: #ffffff; margin-right: auto; }
+  .bulk-action-bar .bulk-actions { display: flex; align-items: center; gap: 10px; }
+  .bulk-action-bar .btn { padding: 8px 14px; font-size: 13px; }
+  .bulk-action-bar .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .bulk-action-bar .bulk-clear { font-size: 12px; font-weight: 700; color: #b2c1d7; background: transparent; border: 0; padding: 6px; cursor: pointer; }
+  .bulk-action-bar .bulk-clear:hover { color: #ffffff; }
   .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chip { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
   .chip .n { opacity: 0.85; font-weight: 600; }
@@ -86,10 +93,14 @@
   .dd-menu .opt.active { background: #e8f0fc; color: #1960bd; }
 
   .table-card { position: relative; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); overflow: visible; }
-  .row { display: grid; grid-template-columns: 2.3fr 1fr 0.85fr 1fr 1fr 1.2fr; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
+  .row { display: grid; grid-template-columns: 40px 2.3fr 1fr 0.85fr 1fr 1fr 1.2fr; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
   .row.head { background: #fafbfd; border-radius: 14px 14px 0 0; }
   .row.head span { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
   .row.critical { background: #fffbfb; }
+  .cb { width: 18px; height: 18px; border-radius: 6px; border: 1.6px solid #b2c1d7; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; }
+  .cb.checked { border-color: #1960bd; background: #1960bd; }
+  .cb svg { opacity: 0; }
+  .cb.checked svg { opacity: 1; }
   .item-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .item-cell .nm { font-size: 14px; font-weight: 700; }
   .item-cell .meta { font-size: 12px; font-weight: 500; color: #8da4be; }
@@ -172,8 +183,17 @@
       </div>
     </div>
 
+    <div class="bulk-action-bar" id="bulkActionBar">
+      <span class="bulk-count" id="bulkCount"></span>
+      <div class="bulk-actions">
+        <button class="btn primary" type="button" id="bulkCreatePo">Create PO</button>
+      </div>
+      <button class="bulk-clear" type="button" id="bulkClear">Clear ✕</button>
+    </div>
+
     <div class="table-card">
       <div class="row head">
+        <button class="cb" id="selectAllBtn" type="button"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <span>Item</span><span>Category</span><span>On hand</span><span>Reorder Point</span><span>Health</span><span>Action</span>
       </div>
       <div id="rows"></div>
@@ -260,7 +280,7 @@
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  var state = { search: '', activeFilter: 'all', category: 'all', activePage: 1, rowsPerPage: 10, categoryOpen: false, rowsOpen: false };
+  var state = { search: '', activeFilter: 'all', category: 'all', activePage: 1, rowsPerPage: 10, categoryOpen: false, rowsOpen: false, checked: {} };
 
   function visibleItems() {
     var q = state.search.trim().toLowerCase();
@@ -306,14 +326,26 @@
     return '<span class="no-action">—</span>';
   }
 
+  function renderBulkBar() {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var bar = document.getElementById('bulkActionBar');
+    if (selectedIds.length === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    document.getElementById('bulkCount').textContent = selectedIds.length + ' SKU' + (selectedIds.length === 1 ? '' : 's') + ' selected';
+  }
+
   function render() {
     renderKpis();
     var visible = visibleItems();
+    var eligibleVisible = visible.filter(function (it) { return it.tier !== 'healthy'; });
+    var eligibleIds = eligibleVisible.map(function (it) { return it.id; });
+    var allEligibleChecked = eligibleIds.length > 0 && eligibleIds.every(function (id) { return state.checked[id]; });
     var totalPages = Math.max(1, Math.ceil(visible.length / state.rowsPerPage));
     if (state.activePage > totalPages) state.activePage = totalPages;
     if (state.activePage < 1) state.activePage = 1;
     var pageStart = (state.activePage - 1) * state.rowsPerPage;
     var pageItems = visible.slice(pageStart, pageStart + state.rowsPerPage);
+    renderBulkBar();
 
     var filterDefs = [
       { key: 'all', label: 'All', count: items.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
@@ -349,6 +381,9 @@
     document.getElementById('pgPrev').classList.toggle('disabled', state.activePage <= 1);
     document.getElementById('pgNext').classList.toggle('disabled', state.activePage >= totalPages);
 
+    var selectAllBtn = document.getElementById('selectAllBtn');
+    selectAllBtn.className = 'cb' + (allEligibleChecked ? ' checked' : '');
+
     var rowsEl = document.getElementById('rows');
     if (visible.length === 0) {
       rowsEl.innerHTML = '';
@@ -359,8 +394,13 @@
         var meta = tierMeta[it.tier];
         var risk = stockoutRisk(it);
         var riskHtml = risk ? '<span class="risk ' + risk.tier + '"><span class="rd" style="background:' + (risk.tier === 'red' ? '#dc2626' : '#e56106') + ';"></span>' + esc(risk.label) + '</span>' : '';
+        var isChecked = !!state.checked[it.id];
+        var cbHtml = it.tier !== 'healthy'
+          ? '<button class="cb' + (isChecked ? ' checked' : '') + '" type="button" data-action="check" data-key="' + it.id + '"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+          : '<span></span>';
         return '' +
           '<div class="row' + (it.tier === 'critical' ? ' critical' : '') + '">' +
+            cbHtml +
             '<div class="item-cell"><a class="nm" href="item-detail.html?id=' + it.id + '" style="color:#151b23;">' + esc(it.name) + '</a><span class="meta">' + esc(it.sku) + ' · ' + esc(it.vendor) + '</span>' + riskHtml + '</div>' +
             '<span class="cat-pill">' + esc(it.category) + '</span>' +
             '<span class="onhand">' + it.onHand + '</span>' +
@@ -388,6 +428,7 @@
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
       else if (action === 'createPo') { createPoForItem(parseInt(key, 10)); return; }
       else if (action === 'adjust') { window.location.href = 'item-detail.html?id=' + key; return; }
+      else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }
       render();
       return;
     }
@@ -396,6 +437,15 @@
     }
     if (e.target.id === 'rowsTrigger' || e.target.closest('#rowsTrigger')) {
       state.rowsOpen = !state.rowsOpen; state.categoryOpen = false; render(); return;
+    }
+    if (e.target.id === 'selectAllBtn' || e.target.closest('#selectAllBtn')) {
+      var visible = visibleItems();
+      var eligible = visible.filter(function (it) { return it.tier !== 'healthy'; });
+      var ids = eligible.map(function (it) { return it.id; });
+      var allChecked = ids.length > 0 && ids.every(function (id) { return state.checked[id]; });
+      var next = !allChecked;
+      ids.forEach(function (id) { state.checked[id] = next; });
+      render(); return;
     }
     if (e.target.id === 'backdrop') {
       state.categoryOpen = false; state.rowsOpen = false; render(); return;
@@ -411,6 +461,59 @@
 
   document.getElementById('search').addEventListener('input', function (e) {
     state.search = e.target.value; state.activePage = 1; render();
+  });
+
+  document.getElementById('bulkClear').addEventListener('click', function () {
+    state.checked = {};
+    render();
+  });
+
+  document.getElementById('bulkCreatePo').addEventListener('click', function () {
+    var selected = items.filter(function (it) { return !!state.checked[it.id]; });
+    if (selected.length === 0) return;
+    var byVendor = {};
+    selected.forEach(function (it) {
+      if (!byVendor[it.vendor]) byVendor[it.vendor] = { vendor: it.vendor, hasStockout: false, lines: [] };
+      if (it.status === 'stockout') byVendor[it.vendor].hasStockout = true;
+      var qty = Math.max((it.reorder * 2) - it.onHand, it.reorder, 1);
+      byVendor[it.vendor].lines.push({ item: it.name, qty: qty, vendor: it.vendor });
+    });
+    var vendorGroups = Object.keys(byVendor).map(function (k) { return byVendor[k]; });
+    vendorGroups.sort(function (a, b) {
+      var stockoutDiff = (b.hasStockout ? 1 : 0) - (a.hasStockout ? 1 : 0);
+      if (stockoutDiff !== 0) return stockoutDiff;
+      return b.lines.length - a.lines.length;
+    });
+
+    // Cap the number of POs produced: keep the biggest vendor groups as their
+    // own (vendor-pure) POs, and fold any remaining smaller vendor groups
+    // together into one consolidated multi-vendor PO, rather than spinning
+    // up a separate near-empty PO per vendor.
+    var MAX_POS = 3;
+    var groups;
+    if (vendorGroups.length <= MAX_POS) {
+      groups = vendorGroups;
+    } else {
+      var kept = vendorGroups.slice(0, MAX_POS - 1);
+      var leftover = vendorGroups.slice(MAX_POS - 1);
+      var mergedLines = [];
+      var mergedVendors = [];
+      var mergedHasStockout = false;
+      leftover.forEach(function (g) {
+        if (g.hasStockout) mergedHasStockout = true;
+        mergedVendors.push(g.vendor);
+        g.lines.forEach(function (l) { mergedLines.push(l); });
+      });
+      groups = kept.concat([{
+        vendor: 'Multiple Vendors',
+        vendors: mergedVendors,
+        hasStockout: mergedHasStockout,
+        lines: mergedLines
+      }]);
+    }
+
+    try { localStorage.setItem('stockhouseRecSelection', JSON.stringify({ groups: groups, aiDrafted: false })); } catch (e) {}
+    window.location.href = 'create-po.html';
   });
 
   render();
