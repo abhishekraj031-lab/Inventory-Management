@@ -64,6 +64,13 @@
   .special-filter-banner span { font-size: 12.5px; font-weight: 500; color: #1e3a66; line-height: 1.4; }
   .special-filter-banner b { font-weight: 700; }
   .special-filter-banner a.clear-filter { font-size: 12px; font-weight: 700; color: #1960bd; white-space: nowrap; }
+  .bulk-action-bar { display: none; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 10px; background: #151b23; }
+  .bulk-action-bar .bulk-count { font-size: 13px; font-weight: 700; color: #ffffff; margin-right: auto; }
+  .bulk-action-bar .bulk-actions { display: flex; align-items: center; gap: 10px; }
+  .bulk-action-bar .btn { padding: 8px 14px; font-size: 13px; }
+  .bulk-action-bar .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .bulk-action-bar .bulk-clear { font-size: 12px; font-weight: 700; color: #b2c1d7; background: transparent; border: 0; padding: 6px; cursor: pointer; }
+  .bulk-action-bar .bulk-clear:hover { color: #ffffff; }
   .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chip { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
   .chip .n { opacity: 0.85; font-weight: 600; }
@@ -195,6 +202,14 @@
       </div>
     </div>
 
+    <div class="bulk-action-bar" id="bulkActionBar">
+      <span class="bulk-count" id="bulkCount"></span>
+      <div class="bulk-actions">
+        <button class="btn primary" type="button" id="bulkDeactivate">Deactivate</button>
+      </div>
+      <button class="bulk-clear" type="button" id="bulkClear">Clear ✕</button>
+    </div>
+
     <div class="table-card">
       <div class="row head">
         <button class="cb" id="selectAllBtn" type="button"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -271,10 +286,22 @@
 
   var nextWhId = 11;
 
+  (function applyWarehouseStatusOverrides() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhouseWarehouseStatusOverrides'); } catch (e) {}
+    if (!raw) return;
+    var overrides;
+    try { overrides = JSON.parse(raw); } catch (e) { return; }
+    warehouses.forEach(function (w) {
+      if (overrides[w.id]) w.status = overrides[w.id];
+    });
+  })();
+
   var statusMeta = {
     normal: { label: 'Operating normally', bg: '#ecfdf1', color: '#047857', dot: '#10bc83', bar: '#1960bd' },
     nearCapacity: { label: 'Near capacity', bg: '#fff7ed', color: '#b84509', dot: '#e56106', bar: '#e56106' },
-    lowUtilization: { label: 'Low utilization', bg: '#eef1f5', color: '#576a84', dot: '#8da4be', bar: '#8da4be' }
+    lowUtilization: { label: 'Low utilization', bg: '#eef1f5', color: '#576a84', dot: '#8da4be', bar: '#8da4be' },
+    inactive: { label: 'Inactive', bg: '#eef1f5', color: '#576a84', dot: '#8da4be', bar: '#8da4be' }
   };
 
   var state = { search: '', activeFilter: 'all', activePage: 1, rowsPerPage: 10, openMenuId: null, rowsOpen: false, checked: {} };
@@ -318,6 +345,16 @@
     document.getElementById('kpiNearCapacity').textContent = nearCapacityCount;
   }
 
+  function renderBulkBar() {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var bar = document.getElementById('bulkActionBar');
+    if (selectedIds.length === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    document.getElementById('bulkCount').textContent = selectedIds.length + ' warehouse' + (selectedIds.length === 1 ? '' : 's') + ' selected';
+    var eligible = warehouses.filter(function (w) { return selectedIds.indexOf(w.id) !== -1 && w.status !== 'inactive'; }).length;
+    document.getElementById('bulkDeactivate').disabled = eligible === 0;
+  }
+
   function render() {
     renderKpis();
     var visible = visibleItems();
@@ -328,6 +365,7 @@
     if (state.activePage < 1) state.activePage = 1;
     var pageStart = (state.activePage - 1) * state.rowsPerPage;
     var pageItems = visible.slice(pageStart, pageStart + state.rowsPerPage);
+    renderBulkBar();
 
     if (state.specialFilter) {
       document.getElementById('specialFilterText').innerHTML = SPECIAL_FILTERS[state.specialFilter].text;
@@ -340,7 +378,8 @@
       { key: 'all', label: 'All', count: warehouses.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
       { key: 'normal', label: 'Operating normally', count: warehouses.filter(function (i) { return i.status === 'normal'; }).length, activeBg: '#047857', activeBorder: '#047857', activeColor: '#ffffff', idleBg: '#ecfdf1', idleBorder: '#bdeed4', idleColor: '#047857' },
       { key: 'nearCapacity', label: 'Near Capacity', count: warehouses.filter(function (i) { return i.status === 'nearCapacity'; }).length, activeBg: '#e56106', activeBorder: '#e56106', activeColor: '#ffffff', idleBg: '#fff7ed', idleBorder: '#ffe9cc', idleColor: '#b84509' },
-      { key: 'lowUtilization', label: 'Low Utilization', count: warehouses.filter(function (i) { return i.status === 'lowUtilization'; }).length, activeBg: '#576a84', activeBorder: '#576a84', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' }
+      { key: 'lowUtilization', label: 'Low Utilization', count: warehouses.filter(function (i) { return i.status === 'lowUtilization'; }).length, activeBg: '#576a84', activeBorder: '#576a84', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
+      { key: 'inactive', label: 'Inactive', count: warehouses.filter(function (i) { return i.status === 'inactive'; }).length, activeBg: '#384352', activeBorder: '#384352', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' }
     ];
     document.getElementById('chips').innerHTML = filterDefs.map(function (f) {
       var isActive = !state.specialFilter && state.activeFilter === f.key;
@@ -390,8 +429,10 @@
                 '<div class="row-menu">' +
                   '<div class="mi" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="0.9" fill="#576a84" stroke="none"/></svg>View warehouse details</div>' +
                   '<div class="mi" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Edit warehouse</div>' +
-                  '<div class="sep"></div>' +
-                  '<div class="mi danger" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Deactivate warehouse</div>' +
+                  (it.status !== 'inactive' ? (
+                    '<div class="sep"></div>' +
+                    '<div class="mi danger" data-action="deactivate" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Deactivate warehouse</div>'
+                  ) : '') +
                 '</div>'
               ) : '') +
             '</div>' +
@@ -415,6 +456,7 @@
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
       else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }
       else if (action === 'menu') { var mid = parseInt(key, 10); state.openMenuId = state.openMenuId === mid ? null : mid; state.rowsOpen = false; }
+      else if (action === 'deactivate') { deactivateWarehouse(parseInt(key, 10)); }
       render();
       return;
     }
@@ -436,6 +478,38 @@
 
   document.getElementById('search').addEventListener('input', function (e) {
     state.search = e.target.value; render();
+  });
+
+  function setWarehouseStatus(w, status) {
+    w.status = status;
+    var overrides = {};
+    try { overrides = JSON.parse(localStorage.getItem('stockhouseWarehouseStatusOverrides') || '{}'); } catch (e) {}
+    overrides[w.id] = status;
+    try { localStorage.setItem('stockhouseWarehouseStatusOverrides', JSON.stringify(overrides)); } catch (e) {}
+  }
+
+  function deactivateWarehouse(id) {
+    var w = warehouses.filter(function (x) { return x.id === id; })[0];
+    if (!w || w.status === 'inactive') return;
+    setWarehouseStatus(w, 'inactive');
+    state.openMenuId = null;
+    showWhToast(w.name + ' deactivated');
+  }
+
+  document.getElementById('bulkClear').addEventListener('click', function () {
+    state.checked = {};
+    render();
+  });
+
+  document.getElementById('bulkDeactivate').addEventListener('click', function () {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var eligible = warehouses.filter(function (w) { return selectedIds.indexOf(w.id) !== -1 && w.status !== 'inactive'; });
+    if (eligible.length === 0) return;
+    eligible.forEach(function (w) { setWarehouseStatus(w, 'inactive'); });
+    var n = eligible.length;
+    state.checked = {};
+    render();
+    showWhToast(n + ' warehouse' + (n === 1 ? '' : 's') + ' deactivated');
   });
 
   // ---- Add Warehouse modal ----

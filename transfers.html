@@ -61,6 +61,13 @@
   .kpi-label { font-size: 12px; font-weight: 600; color: #6e8aab; }
 
   .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .bulk-action-bar { display: none; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 10px; background: #151b23; }
+  .bulk-action-bar .bulk-count { font-size: 13px; font-weight: 700; color: #ffffff; margin-right: auto; }
+  .bulk-action-bar .bulk-actions { display: flex; align-items: center; gap: 10px; }
+  .bulk-action-bar .btn { padding: 8px 14px; font-size: 13px; }
+  .bulk-action-bar .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .bulk-action-bar .bulk-clear { font-size: 12px; font-weight: 700; color: #b2c1d7; background: transparent; border: 0; padding: 6px; cursor: pointer; }
+  .bulk-action-bar .bulk-clear:hover { color: #ffffff; }
   .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chip { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
   .chip .n { opacity: 0.85; font-weight: 600; }
@@ -191,6 +198,15 @@
       </div>
     </div>
 
+    <div class="bulk-action-bar" id="bulkActionBar">
+      <span class="bulk-count" id="bulkCount"></span>
+      <div class="bulk-actions">
+        <button class="btn" type="button" id="bulkReceive">Mark as Received</button>
+        <button class="btn primary" type="button" id="bulkCancelTransfers">Cancel Transfers</button>
+      </div>
+      <button class="bulk-clear" type="button" id="bulkClear">Clear ✕</button>
+    </div>
+
     <div class="table-card">
       <div class="row head">
         <button class="cb" id="selectAllBtn" type="button"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -282,6 +298,17 @@
     { id: 10, tid: 'TRF-2050', item: 'Leather Belt', from: 'Plant C · Chennai', to: 'Plant D · Bhiwandi', qty: 15, status: 'completed', requestedBy: 'Mira Delgado', date: 'Sep 10, 2026' }
   ];
 
+  (function applyTransferStatusOverrides() {
+    var raw = null;
+    try { raw = localStorage.getItem('stockhouseTransferStatusOverrides'); } catch (e) {}
+    if (!raw) return;
+    var overrides;
+    try { overrides = JSON.parse(raw); } catch (e) { return; }
+    transfers.forEach(function (t) {
+      if (overrides[t.tid]) t.status = overrides[t.tid];
+    });
+  })();
+
   var statusMeta = {
     completed: { label: 'Completed', bg: '#ecfdf1', color: '#047857', dot: '#10bc83' },
     inTransit: { label: 'In Transit', bg: '#e8f0fc', color: '#1960bd', dot: '#2577e5' },
@@ -315,6 +342,17 @@
     document.getElementById('kpiCompleted').textContent = completed;
   }
 
+  function renderBulkBar() {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var bar = document.getElementById('bulkActionBar');
+    if (selectedIds.length === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    document.getElementById('bulkCount').textContent = selectedIds.length + ' transfer' + (selectedIds.length === 1 ? '' : 's') + ' selected';
+    var eligible = transfers.filter(function (t) { return selectedIds.indexOf(t.id) !== -1 && (t.status === 'pending' || t.status === 'inTransit'); }).length;
+    document.getElementById('bulkReceive').disabled = eligible === 0;
+    document.getElementById('bulkCancelTransfers').disabled = eligible === 0;
+  }
+
   function render() {
     renderKpis();
     var visible = visibleItems();
@@ -325,6 +363,7 @@
     if (state.activePage < 1) state.activePage = 1;
     var pageStart = (state.activePage - 1) * state.rowsPerPage;
     var pageItems = visible.slice(pageStart, pageStart + state.rowsPerPage);
+    renderBulkBar();
 
     var filterDefs = [
       { key: 'all', label: 'All', count: transfers.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
@@ -380,9 +419,11 @@
               (menuOpen ? (
                 '<div class="row-menu">' +
                   '<div class="mi" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="0.9" fill="#576a84" stroke="none"/></svg>View transfer details</div>' +
-                  '<div class="mi" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Mark as received</div>' +
-                  '<div class="sep"></div>' +
-                  '<div class="mi danger" data-action="menu" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Cancel transfer</div>' +
+                  (it.status === 'pending' || it.status === 'inTransit' ? '<div class="mi" data-action="receive" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Mark as received</div>' : '') +
+                  (it.status === 'pending' || it.status === 'inTransit' ? (
+                    '<div class="sep"></div>' +
+                    '<div class="mi danger" data-action="cancel" data-key="' + it.id + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Cancel transfer</div>'
+                  ) : '') +
                 '</div>'
               ) : '') +
             '</div>' +
@@ -406,6 +447,8 @@
       else if (action === 'page') { state.activePage = parseInt(key, 10); }
       else if (action === 'check') { var id = parseInt(key, 10); state.checked[id] = !state.checked[id]; }
       else if (action === 'menu') { var mid = parseInt(key, 10); state.openMenuId = state.openMenuId === mid ? null : mid; state.rowsOpen = false; }
+      else if (action === 'receive') { markTransferReceived(parseInt(key, 10)); }
+      else if (action === 'cancel') { cancelTransfer(parseInt(key, 10)); }
       render();
       return;
     }
@@ -427,6 +470,57 @@
 
   document.getElementById('search').addEventListener('input', function (e) {
     state.search = e.target.value; render();
+  });
+
+  function setTransferStatus(t, status) {
+    t.status = status;
+    var overrides = {};
+    try { overrides = JSON.parse(localStorage.getItem('stockhouseTransferStatusOverrides') || '{}'); } catch (e) {}
+    overrides[t.tid] = status;
+    try { localStorage.setItem('stockhouseTransferStatusOverrides', JSON.stringify(overrides)); } catch (e) {}
+  }
+
+  function markTransferReceived(id) {
+    var t = transfers.filter(function (x) { return x.id === id; })[0];
+    if (!t || (t.status !== 'pending' && t.status !== 'inTransit')) return;
+    setTransferStatus(t, 'completed');
+    state.openMenuId = null;
+    showToast('transferToastWrap', 'transferToastText', t.tid + ' marked as received');
+  }
+
+  function cancelTransfer(id) {
+    var t = transfers.filter(function (x) { return x.id === id; })[0];
+    if (!t || (t.status !== 'pending' && t.status !== 'inTransit')) return;
+    setTransferStatus(t, 'cancelled');
+    state.openMenuId = null;
+    showToast('transferToastWrap', 'transferToastText', t.tid + ' cancelled');
+  }
+
+  document.getElementById('bulkClear').addEventListener('click', function () {
+    state.checked = {};
+    render();
+  });
+
+  document.getElementById('bulkReceive').addEventListener('click', function () {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var eligible = transfers.filter(function (t) { return selectedIds.indexOf(t.id) !== -1 && (t.status === 'pending' || t.status === 'inTransit'); });
+    if (eligible.length === 0) return;
+    eligible.forEach(function (t) { setTransferStatus(t, 'completed'); });
+    var n = eligible.length;
+    state.checked = {};
+    render();
+    showToast('transferToastWrap', 'transferToastText', n + ' transfer' + (n === 1 ? '' : 's') + ' marked as received');
+  });
+
+  document.getElementById('bulkCancelTransfers').addEventListener('click', function () {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var eligible = transfers.filter(function (t) { return selectedIds.indexOf(t.id) !== -1 && (t.status === 'pending' || t.status === 'inTransit'); });
+    if (eligible.length === 0) return;
+    eligible.forEach(function (t) { setTransferStatus(t, 'cancelled'); });
+    var n = eligible.length;
+    state.checked = {};
+    render();
+    showToast('transferToastWrap', 'transferToastText', n + ' transfer' + (n === 1 ? '' : 's') + ' cancelled');
   });
 
   // ---- Create Transfer modal ----

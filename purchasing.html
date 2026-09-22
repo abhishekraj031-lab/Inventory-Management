@@ -61,6 +61,13 @@
   .special-filter-banner b { font-weight: 700; }
   .special-filter-banner a.clear-filter { font-size: 12px; font-weight: 700; color: #1960bd; white-space: nowrap; }
   .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .bulk-action-bar { display: none; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 10px; background: #151b23; }
+  .bulk-action-bar .bulk-count { font-size: 13px; font-weight: 700; color: #ffffff; margin-right: auto; }
+  .bulk-action-bar .bulk-actions { display: flex; align-items: center; gap: 10px; }
+  .bulk-action-bar .btn { padding: 8px 14px; font-size: 13px; }
+  .bulk-action-bar .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .bulk-action-bar .bulk-clear { font-size: 12px; font-weight: 700; color: #b2c1d7; background: transparent; border: 0; padding: 6px; cursor: pointer; }
+  .bulk-action-bar .bulk-clear:hover { color: #ffffff; }
   .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chip { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
   .chip .n { opacity: 0.85; font-weight: 600; }
@@ -173,6 +180,15 @@
       </div>
     </div>
 
+    <div class="bulk-action-bar" id="bulkActionBar">
+      <span class="bulk-count" id="bulkCount"></span>
+      <div class="bulk-actions">
+        <button class="btn" type="button" id="bulkApprove">Approve</button>
+        <button class="btn primary" type="button" id="bulkCancel">Cancel POs</button>
+      </div>
+      <button class="bulk-clear" type="button" id="bulkClear">Clear ✕</button>
+    </div>
+
     <div class="table-card">
       <div class="row head">
         <button class="cb" id="selectAllBtn" type="button"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -264,6 +280,18 @@
     });
   }
 
+  function renderBulkBar() {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var bar = document.getElementById('bulkActionBar');
+    if (selectedIds.length === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    document.getElementById('bulkCount').textContent = selectedIds.length + ' PO' + (selectedIds.length === 1 ? '' : 's') + ' selected';
+    var approveEligible = pos.filter(function (p) { return selectedIds.indexOf(p.id) !== -1 && p.status === 'pending'; }).length;
+    var cancelEligible = pos.filter(function (p) { return selectedIds.indexOf(p.id) !== -1 && (p.status === 'draft' || p.status === 'pending' || p.status === 'inTransit'); }).length;
+    document.getElementById('bulkApprove').disabled = approveEligible === 0;
+    document.getElementById('bulkCancel').disabled = cancelEligible === 0;
+  }
+
   function render() {
     var visible = visibleItems();
     var visibleIds = visible.map(function (it) { return it.id; });
@@ -273,6 +301,7 @@
     if (state.activePage < 1) state.activePage = 1;
     var pageStart = (state.activePage - 1) * state.rowsPerPage;
     var pageItems = visible.slice(pageStart, pageStart + state.rowsPerPage);
+    renderBulkBar();
 
     if (state.specialFilterPo) {
       document.getElementById('specialFilterText').innerHTML = 'Showing just <b>' + esc(state.specialFilterPo) + '</b> — flagged on your Dashboard\u2019s Critical actions for a price variance vs. your last order.';
@@ -395,29 +424,56 @@
     setTimeout(function () { document.getElementById('poToastWrap').style.display = 'none'; }, 2600);
   }
 
+  function setPoStatus(po, status) {
+    po.status = status;
+    var overrides = {};
+    try { overrides = JSON.parse(localStorage.getItem('stockhousePoStatusOverrides') || '{}'); } catch (e) {}
+    overrides[po.poId] = status;
+    try { localStorage.setItem('stockhousePoStatusOverrides', JSON.stringify(overrides)); } catch (e) {}
+  }
+
   function approvePo(id) {
     var po = pos.filter(function (p) { return p.id === id; })[0];
     if (!po || po.status !== 'pending') return;
-    po.status = 'inTransit';
+    setPoStatus(po, 'inTransit');
     state.openMenuId = null;
-    var overrides = {};
-    try { overrides = JSON.parse(localStorage.getItem('stockhousePoStatusOverrides') || '{}'); } catch (e) {}
-    overrides[po.poId] = po.status;
-    try { localStorage.setItem('stockhousePoStatusOverrides', JSON.stringify(overrides)); } catch (e) {}
     showToast(po.poId + ' approved — now in transit');
   }
 
   function cancelPo(id) {
     var po = pos.filter(function (p) { return p.id === id; })[0];
     if (!po || (po.status !== 'draft' && po.status !== 'pending' && po.status !== 'inTransit')) return;
-    po.status = 'cancelled';
+    setPoStatus(po, 'cancelled');
     state.openMenuId = null;
-    var overrides = {};
-    try { overrides = JSON.parse(localStorage.getItem('stockhousePoStatusOverrides') || '{}'); } catch (e) {}
-    overrides[po.poId] = po.status;
-    try { localStorage.setItem('stockhousePoStatusOverrides', JSON.stringify(overrides)); } catch (e) {}
     showToast(po.poId + ' cancelled');
   }
+
+  document.getElementById('bulkClear').addEventListener('click', function () {
+    state.checked = {};
+    render();
+  });
+
+  document.getElementById('bulkApprove').addEventListener('click', function () {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var eligible = pos.filter(function (p) { return selectedIds.indexOf(p.id) !== -1 && p.status === 'pending'; });
+    if (eligible.length === 0) return;
+    eligible.forEach(function (po) { setPoStatus(po, 'inTransit'); });
+    var n = eligible.length;
+    state.checked = {};
+    render();
+    showToast(n + ' PO' + (n === 1 ? '' : 's') + ' approved — now in transit');
+  });
+
+  document.getElementById('bulkCancel').addEventListener('click', function () {
+    var selectedIds = Object.keys(state.checked).filter(function (id) { return state.checked[id]; }).map(function (id) { return parseInt(id, 10); });
+    var eligible = pos.filter(function (p) { return selectedIds.indexOf(p.id) !== -1 && (p.status === 'draft' || p.status === 'pending' || p.status === 'inTransit'); });
+    if (eligible.length === 0) return;
+    eligible.forEach(function (po) { setPoStatus(po, 'cancelled'); });
+    var n = eligible.length;
+    state.checked = {};
+    render();
+    showToast(n + ' PO' + (n === 1 ? '' : 's') + ' cancelled');
+  });
 
   // ---- Pick up any POs created on the Create Purchase Order page and merge them into the list.
   //      This is a PERSISTENT merge (the queue is never cleared) so newly created POs survive a
