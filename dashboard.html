@@ -72,6 +72,9 @@
   .card-title { font-size: 15px; font-weight: 800; margin: 0 0 4px; }
   .card-sub { font-size: 12px; font-weight: 500; color: #8da4be; margin: 0 0 14px; }
   .view-all { font-size: 13px; font-weight: 700; color: #1960bd; }
+  .health-card { cursor: pointer; transition: border-color 0.15s; }
+  .health-card:hover, .health-card:focus-visible { border-color: #1960bd; }
+  .health-card:focus-visible { outline: 2px solid #1960bd; outline-offset: 2px; }
 
   /* segmented health / cash-locked rows */
   .seg-bar { display: flex; width: 100%; height: 10px; border-radius: 999px; overflow: hidden; margin: 14px 0 16px; }
@@ -212,9 +215,9 @@
     <div class="two-col">
       <div class="col">
         <div class="pair-grid">
-          <div class="card card-pad">
-            <p class="card-title">Inventory health</p>
-            <p class="card-sub">47 SKUs across 6 categories</p>
+          <div class="card card-pad health-card" id="healthCard" role="link" tabindex="0">
+            <div class="card-title-row"><p class="card-title">Inventory health</p><a class="view-all" href="inventory-health.html">View all SKUs →</a></div>
+            <p class="card-sub">25 SKUs across 5 categories</p>
             <div class="chart-row">
               <div class="donut-wrap" id="healthDonut"></div>
               <div class="donut-legend" id="healthLegend"></div>
@@ -375,10 +378,21 @@
     }
 
     renderDonutCard('healthDonut', 'healthLegend', [
-      { label: 'Healthy', value: 32, color: '#10bc83' },
-      { label: 'Attention', value: 10, color: '#e5c022' },
-      { label: 'Critical', value: 5, color: '#dc2626' }
-    ], '47', 'SKUs total', function (v) { return v + ' SKUs'; });
+      { label: 'Healthy', value: 7, color: '#10bc83' },
+      { label: 'Attention', value: 12, color: '#e5c022' },
+      { label: 'Critical', value: 6, color: '#dc2626' }
+    ], '25', 'SKUs total', function (v) { return v + ' SKUs'; });
+
+    var healthCardEl = document.getElementById('healthCard');
+    if (healthCardEl) {
+      healthCardEl.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        window.location.href = 'inventory-health.html';
+      });
+      healthCardEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.location.href = 'inventory-health.html'; }
+      });
+    }
 
     renderDonutCard('cashDonut', 'cashLegend', [
       { label: 'Healthy stock', value: 21.4, color: '#1960bd' },

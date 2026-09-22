@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockhouse — Inventory Health</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assistant.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #f4f7fa; font-family: 'Albert Sans', system-ui, sans-serif; color: #151b23; }
+  a { color: #1960bd; text-decoration: none; }
+  a:hover { color: #124287; }
+  ::placeholder { color: #8da4be; }
+  button { font-family: inherit; cursor: pointer; }
+  input { font-family: inherit; }
+
+  .app { display: flex; min-height: 100vh; width: 100%; }
+
+  /* sidebar */
+  aside.sb { display: flex; flex-direction: column; width: 248px; flex-shrink: 0; background: #ffffff; border-right: 1px solid #e5eaf1; padding: 24px 16px; }
+  .sb-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 24px; border-bottom: 1px solid #eef1f5; margin-bottom: 20px; }
+  .sb-mark { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #1960bd; flex-shrink: 0; }
+  .sb-brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+  .sb-brand-text .name { font-size: 16px; font-weight: 800; letter-spacing: -0.2px; }
+  .sb-brand-text .sub { font-size: 11px; font-weight: 500; color: #6e8aab; }
+  .sb-label { font-size: 11px; font-weight: 600; color: #8da4be; letter-spacing: 0.06em; text-transform: uppercase; padding: 0 10px; margin-bottom: 6px; display: block; }
+  .sb-nav { display: flex; flex-direction: column; gap: 2px; }
+  .sb-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; color: #576a84; }
+  .sb-item span { font-size: 14px; font-weight: 500; }
+  .sb-item.active { background: #e8f0fc; color: #1960bd; }
+  .sb-item.active span { font-weight: 700; }
+  .sb-spacer { flex: 1; }
+  .sb-profile { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; background: #f4f7fa; border: 1px solid #eef1f5; }
+  .sb-avatar { position: relative; width: 34px; height: 34px; flex-shrink: 0; }
+  .sb-avatar .disc { width: 34px; height: 34px; border-radius: 9px; background: #d1e3fa; color: #124287; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .sb-avatar .dot { position: absolute; right: -2px; bottom: -2px; width: 9px; height: 9px; border-radius: 50%; background: #10bc83; border: 2px solid #f4f7fa; }
+  .sb-profile-text { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
+  .sb-profile-text .name { font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .sb-profile-text .role { font-size: 11px; font-weight: 500; color: #6e8aab; }
+
+  /* main */
+  main { position: relative; display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 28px 36px 36px; gap: 20px; }
+  .crumb { display: flex; align-items: center; gap: 8px; align-self: flex-start; padding: 6px 12px; border-radius: 8px; background: #ffffff; border: 1px solid #eef1f5; }
+  .crumb a { font-size: 13px; font-weight: 600; color: #576a84; }
+  .crumb a:hover { color: #1960bd; }
+  .crumb .sep { font-size: 13px; font-weight: 600; color: #cbd6e6; }
+  .crumb .cur { font-size: 13px; font-weight: 600; color: #151b23; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .page-head h1 { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.1; }
+  .page-head p { margin: 0; font-size: 14px; font-weight: 500; color: #6e8aab; }
+  .btn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 700; border: 1px solid #cbd6e6; background: #ffffff; color: #384352; }
+  .btn.primary { background: #1960bd; border-color: #1960bd; color: #ffffff; }
+  .btn.sm { padding: 7px 12px; font-size: 12.5px; border-radius: 8px; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .kpi { display: flex; flex-direction: column; gap: 14px; background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); }
+  .kpi.good { border-color: #c9f0da; }
+  .kpi.warn { border-color: #fed8d8; }
+  .kpi.caution { border-color: #ffe9cc; }
+  .kpi-top { display: flex; align-items: center; justify-content: space-between; }
+  .kpi-icon { width: 34px; height: 34px; border-radius: 9px; background: #e8f0fc; display: flex; align-items: center; justify-content: center; }
+  .kpi-icon.good { background: #ecfdf1; }
+  .kpi-icon.warn { background: #feecec; }
+  .kpi-icon.caution { background: #fff7ed; }
+  .kpi-body { display: flex; flex-direction: column; gap: 2px; }
+  .kpi-num { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+  .kpi-num.good { color: #047857; }
+  .kpi-num.warn { color: #b91c1c; }
+  .kpi-num.caution { color: #b84509; }
+  .kpi-label { font-size: 12px; font-weight: 600; color: #6e8aab; }
+
+  .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .chip { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
+  .chip .n { opacity: 0.85; font-weight: 600; }
+  .toolbar-right { display: flex; align-items: center; gap: 10px; }
+  .search-box { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 10px; background: #ffffff; border: 1px solid #cbd6e6; width: 240px; }
+  .search-box input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 13px; font-weight: 500; color: #151b23; }
+  .dd { position: relative; }
+  .dd-trigger { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; background: #ffffff; border: 1px solid #cbd6e6; }
+  .dd-trigger span { font-size: 13px; font-weight: 600; color: #384352; }
+  .dd-menu { position: absolute; background: #ffffff; border: 1px solid #eef1f5; border-radius: 12px; box-shadow: 0 12px 32px rgba(21,27,35,0.14); padding: 6px; z-index: 40; }
+  .dd-menu .opt { display: flex; align-items: center; justify-content: space-between; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; color: #384352; }
+  .dd-menu .opt:hover { background: #f4f7fa; }
+  .dd-menu .opt.active { background: #e8f0fc; color: #1960bd; }
+
+  .table-card { position: relative; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); overflow: visible; }
+  .row { display: grid; grid-template-columns: 2.3fr 1fr 0.85fr 1fr 1fr 1.2fr; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
+  .row.head { background: #fafbfd; border-radius: 14px 14px 0 0; }
+  .row.head span { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
+  .row.critical { background: #fffbfb; }
+  .item-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .item-cell .nm { font-size: 14px; font-weight: 700; }
+  .item-cell .meta { font-size: 12px; font-weight: 500; color: #8da4be; }
+  .item-cell .risk { display: inline-flex; align-items: center; gap: 4px; width: fit-content; font-size: 11px; font-weight: 700; }
+  .item-cell .risk.red { color: #b91c1c; }
+  .item-cell .risk.amber { color: #b84509; }
+  .item-cell .risk .rd { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .cat-pill { display: inline-flex; width: fit-content; padding: 4px 10px; border-radius: 999px; background: #eef1f5; color: #384352; font-size: 12px; font-weight: 600; }
+  .onhand { font-size: 14px; font-weight: 700; }
+  .reorder { font-size: 14px; font-weight: 600; color: #576a84; }
+  .status-pill { display: inline-flex; align-items: center; gap: 5px; width: fit-content; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .no-action { font-size: 12px; font-weight: 600; color: #8da4be; }
+  .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 56px 20px; }
+  .empty .t { font-size: 14px; font-weight: 700; color: #384352; }
+  .empty .s { font-size: 13px; font-weight: 500; color: #8da4be; }
+
+  .pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .pagination .count { font-size: 13px; font-weight: 600; color: #6e8aab; }
+  .pg { display: flex; align-items: center; gap: 6px; }
+  .pg-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; font-size: 13px; font-weight: 700; color: #384352; cursor: pointer; }
+  .pg-btn.active { background: #1960bd; color: #ffffff; }
+  .pg-arrow { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: 1px solid #cbd6e6; color: #576a84; }
+  .pg-arrow.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+  .rows-trigger { display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; border: 1px solid #cbd6e6; background: #ffffff; margin-left: 14px; }
+  .rows-trigger span { font-size: 13px; font-weight: 600; color: #384352; }
+
+  .backdrop { position: fixed; inset: 0; z-index: 25; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sb">
+    <div class="sb-brand">
+      <div class="sb-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg></div>
+      <div class="sb-brand-text"><span class="name">Stockhouse</span><span class="sub">Inventory Control</span></div>
+    </div>
+    <span class="sb-label">Menu</span>
+    <nav class="sb-nav">
+      <a class="sb-item" href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></a>
+      <a class="sb-item active" href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg><span>Inventory</span></a>
+      <a class="sb-item" href="transfers.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l3 4 3-4h6"/><path d="M4 17h4l3-4 3 4h6"/><path d="M17 4l3 3-3 3"/><path d="M17 14l3 3-3 3"/></svg><span>Transfers</span></a>
+      <a class="sb-item" href="purchasing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"/></svg><span>Purchasing</span></a>
+      <a class="sb-item" href="warehouses.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/><path d="M4 21h16"/></svg><span>Warehouses</span></a>
+      <a class="sb-item" href="suppliers.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M15.5 13a5 5 0 0 1 6 4.8"/></svg><span>Suppliers</span></a>
+      <div class="sb-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-7"/><path d="M2 20h20"/></svg><span>Reports</span></div>
+    </nav>
+    <div class="sb-spacer"></div>
+    <div class="sb-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M4.9 4.9l1.55 1.55M17.55 17.55l1.55 1.55M3 12h2.2M18.8 12H21M4.9 19.1l1.55-1.55M17.55 6.45l1.55-1.55"/></svg><span>Settings</span></div>
+    <div class="sb-profile">
+      <div class="sb-avatar"><div class="disc">AG</div><div class="dot"></div></div>
+      <div class="sb-profile-text"><span class="name">Abhishek Gupta</span><span class="role">Operations Manager</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="crumb"><a href="dashboard.html">Dashboard</a><span class="sep">/</span><span class="cur">Inventory Health</span></div>
+
+    <div class="page-head">
+      <div><h1>Inventory Health</h1><p>Every SKU behind your Dashboard's health score, grouped by how urgently it needs you.</p></div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-top"><div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 16l10 5 10-5"/></svg></div></div><div class="kpi-body"><span class="kpi-num" id="kpiTotal">25</span><span class="kpi-label" id="kpiTotalLabel">SKUs tracked · 5 categories</span></div></div>
+      <div class="kpi good"><div class="kpi-top"><div class="kpi-icon good"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.5 1.3 6 1.6 8 1.5 0 8-3.2 12.4-8 14.5-4.8-2.1-8-6.5-8-14.5 2 .1 4.5-.2 8-1.5Z"/><path d="M9 12.2l2 2 4-4.4"/></svg></div></div><div class="kpi-body"><span class="kpi-num good" id="kpiHealthy">7</span><span class="kpi-label">Healthy · on track</span></div></div>
+      <div class="kpi caution"><div class="kpi-top"><div class="kpi-icon caution"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#e56106" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.6" r="0.9" fill="#e56106" stroke="none"/></svg></div></div><div class="kpi-body"><span class="kpi-num caution" id="kpiAttention">12</span><span class="kpi-label">Need attention</span></div></div>
+      <div class="kpi warn"><div class="kpi-top"><div class="kpi-icon warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5"/><circle cx="12" cy="16.4" r="0.9" fill="#dc2626" stroke="none"/><circle cx="12" cy="12" r="9"/></svg></div></div><div class="kpi-body"><span class="kpi-num warn" id="kpiCritical">6</span><span class="kpi-label">Critical · act now</span></div></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="chips" id="chips"></div>
+      <div class="toolbar-right">
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8da4be" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input id="search" type="text" placeholder="Search item or SKU">
+        </div>
+        <div class="dd" id="categoryDd">
+          <button class="dd-trigger" id="categoryTrigger" type="button"><span id="categoryLabel">All categories</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="dd-menu" id="categoryMenu" style="display:none; top:44px; right:0; width:200px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="row head">
+        <span>Item</span><span>Category</span><span>On hand</span><span>Reorder Point</span><span>Health</span><span>Action</span>
+      </div>
+      <div id="rows"></div>
+      <div class="empty" id="emptyState" style="display:none;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b2c1d7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span class="t">No items match your filters</span>
+        <span class="s">Try a different search term or clear the active filter.</span>
+      </div>
+    </div>
+
+    <div class="pagination">
+      <span class="count" id="resultCount">Showing 25 of 25 items</span>
+      <div class="pg">
+        <div class="pg-arrow" id="pgPrev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+        <div id="pages" style="display:flex; gap:6px;"></div>
+        <div class="pg-arrow" id="pgNext"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        <div class="dd" id="rowsDd" style="margin-left:14px;">
+          <button class="rows-trigger" id="rowsTrigger" type="button"><span id="rowsLabel">10 per page</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="dd-menu" id="rowsMenu" style="display:none; bottom:40px; right:0; width:140px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="backdrop" id="backdrop" style="display:none;"></div>
+  </main>
+</div>
+
+<script src="assistant-data.js"></script>
+<script src="assistant.js"></script>
+<script>
+(function () {
+  // Same 25-SKU catalog as the Inventory Item List (index.html) — this page is a health-tier
+  // lens on the identical dataset, not a separate universe, so counts always agree app-wide.
+  var items = [
+    { id: 1, name: 'Boxy Knit Vest', sku: 'TOP-1096', vendor: 'Hanover Works', category: 'Tops', onHand: 444, reorder: 126, status: 'healthy', dailyDemand: 16 },
+    { id: 2, name: 'Canvas Low Top', sku: 'FTW-1215', vendor: 'Verado Mills', category: 'Footwear', onHand: 259, reorder: 66, status: 'healthy', dailyDemand: 42 },
+    { id: 3, name: 'Canvas Tote', sku: 'ACC-1285', vendor: 'Pergola Goods', category: 'Accessories', onHand: 470, reorder: 150, status: 'healthy', dailyDemand: 20 },
+    { id: 4, name: 'Card Holder', sku: 'ACC-1292', vendor: 'Hanover Works', category: 'Accessories', onHand: 98, reorder: 120, status: 'belowReorder', dailyDemand: 22 },
+    { id: 5, name: 'Cargo Pant', sku: 'BTM-1124', vendor: 'Kestrel Supply Co.', category: 'Bottoms', onHand: 0, reorder: 126, status: 'stockout', dailyDemand: 15 },
+    { id: 6, name: 'Cashmere Scarf', sku: 'ACC-1306', vendor: 'Northline Textile', category: 'Accessories', onHand: 272, reorder: 78, status: 'healthy', dailyDemand: 9 },
+    { id: 7, name: 'Ceramic Vase', sku: 'HOM-1362', vendor: 'Verado Mills', category: 'Home', onHand: 444, reorder: 108, status: 'overstock', dailyDemand: 6 },
+    { id: 8, name: 'Chino Short', sku: 'BTM-1131', vendor: 'Hanover Works', category: 'Bottoms', onHand: 566, reorder: 198, status: 'healthy', dailyDemand: 24 },
+    { id: 9, name: 'Denim Jacket', sku: 'TOP-1103', vendor: 'Verado Mills', category: 'Tops', onHand: 180, reorder: 90, status: 'healthy', dailyDemand: 12 },
+    { id: 10, name: 'Leather Belt', sku: 'ACC-1319', vendor: 'Meridian Leather Works', category: 'Accessories', onHand: 140, reorder: 80, status: 'healthy', dailyDemand: 8 },
+    { id: 11, name: 'Wool Beanie', sku: 'ACC-1327', vendor: 'Northline Textile', category: 'Accessories', onHand: 150, reorder: 210, status: 'belowReorder', dailyDemand: 8 },
+    { id: 12, name: 'Linen Shirt', sku: 'TOP-1140', vendor: 'Hanover Works', category: 'Tops', onHand: 210, reorder: 260, status: 'belowReorder', dailyDemand: 14 },
+    { id: 13, name: 'Suede Loafer', sku: 'FTW-1228', vendor: 'Verado Mills', category: 'Footwear', onHand: 95, reorder: 140, status: 'belowReorder', dailyDemand: 5 },
+    { id: 14, name: 'Corduroy Trouser', sku: 'BTM-1148', vendor: 'Kestrel Supply Co.', category: 'Bottoms', onHand: 175, reorder: 230, status: 'belowReorder', dailyDemand: 10 },
+    { id: 15, name: 'Table Runner', sku: 'HOM-1375', vendor: 'Pergola Goods', category: 'Home', onHand: 120, reorder: 160, status: 'belowReorder', dailyDemand: 6 },
+    { id: 16, name: 'Puffer Vest', sku: 'TOP-1152', vendor: 'Verado Mills', category: 'Tops', onHand: 0, reorder: 140, status: 'stockout', dailyDemand: 11 },
+    { id: 17, name: 'Ankle Boot', sku: 'FTW-1241', vendor: 'Kestrel Supply Co.', category: 'Footwear', onHand: 0, reorder: 95, status: 'stockout', dailyDemand: 7 },
+    { id: 18, name: 'Wide-Leg Jean', sku: 'BTM-1155', vendor: 'Hanover Works', category: 'Bottoms', onHand: 0, reorder: 180, status: 'stockout', dailyDemand: 18 },
+    { id: 19, name: 'Leather Tote', sku: 'ACC-1334', vendor: 'Meridian Leather Works', category: 'Accessories', onHand: 0, reorder: 85, status: 'stockout', dailyDemand: 6 },
+    { id: 20, name: 'Throw Pillow', sku: 'HOM-1382', vendor: 'Pergola Goods', category: 'Home', onHand: 0, reorder: 110, status: 'stockout', dailyDemand: 9 },
+    { id: 21, name: 'Fleece Hoodie', sku: 'TOP-1167', vendor: 'Hanover Works', category: 'Tops', onHand: 520, reorder: 140, status: 'overstock', dailyDemand: 7 },
+    { id: 22, name: 'Suede Sneaker', sku: 'FTW-1254', vendor: 'Verado Mills', category: 'Footwear', onHand: 610, reorder: 160, status: 'overstock', dailyDemand: 9 },
+    { id: 23, name: 'Straw Tote', sku: 'ACC-1341', vendor: 'Pergola Goods', category: 'Accessories', onHand: 480, reorder: 130, status: 'overstock', dailyDemand: 6 },
+    { id: 24, name: 'Wide Belt', sku: 'ACC-1348', vendor: 'Meridian Leather Works', category: 'Accessories', onHand: 390, reorder: 100, status: 'overstock', dailyDemand: 5 },
+    { id: 25, name: 'Ceramic Planter', sku: 'HOM-1389', vendor: 'Verado Mills', category: 'Home', onHand: 560, reorder: 145, status: 'overstock', dailyDemand: 8 }
+  ];
+
+  var categoryNames = ['Tops', 'Footwear', 'Accessories', 'Bottoms', 'Home'];
+
+  function tierOf(status) {
+    if (status === 'stockout') return 'critical';
+    if (status === 'belowReorder' || status === 'overstock') return 'attention';
+    return 'healthy';
+  }
+  items.forEach(function (it) { it.tier = tierOf(it.status); });
+
+  var tierMeta = {
+    healthy: { label: 'Healthy', bg: '#ecfdf1', color: '#047857', dot: '#10bc83' },
+    attention: { label: 'Attention', bg: '#fff7ed', color: '#b84509', dot: '#e56106' },
+    critical: { label: 'Critical', bg: '#feecec', color: '#b91c1c', dot: '#dc2626' }
+  };
+
+  function stockoutRisk(it) {
+    var days = it.dailyDemand > 0 ? Math.round(it.onHand / it.dailyDemand) : (it.onHand > 0 ? 999 : 0);
+    if (it.onHand === 0) return { tier: 'red', label: 'Out of stock' };
+    if (days <= 7) return { tier: 'red', label: '~' + days + ' days of stock left' };
+    if (days <= 14) return { tier: 'amber', label: '~' + days + ' days of stock left' };
+    return null;
+  }
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  var state = { search: '', activeFilter: 'all', category: 'all', activePage: 1, rowsPerPage: 10, categoryOpen: false, rowsOpen: false };
+
+  function visibleItems() {
+    var q = state.search.trim().toLowerCase();
+    return items.filter(function (it) {
+      if (state.activeFilter !== 'all' && it.tier !== state.activeFilter) return false;
+      if (state.category !== 'all' && it.category !== state.category) return false;
+      if (q && it.name.toLowerCase().indexOf(q) === -1 && it.sku.toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+  }
+
+  function renderKpis() {
+    var healthy = 0, attention = 0, critical = 0, categories = {};
+    items.forEach(function (it) {
+      categories[it.category] = true;
+      if (it.tier === 'healthy') healthy++;
+      else if (it.tier === 'attention') attention++;
+      else critical++;
+    });
+    document.getElementById('kpiTotal').textContent = items.length;
+    document.getElementById('kpiTotalLabel').textContent = 'SKUs tracked · ' + Object.keys(categories).length + ' categories';
+    document.getElementById('kpiHealthy').textContent = healthy;
+    document.getElementById('kpiAttention').textContent = attention;
+    document.getElementById('kpiCritical').textContent = critical;
+  }
+
+  function createPoForItem(id) {
+    var it = items.filter(function (i) { return i.id === id; })[0];
+    if (!it) return;
+    var qty = Math.max((it.reorder * 2) - it.onHand, it.reorder, 1);
+    var group = { vendor: it.vendor, hasStockout: it.status === 'stockout', lines: [{ item: it.name, qty: qty, vendor: it.vendor }] };
+    try { localStorage.setItem('stockhouseRecSelection', JSON.stringify({ groups: [group], aiDrafted: false })); } catch (e) {}
+    window.location.href = 'create-po.html';
+  }
+
+  function actionHtml(it) {
+    if (it.tier === 'critical') {
+      return '<button type="button" class="btn sm" data-action="createPo" data-key="' + it.id + '" style="background:#dc2626; border-color:#dc2626; color:#ffffff;">Create PO</button>';
+    }
+    if (it.tier === 'attention') {
+      return '<button type="button" class="btn sm" data-action="adjust" data-key="' + it.id + '" style="background:#fff7ed; border-color:#e56106; color:#b84509;">Adjust stock</button>';
+    }
+    return '<span class="no-action">—</span>';
+  }
+
+  function render() {
+    renderKpis();
+    var visible = visibleItems();
+    var totalPages = Math.max(1, Math.ceil(visible.length / state.rowsPerPage));
+    if (state.activePage > totalPages) state.activePage = totalPages;
+    if (state.activePage < 1) state.activePage = 1;
+    var pageStart = (state.activePage - 1) * state.rowsPerPage;
+    var pageItems = visible.slice(pageStart, pageStart + state.rowsPerPage);
+
+    var filterDefs = [
+      { key: 'all', label: 'All', count: items.length, activeBg: '#1960bd', activeBorder: '#1960bd', activeColor: '#ffffff', idleBg: '#eef1f5', idleBorder: '#e5eaf1', idleColor: '#576a84' },
+      { key: 'healthy', label: 'Healthy', count: items.filter(function (i) { return i.tier === 'healthy'; }).length, activeBg: '#10bc83', activeBorder: '#10bc83', activeColor: '#ffffff', idleBg: '#ecfdf1', idleBorder: '#c9f0da', idleColor: '#047857' },
+      { key: 'attention', label: 'Attention', count: items.filter(function (i) { return i.tier === 'attention'; }).length, activeBg: '#e56106', activeBorder: '#e56106', activeColor: '#ffffff', idleBg: '#fff7ed', idleBorder: '#ffe9cc', idleColor: '#b84509' },
+      { key: 'critical', label: 'Critical', count: items.filter(function (i) { return i.tier === 'critical'; }).length, activeBg: '#dc2626', activeBorder: '#dc2626', activeColor: '#ffffff', idleBg: '#feecec', idleBorder: '#fed8d8', idleColor: '#b91c1c' }
+    ];
+    document.getElementById('chips').innerHTML = filterDefs.map(function (f) {
+      var isActive = state.activeFilter === f.key;
+      var bg = isActive ? f.activeBg : f.idleBg, border = isActive ? f.activeBorder : f.idleBorder, color = isActive ? f.activeColor : f.idleColor;
+      return '<button type="button" class="chip" data-action="filter" data-key="' + f.key + '" style="background:' + bg + '; border-color:' + border + '; color:' + color + ';">' + f.label + ' <span class="n">' + f.count + '</span></button>';
+    }).join('');
+
+    var catOptions = [{ key: 'all', label: 'All categories' }].concat(categoryNames.map(function (c) { return { key: c, label: c }; }));
+    document.getElementById('categoryMenu').innerHTML = catOptions.map(function (c) {
+      return '<div class="opt' + (state.category === c.key ? ' active' : '') + '" data-action="category" data-key="' + c.key + '">' + c.label + '</div>';
+    }).join('');
+    document.getElementById('categoryLabel').textContent = state.category === 'all' ? 'All categories' : state.category;
+    document.getElementById('categoryMenu').style.display = state.categoryOpen ? 'block' : 'none';
+
+    var rowsDefs = [10, 25, 50];
+    document.getElementById('rowsMenu').innerHTML = rowsDefs.map(function (n) {
+      return '<div class="opt' + (state.rowsPerPage === n ? ' active' : '') + '" data-action="rows" data-key="' + n + '">' + n + ' per page</div>';
+    }).join('');
+    document.getElementById('rowsLabel').textContent = state.rowsPerPage + ' per page';
+    document.getElementById('rowsMenu').style.display = state.rowsOpen ? 'block' : 'none';
+
+    var pageNums = [];
+    for (var pn = 1; pn <= totalPages; pn++) pageNums.push(pn);
+    document.getElementById('pages').innerHTML = pageNums.map(function (n) {
+      return '<div class="pg-btn' + (state.activePage === n ? ' active' : '') + '" data-action="page" data-key="' + n + '">' + n + '</div>';
+    }).join('');
+    document.getElementById('pgPrev').classList.toggle('disabled', state.activePage <= 1);
+    document.getElementById('pgNext').classList.toggle('disabled', state.activePage >= totalPages);
+
+    var rowsEl = document.getElementById('rows');
+    if (visible.length === 0) {
+      rowsEl.innerHTML = '';
+      document.getElementById('emptyState').style.display = 'flex';
+    } else {
+      document.getElementById('emptyState').style.display = 'none';
+      rowsEl.innerHTML = pageItems.map(function (it) {
+        var meta = tierMeta[it.tier];
+        var risk = stockoutRisk(it);
+        var riskHtml = risk ? '<span class="risk ' + risk.tier + '"><span class="rd" style="background:' + (risk.tier === 'red' ? '#dc2626' : '#e56106') + ';"></span>' + esc(risk.label) + '</span>' : '';
+        return '' +
+          '<div class="row' + (it.tier === 'critical' ? ' critical' : '') + '">' +
+            '<div class="item-cell"><a class="nm" href="item-detail.html?id=' + it.id + '" style="color:#151b23;">' + esc(it.name) + '</a><span class="meta">' + esc(it.sku) + ' · ' + esc(it.vendor) + '</span>' + riskHtml + '</div>' +
+            '<span class="cat-pill">' + esc(it.category) + '</span>' +
+            '<span class="onhand">' + it.onHand + '</span>' +
+            '<span class="reorder">' + it.reorder + '</span>' +
+            '<span class="status-pill" style="background:' + meta.bg + '; color:' + meta.color + ';"><svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="' + meta.dot + '"/></svg>' + meta.label + '</span>' +
+            actionHtml(it) +
+          '</div>';
+      }).join('');
+    }
+
+    document.getElementById('resultCount').textContent = visible.length === 0 ? 'Showing 0 items' : ('Showing ' + (pageStart + 1) + '–' + Math.min(pageStart + state.rowsPerPage, visible.length) + ' of ' + visible.length + ' items');
+
+    var anyPopoverOpen = state.categoryOpen || state.rowsOpen;
+    document.getElementById('backdrop').style.display = anyPopoverOpen ? 'block' : 'none';
+  }
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action]');
+    if (el) {
+      var action = el.getAttribute('data-action');
+      var key = el.getAttribute('data-key');
+      if (action === 'filter') { state.activeFilter = key; state.activePage = 1; }
+      else if (action === 'category') { if (el.closest('#categoryMenu')) { state.category = key; state.categoryOpen = false; state.activePage = 1; } }
+      else if (action === 'rows') { if (el.closest('#rowsMenu')) { state.rowsPerPage = parseInt(key, 10); state.rowsOpen = false; state.activePage = 1; } }
+      else if (action === 'page') { state.activePage = parseInt(key, 10); }
+      else if (action === 'createPo') { createPoForItem(parseInt(key, 10)); return; }
+      else if (action === 'adjust') { window.location.href = 'item-detail.html?id=' + key; return; }
+      render();
+      return;
+    }
+    if (e.target.id === 'categoryTrigger' || e.target.closest('#categoryTrigger')) {
+      state.categoryOpen = !state.categoryOpen; state.rowsOpen = false; render(); return;
+    }
+    if (e.target.id === 'rowsTrigger' || e.target.closest('#rowsTrigger')) {
+      state.rowsOpen = !state.rowsOpen; state.categoryOpen = false; render(); return;
+    }
+    if (e.target.id === 'backdrop') {
+      state.categoryOpen = false; state.rowsOpen = false; render(); return;
+    }
+  });
+
+  document.getElementById('pgPrev').addEventListener('click', function () {
+    if (state.activePage > 1) { state.activePage -= 1; render(); }
+  });
+  document.getElementById('pgNext').addEventListener('click', function () {
+    state.activePage += 1; render();
+  });
+
+  document.getElementById('search').addEventListener('input', function (e) {
+    state.search = e.target.value; state.activePage = 1; render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
