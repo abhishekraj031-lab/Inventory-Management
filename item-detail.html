@@ -898,13 +898,13 @@
     queueNewTransfer({
       id: Date.now(),
       tid: tid,
-      item: item.name,
+      lines: [{ item: item.name, qty: qty, uom: item.uom || '—' }],
       from: from,
       to: to,
-      qty: qty,
+      reason: document.getElementById('mvReason').value,
       status: 'pending',
       requestedBy: 'Abhishek Gupta',
-      date: 'Sep 16, 2026'
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     });
     closeMoveStockModal();
     showFlowToast(tid + ' created \u2014 view it on the Transfers page');

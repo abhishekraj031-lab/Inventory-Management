@@ -74,10 +74,13 @@
   .route-plant .nm { font-size: 14px; font-weight: 800; }
   .route-arrow { display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 4px; flex-shrink: 0; }
   .route-arrow .qty-badge { font-size: 12px; font-weight: 700; color: #1960bd; background: #e8f0fc; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
-  .item-summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 16px; margin-top: 2px; border-top: 1px solid #f2f4f7; }
-  .item-summary .nm { font-size: 15px; font-weight: 800; }
-  .item-summary .qty-lbl { font-size: 13px; font-weight: 600; color: #6e8aab; }
-  .item-summary .qty-val { font-size: 18px; font-weight: 800; color: #1960bd; }
+
+  .li-head { display: grid; grid-template-columns: 1.8fr 0.7fr 0.7fr; align-items: center; gap: 10px; padding: 4px 0 10px; border-bottom: 1px solid #eef1f5; }
+  .li-head .lbl { font-size: 11px; font-weight: 700; color: #8da4be; text-transform: uppercase; letter-spacing: 0.04em; }
+  .li-row { display: grid; grid-template-columns: 1.8fr 0.7fr 0.7fr; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid #f2f4f7; }
+  .li-row:last-child { border-bottom: 0; }
+  .li-row .nm { font-size: 13.5px; font-weight: 700; }
+  .li-row .v { font-size: 13px; font-weight: 600; color: #384352; text-align: right; }
 
   .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90; display: none; }
   .toast { display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 10px; background: #151b23; color: #ffffff; font-size: 13px; font-weight: 600; box-shadow: 0 12px 28px rgba(21,27,35,0.28); }
@@ -115,7 +118,7 @@
     <div class="page-head">
       <div>
         <div class="title-row"><h1 id="trTitle">TRF</h1><span class="status-pill" id="statusPill">—</span></div>
-        <div class="meta-line"><span id="metaItem">Item</span><span class="dot">·</span><span id="metaQty">0 units</span><span class="dot">·</span><span id="metaDate">—</span></div>
+        <div class="meta-line"><span id="metaItems">0 items</span><span class="dot">·</span><span id="metaDate">—</span></div>
       </div>
       <div class="head-actions" id="headActions"></div>
     </div>
@@ -141,10 +144,17 @@
               <span class="nm" id="routeTo">—</span>
             </div>
           </div>
-          <div class="item-summary">
-            <span class="nm" id="itemSummaryName">—</span>
-            <span><span class="qty-lbl">Quantity</span> <span class="qty-val" id="itemSummaryQty">0</span></span>
+        </div>
+
+        <div class="card card-pad">
+          <p class="card-title">Items</p>
+          <p class="card-sub">Products included in this stock movement.</p>
+          <div class="li-head">
+            <span class="lbl">Product</span>
+            <span class="lbl" style="text-align:right;">Qty</span>
+            <span class="lbl" style="text-align:right;">UOM</span>
           </div>
+          <div id="liRows"></div>
         </div>
       </div>
 
@@ -152,8 +162,8 @@
         <div class="card card-pad">
           <p class="card-title">Transfer information</p>
           <div class="info-grid">
-            <div class="info-field"><span class="lbl">Item</span><span class="val" id="infoItem">—</span></div>
-            <div class="info-field"><span class="lbl">Quantity</span><span class="val" id="infoQty">—</span></div>
+            <div class="info-field"><span class="lbl">Total quantity</span><span class="val" id="infoQty">—</span></div>
+            <div class="info-field"><span class="lbl">Reason</span><span class="val" id="infoReason">—</span></div>
             <div class="info-field"><span class="lbl">From plant</span><span class="val" id="infoFrom">—</span></div>
             <div class="info-field"><span class="lbl">To plant</span><span class="val" id="infoTo">—</span></div>
             <div class="info-field"><span class="lbl">Requested by</span><span class="val" id="infoRequestedBy">—</span></div>
@@ -172,17 +182,19 @@
 <script>
 (function () {
   var transfers = [
-    { id: 1, tid: 'TRF-2041', item: 'Boxy Knit Vest', from: 'Plant A · Gurgaon', to: 'Plant B · Pune', qty: 30, status: 'completed', requestedBy: 'Priya Nair', date: 'Sep 6, 2026' },
-    { id: 2, tid: 'TRF-2042', item: 'Canvas Low Top', from: 'Plant B · Pune', to: 'Plant C · Chennai', qty: 45, status: 'inTransit', requestedBy: 'Rahul Mehta', date: 'Sep 12, 2026' },
-    { id: 3, tid: 'TRF-2043', item: 'Cashmere Scarf', from: 'Plant D · Bhiwandi', to: 'Plant A · Gurgaon', qty: 60, status: 'pending', requestedBy: 'Mira Delgado', date: 'Sep 14, 2026' },
-    { id: 4, tid: 'TRF-2044', item: 'Chino Short', from: 'Plant A · Gurgaon', to: 'Plant D · Bhiwandi', qty: 80, status: 'completed', requestedBy: 'Priya Nair', date: 'Sep 2, 2026' },
-    { id: 5, tid: 'TRF-2045', item: 'Ceramic Vase', from: 'Plant C · Chennai', to: 'Plant B · Pune', qty: 25, status: 'inTransit', requestedBy: 'Rahul Mehta', date: 'Sep 15, 2026' },
-    { id: 6, tid: 'TRF-2046', item: 'Canvas Tote', from: 'Plant A · Gurgaon', to: 'Plant C · Chennai', qty: 50, status: 'cancelled', requestedBy: 'Mira Delgado', date: 'Aug 30, 2026' },
-    { id: 7, tid: 'TRF-2047', item: 'Card Holder', from: 'Plant C · Chennai', to: 'Plant A · Gurgaon', qty: 40, status: 'pending', requestedBy: 'Priya Nair', date: 'Sep 15, 2026' },
-    { id: 8, tid: 'TRF-2048', item: 'Cargo Pant', from: 'Plant B · Pune', to: 'Plant D · Bhiwandi', qty: 35, status: 'completed', requestedBy: 'Rahul Mehta', date: 'Sep 8, 2026' },
-    { id: 9, tid: 'TRF-2049', item: 'Denim Jacket', from: 'Plant B · Pune', to: 'Plant A · Gurgaon', qty: 20, status: 'inTransit', requestedBy: 'Rahul Mehta', date: 'Sep 16, 2026' },
-    { id: 10, tid: 'TRF-2050', item: 'Leather Belt', from: 'Plant C · Chennai', to: 'Plant D · Bhiwandi', qty: 15, status: 'completed', requestedBy: 'Mira Delgado', date: 'Sep 10, 2026' }
+    { id: 1, tid: 'TRF-2041', lines: [{ item: 'Boxy Knit Vest', qty: 30, uom: 'Piece' }], from: 'Plant A · Gurgaon', to: 'Plant B · Pune', status: 'completed', reason: 'Rebalance stock ahead of regional demand', requestedBy: 'Priya Nair', date: 'Sep 6, 2026' },
+    { id: 2, tid: 'TRF-2042', lines: [{ item: 'Canvas Low Top', qty: 45, uom: 'Pair' }], from: 'Plant B · Pune', to: 'Plant C · Chennai', status: 'inTransit', reason: 'Replenishment request', requestedBy: 'Rahul Mehta', date: 'Sep 12, 2026' },
+    { id: 3, tid: 'TRF-2043', lines: [{ item: 'Cashmere Scarf', qty: 60, uom: 'Piece' }, { item: 'Wool Beanie', qty: 25, uom: 'Piece' }], from: 'Plant D · Bhiwandi', to: 'Plant A · Gurgaon', status: 'pending', reason: 'Replenishment request', requestedBy: 'Mira Delgado', date: 'Sep 14, 2026' },
+    { id: 4, tid: 'TRF-2044', lines: [{ item: 'Chino Short', qty: 80, uom: 'Piece' }], from: 'Plant A · Gurgaon', to: 'Plant D · Bhiwandi', status: 'completed', reason: 'Cycle count correction', requestedBy: 'Priya Nair', date: 'Sep 2, 2026' },
+    { id: 5, tid: 'TRF-2045', lines: [{ item: 'Ceramic Vase', qty: 25, uom: 'Piece' }], from: 'Plant C · Chennai', to: 'Plant B · Pune', status: 'inTransit', reason: 'Rebalance stock ahead of regional demand', requestedBy: 'Rahul Mehta', date: 'Sep 15, 2026' },
+    { id: 6, tid: 'TRF-2046', lines: [{ item: 'Canvas Tote', qty: 50, uom: 'Piece' }], from: 'Plant A · Gurgaon', to: 'Plant C · Chennai', status: 'cancelled', reason: 'Other', requestedBy: 'Mira Delgado', date: 'Aug 30, 2026' },
+    { id: 7, tid: 'TRF-2047', lines: [{ item: 'Card Holder', qty: 40, uom: 'Piece' }], from: 'Plant C · Chennai', to: 'Plant A · Gurgaon', status: 'pending', reason: 'Replenishment request', requestedBy: 'Priya Nair', date: 'Sep 15, 2026' },
+    { id: 8, tid: 'TRF-2048', lines: [{ item: 'Cargo Pant', qty: 35, uom: 'Piece' }, { item: 'Suede Loafer', qty: 20, uom: 'Pair' }], from: 'Plant B · Pune', to: 'Plant D · Bhiwandi', status: 'completed', reason: 'Rebalance stock ahead of regional demand', requestedBy: 'Rahul Mehta', date: 'Sep 8, 2026' },
+    { id: 9, tid: 'TRF-2049', lines: [{ item: 'Denim Jacket', qty: 20, uom: 'Piece' }], from: 'Plant B · Pune', to: 'Plant A · Gurgaon', status: 'inTransit', reason: 'Cycle count correction', requestedBy: 'Rahul Mehta', date: 'Sep 16, 2026' },
+    { id: 10, tid: 'TRF-2050', lines: [{ item: 'Leather Belt', qty: 15, uom: 'Piece' }], from: 'Plant C · Chennai', to: 'Plant D · Bhiwandi', status: 'completed', reason: 'Replenishment request', requestedBy: 'Mira Delgado', date: 'Sep 10, 2026' }
   ];
+
+  function totalQty(t) { return t.lines.reduce(function (sum, li) { return sum + (li.qty || 0); }, 0); }
 
   var statusMeta = {
     completed: { label: 'Completed', bg: '#ecfdf1', color: '#047857', dot: '#10bc83' },
@@ -202,8 +214,8 @@
     transfers.forEach(function (t) { if (overrides[t.tid]) t.status = overrides[t.tid]; });
   })();
 
-  // Pick up any transfers created via the Create Stock Transfer modal (on transfers.html or
-  // Item Detail) so a newly created transfer resolves to its own data here too.
+  // Pick up any transfers created via the Create Stock Transfer page or Item Detail's
+  // quick "Move stock" action, so a newly created transfer resolves to its own data here too.
   (function mergeQueuedTransfers() {
     var raw = null;
     try { raw = localStorage.getItem('stockhouseNewTransfers'); } catch (e) {}
@@ -258,20 +270,22 @@
     pill.style.color = meta.color;
     pill.innerHTML = '<svg width="6" height="6" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="' + meta.dot + '"/></svg>' + meta.label;
 
-    document.getElementById('metaItem').textContent = t.item;
-    document.getElementById('metaQty').textContent = t.qty + ' units';
+    var qty = totalQty(t);
+    document.getElementById('metaItems').textContent = t.lines.length + (t.lines.length === 1 ? ' item' : ' items') + ' · ' + qty + ' units';
     document.getElementById('metaDate').textContent = t.date;
 
     document.getElementById('headActions').innerHTML = headActionsHtml();
 
     document.getElementById('routeFrom').textContent = t.from;
     document.getElementById('routeTo').textContent = t.to;
-    document.getElementById('routeQtyBadge').textContent = t.qty + ' units';
-    document.getElementById('itemSummaryName').textContent = t.item;
-    document.getElementById('itemSummaryQty').textContent = t.qty;
+    document.getElementById('routeQtyBadge').textContent = qty + ' units';
 
-    document.getElementById('infoItem').textContent = t.item;
-    document.getElementById('infoQty').textContent = t.qty;
+    document.getElementById('liRows').innerHTML = t.lines.map(function (li) {
+      return '<div class="li-row"><span class="nm">' + esc(li.item) + '</span><span class="v">' + li.qty + '</span><span class="v">' + esc(li.uom || '—') + '</span></div>';
+    }).join('');
+
+    document.getElementById('infoQty').textContent = qty;
+    document.getElementById('infoReason').textContent = t.reason || '—';
     document.getElementById('infoFrom').textContent = t.from;
     document.getElementById('infoTo').textContent = t.to;
     document.getElementById('infoRequestedBy').textContent = t.requestedBy;
