@@ -113,7 +113,10 @@
   .empty .t { font-size: 14px; font-weight: 700; color: #384352; }
   .empty .s { font-size: 13px; font-weight: 500; color: #8da4be; }
 
-  .pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .pagination { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
+  .pagination .count { justify-self: start; }
+  .pagination .pg { justify-self: center; }
+  .pagination .dd#rowsDd { justify-self: end; }
   .pagination .count { font-size: 13px; font-weight: 600; color: #6e8aab; }
   .pg { display: flex; align-items: center; gap: 6px; }
   .pg-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; font-size: 13px; font-weight: 700; color: #384352; cursor: pointer; }
@@ -250,10 +253,10 @@
         <div class="pg-arrow" id="pgPrev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
         <div id="pages" style="display:flex; gap:6px;"></div>
         <div class="pg-arrow" id="pgNext"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-        <div class="dd" id="rowsDd" style="margin-left:14px;">
-          <button class="rows-trigger" id="rowsTrigger" type="button"><span id="rowsLabel">10 per page</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
-          <div class="dd-menu" id="rowsMenu" style="display:none; bottom:40px; right:0; width:140px;"></div>
-        </div>
+      </div>
+      <div class="dd" id="rowsDd">
+        <button class="rows-trigger" id="rowsTrigger" type="button"><span id="rowsLabel">10 per page</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#576a84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="dd-menu" id="rowsMenu" style="display:none; bottom:40px; right:0; width:140px;"></div>
       </div>
     </div>
 
