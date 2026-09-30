@@ -169,6 +169,22 @@
 
   .rec-sel-count { font-size: 13px; font-weight: 700; color: #384352; }
 
+  .wh-modal-overlay { position: fixed; inset: 0; background: rgba(21,27,35,0.42); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 200; opacity: 0; transition: opacity .18s; }
+  .wh-modal-overlay.show { display: flex; opacity: 1; }
+  .wh-modal { width: 100%; max-width: 400px; background: #ffffff; border-radius: 18px; box-shadow: 0 32px 80px rgba(21,27,35,0.28); padding: 40px 34px 32px; text-align: center; position: relative; overflow: hidden; transform: translateY(10px) scale(0.98); transition: transform .22s cubic-bezier(.2,.9,.3,1.2); }
+  .wh-modal-overlay.show .wh-modal { transform: translateY(0) scale(1); }
+  .wh-confetti { position: absolute; inset: 0; pointer-events: none; }
+  .wh-confetti span { position: absolute; top: -14px; width: 7px; height: 7px; border-radius: 2px; opacity: 0.85; animation: whFall 1.9s ease-in forwards; }
+  @keyframes whFall { to { transform: translateY(220px) rotate(200deg); opacity: 0; } }
+  .wh-modal-icon { width: 56px; height: 56px; border-radius: 50%; background: #e6f7f0; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; position: relative; z-index: 1; }
+  .wh-modal h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 8px; position: relative; z-index: 1; }
+  .wh-modal p { font-size: 13.5px; font-weight: 500; color: #6e8aab; line-height: 1.55; margin: 0 0 26px; position: relative; z-index: 1; }
+  .wh-modal-actions { display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
+  .wh-modal-actions .wh-btn-primary { padding: 12px 0; border-radius: 10px; border: 0; background: #1960bd; color: #fff; font-size: 13.5px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 2px rgba(25,96,189,0.25); }
+  .wh-modal-actions .wh-btn-primary:hover { background: #124287; }
+  .wh-modal-actions .wh-btn-text { padding: 4px 0; border: 0; background: transparent; color: #6e8aab; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+  .wh-modal-actions .wh-btn-text:hover { color: #384352; }
+
   .wh-toast-wrap { position: fixed; bottom: 92px; left: 50%; transform: translateX(-50%) translateY(12px); z-index: 90; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
   .wh-toast-wrap.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .wh-toast { display: flex; align-items: center; gap: 9px; padding: 12px 18px; border-radius: 10px; background: #151b23; color: #ffffff; font-size: 13px; font-weight: 600; box-shadow: 0 12px 28px rgba(21,27,35,0.28); white-space: nowrap; }
@@ -337,6 +353,18 @@
   </div>
 </div>
 
+<div class="wh-modal-overlay" id="whModalOverlay">
+  <div class="wh-modal">
+    <div class="wh-confetti" id="whConfetti"></div>
+    <div class="wh-modal-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+    <h3 id="whModalTitle">Welcome aboard!</h3>
+    <p id="whModalSub">Your workspace is ready. Want a quick tour of what's here?</p>
+    <div class="wh-modal-actions">
+      <button type="button" class="wh-btn-primary" id="whTourBtn">Show me around →</button>
+      <button type="button" class="wh-btn-text" id="whDismissBtn">No thanks, I'll explore</button>
+    </div>
+  </div>
+</div>
 <div class="wh-toast-wrap" id="whToastWrap"><div class="wh-toast"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10bc83" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="whToastMsg"></span></div></div>
 
 <script src="assistant-data.js"></script>
@@ -847,16 +875,49 @@
 
     renderCriticalActions();
 
-    (function welcomeToast() {
+    function whShowToast(msg) {
+      var wrap = document.getElementById('whToastWrap');
+      var msgEl = document.getElementById('whToastMsg');
+      if (!wrap || !msgEl) return;
+      msgEl.textContent = msg;
+      wrap.classList.add('show');
+      setTimeout(function () { wrap.classList.remove('show'); }, 2600);
+    }
+
+    (function welcomeModal() {
       var params = new URLSearchParams(window.location.search);
       if (params.get('welcome') !== '1') return;
       var company = params.get('company') || 'your team';
-      var wrap = document.getElementById('whToastWrap');
-      var msg = document.getElementById('whToastMsg');
-      if (!wrap || !msg) return;
-      msg.textContent = 'Welcome to Stockhouse, ' + company + '! Your workspace is ready.';
-      setTimeout(function () { wrap.classList.add('show'); }, 300);
-      setTimeout(function () { wrap.classList.remove('show'); }, 5200);
+      var overlay = document.getElementById('whModalOverlay');
+      var title = document.getElementById('whModalTitle');
+      if (!overlay || !title) return;
+      title.textContent = 'Welcome aboard, ' + company + '!';
+
+      var confettiWrap = document.getElementById('whConfetti');
+      var confettiColors = ['#1960bd', '#10bc83', '#e56106', '#7c3aed', '#dc2626'];
+      var confettiHtml = '';
+      for (var i = 0; i < 24; i++) {
+        var left = Math.round(Math.random() * 100);
+        var delay = (Math.random() * 0.4).toFixed(2);
+        var color = confettiColors[i % confettiColors.length];
+        confettiHtml += '<span style="left:' + left + '%; background:' + color + '; animation-delay:' + delay + 's;"></span>';
+      }
+      confettiWrap.innerHTML = confettiHtml;
+
+      setTimeout(function () { overlay.classList.add('show'); }, 300);
+
+      function closeModal() {
+        overlay.classList.remove('show');
+      }
+      document.getElementById('whTourBtn').addEventListener('click', function () {
+        closeModal();
+        whShowToast('A guided product tour isn’t available in this demo yet');
+      });
+      document.getElementById('whDismissBtn').addEventListener('click', closeModal);
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeModal();
+      });
+
       if (window.history && window.history.replaceState) {
         var url = window.location.pathname;
         window.history.replaceState({}, document.title, url);
