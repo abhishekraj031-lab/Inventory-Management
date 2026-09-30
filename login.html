@@ -367,12 +367,13 @@
     }
     submitBtn.disabled = true;
     submitBtn.textContent = mode === 'signup' ? 'Creating account…' : 'Logging in…';
-    if (mode === 'signup') {
-      try {
+    try {
+      localStorage.setItem('stockhouseAuthed', '1');
+      if (mode === 'signup') {
         localStorage.setItem('stockhouseSignupEmail', fEmail.value.trim());
         localStorage.setItem('stockhouseSignupPhone', fPhone.value.trim());
-      } catch (e) {}
-    }
+      }
+    } catch (e) {}
     setTimeout(function () {
       window.location.href = mode === 'signup' ? 'onboarding.html' : 'dashboard.html';
     }, 450);

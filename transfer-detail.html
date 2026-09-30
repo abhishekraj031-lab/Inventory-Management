@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="auth.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stockhouse — Transfer Detail</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap">
@@ -34,6 +35,8 @@
   .sb-profile-text { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
   .sb-profile-text .name { font-size: 13px; font-weight: 700; white-space: nowrap; }
   .sb-profile-text .role { font-size: 11px; font-weight: 500; color: #6e8aab; }
+  .sb-logout-btn { margin-left: auto; flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: #8da4be; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background .12s, color .12s, border-color .12s; }
+  .sb-logout-btn:hover { background: #ffffff; color: #d33a3a; border-color: #eef1f5; }
 
   main { position: relative; display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 28px 36px 48px; gap: 20px; }
   .crumb { display: flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 13px; font-weight: 600; color: #8da4be; }
@@ -108,6 +111,9 @@
     <div class="sb-profile">
       <div class="sb-avatar"><div class="disc">AG</div><div class="dot"></div></div>
       <div class="sb-profile-text"><span class="name">Abhishek Gupta</span><span class="role">Operations Manager</span></div>
+      <button type="button" class="sb-logout-btn" id="sbLogoutBtn" aria-label="Log out" title="Log out">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
     </div>
   </aside>
 
