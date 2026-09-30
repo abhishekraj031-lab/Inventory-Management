@@ -3,43 +3,453 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stockhouse — Set up your company</title>
+<title>Stockhouse — Set up your workspace</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; background: #f4f7fa; font-family: 'Albert Sans', system-ui, sans-serif; color: #151b23; }
+  button, input, select { font-family: inherit; }
   a { color: #1960bd; text-decoration: none; }
-  button { font-family: inherit; cursor: pointer; }
+  a:hover { color: #124287; }
 
-  .wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-  .card { width: 100%; max-width: 440px; background: #ffffff; border: 1px solid #e5eaf1; border-radius: 18px; box-shadow: 0 24px 64px rgba(21,27,35,0.08); padding: 40px 36px; text-align: center; }
+  .wiz-shell { min-height: 100vh; display: flex; flex-direction: column; }
 
-  .mark { width: 52px; height: 52px; border-radius: 14px; background: #e8f0fc; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-  h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 10px; }
-  p { font-size: 13.5px; font-weight: 500; color: #6e8aab; line-height: 1.55; margin: 0 0 6px; }
-  .progress-note { font-size: 12px; font-weight: 700; color: #1960bd; background: #e8f0fc; display: inline-block; padding: 6px 12px; border-radius: 999px; margin: 18px 0 26px; }
+  /* ---------- Top bar ---------- */
+  .wiz-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; background: #ffffff; border-bottom: 1px solid #e5eaf1; flex-shrink: 0; }
+  .wiz-brand { display: flex; align-items: center; gap: 9px; }
+  .wiz-brand .mark { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: #1960bd; flex-shrink: 0; }
+  .wiz-brand b { font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; }
+  .wiz-topright { display: flex; align-items: center; gap: 18px; }
+  .wiz-step-label { font-size: 12.5px; font-weight: 700; color: #6e8aab; }
+  .wiz-exit { font-size: 12.5px; font-weight: 700; color: #6e8aab; }
+  .wiz-exit:hover { color: #124287; }
 
-  .cta { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 10px; border: 0; background: #1960bd; color: #ffffff; font-size: 13.5px; font-weight: 700; box-shadow: 0 1px 2px rgba(25,96,189,0.25); }
-  .cta:hover { background: #124287; }
-  .back-link { display: block; margin-top: 18px; font-size: 13px; font-weight: 600; }
+  /* ---------- Stepper ---------- */
+  .wiz-progress { background: #ffffff; border-bottom: 1px solid #e5eaf1; padding: 22px 28px 26px; flex-shrink: 0; }
+  .wiz-steps { display: flex; align-items: flex-start; max-width: 640px; margin: 0 auto; }
+  .wiz-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+  .wiz-step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; background: #ffffff; border: 2px solid #cbd6e6; color: #9aacc2; z-index: 2; transition: background .15s, border-color .15s, color .15s; }
+  .wiz-step-label2 { margin-top: 8px; font-size: 11px; font-weight: 700; color: #9aacc2; text-align: center; white-space: nowrap; }
+  .wiz-step-line { position: absolute; top: 13px; left: calc(-50% + 13px); width: calc(100% - 26px); height: 2px; background: #e5eaf1; z-index: 1; }
+  .wiz-step:first-child .wiz-step-line { display: none; }
+  .wiz-step.done .wiz-step-dot { background: #1960bd; border-color: #1960bd; color: #ffffff; }
+  .wiz-step.done .wiz-step-line { background: #1960bd; }
+  .wiz-step.done .wiz-step-label2 { color: #384352; }
+  .wiz-step.active .wiz-step-dot { background: #1960bd; border-color: #1960bd; color: #ffffff; box-shadow: 0 0 0 4px rgba(25,96,189,0.14); }
+  .wiz-step.active .wiz-step-label2 { color: #151b23; }
+
+  /* ---------- Main card ---------- */
+  .wiz-main { flex: 1 1 auto; display: flex; align-items: flex-start; justify-content: center; padding: 44px 24px 140px; }
+  .wiz-card { width: 100%; max-width: 560px; background: #ffffff; border: 1px solid #e5eaf1; border-radius: 16px; box-shadow: 0 18px 48px rgba(21,27,35,0.06); padding: 36px 40px; }
+
+  .wiz-greet { font-size: 12.5px; font-weight: 700; color: #1960bd; margin: 0 0 6px; }
+  .wiz-eyebrow { display: block; font-size: 11.5px; font-weight: 700; color: #9aacc2; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .wiz-head h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 8px; display: inline-block; }
+  .opt-pill { display: inline-block; margin-left: 10px; font-size: 10.5px; font-weight: 700; color: #6e8aab; background: #f0f3f7; padding: 3px 9px; border-radius: 999px; vertical-align: middle; }
+  .wiz-head p { font-size: 13.5px; font-weight: 500; color: #6e8aab; line-height: 1.55; margin: 0 0 28px; }
+
+  .field-group { margin-bottom: 18px; }
+  .field-group label { display: block; font-size: 12.5px; font-weight: 700; color: #384352; margin-bottom: 6px; }
+  .field-group input[type="text"], .field-group select {
+    width: 100%; font-size: 13.5px; font-weight: 500; color: #151b23;
+    border: 1px solid #cbd6e6; border-radius: 10px; padding: 11px 13px;
+    background: #ffffff; outline: 0; transition: border-color .12s; appearance: none;
+  }
+  .field-group select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238da4be' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat: no-repeat; background-position: right 12px center; background-size: 15px; padding-right: 36px; }
+  .field-group input:focus, .field-group select:focus { border-color: #1960bd; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-hint { font-size: 11.5px; font-weight: 600; color: #9aacc2; margin-top: 5px; }
+
+  /* ---------- Option cards (inventory step) ---------- */
+  .opt-card { display: flex; align-items: flex-start; gap: 13px; padding: 15px 16px; border: 1.5px solid #e5eaf1; border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: border-color .12s, background .12s; }
+  .opt-card:hover { border-color: #cbd6e6; }
+  .opt-card.selected { border-color: #1960bd; background: #f5f9ff; }
+  .opt-radio { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #cbd6e6; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; }
+  .opt-card.selected .opt-radio { border-color: #1960bd; }
+  .opt-radio .dot { width: 9px; height: 9px; border-radius: 50%; background: #1960bd; display: none; }
+  .opt-card.selected .opt-radio .dot { display: block; }
+  .opt-body { flex: 1; }
+  .opt-title-row { display: flex; align-items: center; gap: 8px; }
+  .opt-title { font-size: 13.5px; font-weight: 700; color: #151b23; }
+  .opt-badge { font-size: 10px; font-weight: 800; color: #047857; background: #e6f7f0; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .opt-desc { font-size: 12.5px; font-weight: 500; color: #6e8aab; margin-top: 3px; line-height: 1.5; }
+  .opt-note { font-size: 11.5px; font-weight: 600; color: #9aacc2; margin-top: 7px; display: none; }
+  .opt-card.selected .opt-note.show { display: block; }
+
+  /* ---------- Branding step ---------- */
+  .logo-drop { display: flex; align-items: center; gap: 14px; padding: 16px; border: 1.5px dashed #cbd6e6; border-radius: 12px; cursor: pointer; margin-bottom: 22px; transition: border-color .12s, background .12s; }
+  .logo-drop:hover { border-color: #1960bd; background: #f5f9ff; }
+  .logo-drop-icon { width: 42px; height: 42px; border-radius: 10px; background: #f0f3f7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #6e8aab; }
+  .logo-drop-text b { display: block; font-size: 13px; font-weight: 700; color: #151b23; }
+  .logo-drop-text span { font-size: 12px; font-weight: 500; color: #9aacc2; }
+
+  .swatch-row { display: flex; gap: 10px; margin-bottom: 22px; }
+  .swatch { width: 34px; height: 34px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; display: flex; align-items: center; justify-content: center; transition: transform .1s, border-color .1s; }
+  .swatch:hover { transform: translateY(-1px); }
+  .swatch.selected { border-color: #151b23; }
+  .swatch svg { display: none; }
+  .swatch.selected svg { display: block; }
+
+  .po-preview { border: 1px solid #e5eaf1; border-radius: 12px; overflow: hidden; }
+  .po-preview-bar { height: 8px; }
+  .po-preview-body { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .po-preview-body b { font-size: 12.5px; font-weight: 800; }
+  .po-preview-body span { font-size: 11px; font-weight: 600; color: #9aacc2; }
+
+  /* ---------- Team step ---------- */
+  .invite-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .invite-row input { flex: 1; font-size: 13px; font-weight: 500; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; outline: 0; }
+  .invite-row input:focus { border-color: #1960bd; }
+  .invite-row select { font-size: 12.5px; font-weight: 600; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 10px; outline: 0; background: #fff; }
+  .invite-add-btn { flex-shrink: 0; padding: 0 16px; border-radius: 10px; border: 1px solid #1960bd; background: #ffffff; color: #1960bd; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+  .invite-add-btn:hover { background: #f5f9ff; }
+  .invite-list { margin-bottom: 6px; }
+  .invite-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: #f8fafc; border-radius: 9px; margin-bottom: 6px; }
+  .invite-item .who { font-size: 12.5px; font-weight: 600; color: #151b23; }
+  .invite-item .role { font-size: 11px; font-weight: 700; color: #6e8aab; background: #eef2f7; padding: 2px 8px; border-radius: 999px; margin-left: 8px; }
+  .invite-item .rm { border: 0; background: transparent; color: #9aacc2; cursor: pointer; font-size: 15px; line-height: 1; padding: 2px 4px; }
+  .invite-item .rm:hover { color: #d33a3a; }
+  .invite-empty { font-size: 12px; font-weight: 500; color: #9aacc2; padding: 4px 2px 0; }
+
+  /* ---------- Footer ---------- */
+  .wiz-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #e5eaf1; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; }
+  .wiz-footer-inner { width: 100%; max-width: 560px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+  .wiz-btn-ghost { background: transparent; border: 0; font-size: 13px; font-weight: 700; color: #6e8aab; cursor: pointer; padding: 10px 6px; }
+  .wiz-btn-ghost:hover { color: #384352; }
+  .wiz-footer-right { display: flex; align-items: center; gap: 18px; }
+  .wiz-btn-text { background: transparent; border: 0; font-size: 13px; font-weight: 700; color: #6e8aab; cursor: pointer; }
+  .wiz-btn-text:hover { color: #384352; }
+  .wiz-btn-primary { padding: 11px 24px; border-radius: 10px; border: 0; background: #1960bd; color: #ffffff; font-size: 13.5px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 2px rgba(25,96,189,0.25); transition: background .12s, opacity .12s; }
+  .wiz-btn-primary:hover { background: #124287; }
+  .wiz-btn-primary:disabled { background: #b9c7db; cursor: not-allowed; box-shadow: none; }
+
+  .toast-wrap { position: fixed; bottom: 92px; left: 50%; transform: translateX(-50%) translateY(12px); z-index: 90; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+  .toast-wrap.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast { display: flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 10px; background: #151b23; color: #ffffff; font-size: 13px; font-weight: 600; box-shadow: 0 12px 28px rgba(21,27,35,0.28); white-space: nowrap; }
+
+  .wiz-finish-overlay { position: fixed; inset: 0; background: rgba(244,247,250,0.92); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; z-index: 100; }
+  .wiz-finish-overlay.show { display: flex; }
+  .wiz-spinner { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #dde5ef; border-top-color: #1960bd; animation: wizspin .7s linear infinite; }
+  @keyframes wizspin { to { transform: rotate(360deg); } }
+  .wiz-finish-overlay span { font-size: 13.5px; font-weight: 700; color: #384352; }
+
+  @media (max-width: 640px) {
+    .wiz-top { padding: 14px 18px; }
+    .wiz-step-label { display: none; }
+    .wiz-exit { font-size: 11.5px; }
+    .wiz-progress { padding: 18px 16px 22px; }
+    .wiz-step-label2 { display: none; }
+    .wiz-main { padding: 28px 16px 140px; }
+    .wiz-card { padding: 26px 22px; }
+    .field-row { grid-template-columns: 1fr; }
+    .wiz-footer { padding: 14px 18px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <div class="card">
-    <div class="mark">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1960bd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg>
+<div class="wiz-shell">
+  <header class="wiz-top">
+    <div class="wiz-brand">
+      <div class="mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg></div>
+      <b>Stockhouse</b>
     </div>
-    <h1>Let's set up your company</h1>
-    <p>The guided setup — company details, your first warehouse, starting inventory, branding and team invites — is being built next.</p>
-    <div class="progress-note">Company setup · coming next</div>
-    <div>
-      <a class="cta" href="dashboard.html">Explore the demo workspace instead →</a>
+    <div class="wiz-topright">
+      <span class="wiz-step-label" id="stepLabel">Step 1 of 5</span>
+      <a href="dashboard.html" class="wiz-exit" id="exitLink">Skip setup, explore demo →</a>
     </div>
-    <a class="back-link" href="login.html">← Back to log in</a>
+  </header>
+
+  <div class="wiz-progress">
+    <div class="wiz-steps" id="stepperTrack"></div>
   </div>
+
+  <main class="wiz-main">
+    <form class="wiz-card" id="stepForm" novalidate></form>
+  </main>
+
+  <footer class="wiz-footer">
+    <div class="wiz-footer-inner">
+      <button type="button" class="wiz-btn-ghost" id="backBtn">← Back</button>
+      <div class="wiz-footer-right">
+        <button type="button" class="wiz-btn-text" id="skipBtn" style="display:none;">Skip this step</button>
+        <button type="submit" form="stepForm" class="wiz-btn-primary" id="nextBtn">Continue →</button>
+      </div>
+    </div>
+  </footer>
 </div>
+
+<div class="wiz-finish-overlay" id="finishOverlay"><div class="wiz-spinner"></div><span>Setting up your workspace…</span></div>
+<div class="toast-wrap" id="toastWrap"><div class="toast" id="toastMsg"></div></div>
+
+<script>
+(function () {
+  var COLORS = [
+    { hex: '#1960bd', name: 'Blue' },
+    { hex: '#7c3aed', name: 'Violet' },
+    { hex: '#0ea5a3', name: 'Teal' },
+    { hex: '#e56106', name: 'Orange' },
+    { hex: '#dc2626', name: 'Red' },
+    { hex: '#047857', name: 'Green' }
+  ];
+
+  var state = {
+    companyName: '',
+    industry: '',
+    currency: 'INR',
+    warehouseName: '',
+    warehouseLocation: '',
+    warehouseType: 'Storage & Distribution',
+    inventoryMethod: 'sample',
+    brandColor: '#1960bd',
+    logoChosen: false,
+    invites: []
+  };
+
+  var signupName = '';
+  try { signupName = localStorage.getItem('stockhouseSignupName') || ''; } catch (e) {}
+
+  var STEPS = [
+    { key: 'company', label: 'Company', optional: false },
+    { key: 'warehouse', label: 'Warehouse', optional: false },
+    { key: 'inventory', label: 'Inventory', optional: false },
+    { key: 'branding', label: 'Branding', optional: true },
+    { key: 'team', label: 'Team', optional: true }
+  ];
+
+  var step = 0;
+  var stepForm = document.getElementById('stepForm');
+  var stepLabel = document.getElementById('stepLabel');
+  var stepperTrack = document.getElementById('stepperTrack');
+  var backBtn = document.getElementById('backBtn');
+  var skipBtn = document.getElementById('skipBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var finishOverlay = document.getElementById('finishOverlay');
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function renderStepper() {
+    var html = '';
+    STEPS.forEach(function (s, i) {
+      var cls = 'wiz-step';
+      if (i < step) cls += ' done';
+      else if (i === step) cls += ' active';
+      html += '<div class="' + cls + '"><div class="wiz-step-line"></div><div class="wiz-step-dot">' + (i < step ? '✓' : (i + 1)) + '</div><div class="wiz-step-label2">' + esc(s.label) + '</div></div>';
+    });
+    stepperTrack.innerHTML = html;
+  }
+
+  function renderCompany() {
+    var greet = signupName ? '<p class="wiz-greet">Welcome, ' + esc(signupName.split(' ')[0]) + ' 👋</p>' : '';
+    stepForm.innerHTML =
+      greet +
+      '<div class="wiz-head"><span class="wiz-eyebrow">Company profile</span><h2>Tell us about your company</h2><p>This personalizes your workspace. You can change it anytime in Settings.</p></div>' +
+      '<div class="field-group"><label for="companyName">Company name</label><input type="text" id="companyName" placeholder="e.g. Kestrel Apparel Co." value="' + esc(state.companyName) + '"></div>' +
+      '<div class="field-row">' +
+        '<div class="field-group"><label for="industry">Industry</label><select id="industry">' +
+          ['', 'Fashion & Apparel', 'Electronics', 'Food & Beverage', 'Wholesale & Distribution', 'Manufacturing', 'E-commerce / D2C', 'Other'].map(function (v) {
+            return '<option value="' + esc(v) + '"' + (state.industry === v ? ' selected' : '') + '>' + (v === '' ? 'Select industry' : esc(v)) + '</option>';
+          }).join('') +
+        '</select></div>' +
+        '<div class="field-group"><label for="currency">Base currency</label><select id="currency">' +
+          [['INR', '₹ INR — Indian Rupee'], ['USD', '$ USD — US Dollar'], ['EUR', '€ EUR — Euro'], ['GBP', '£ GBP — British Pound']].map(function (p) {
+            return '<option value="' + p[0] + '"' + (state.currency === p[0] ? ' selected' : '') + '>' + p[1] + '</option>';
+          }).join('') +
+        '</select></div>' +
+      '</div>';
+
+    document.getElementById('companyName').addEventListener('input', function () { state.companyName = this.value; validateCurrent(); });
+    document.getElementById('industry').addEventListener('change', function () { state.industry = this.value; validateCurrent(); });
+    document.getElementById('currency').addEventListener('change', function () { state.currency = this.value; validateCurrent(); });
+  }
+
+  function renderWarehouse() {
+    stepForm.innerHTML =
+      '<div class="wiz-head"><span class="wiz-eyebrow">First warehouse</span><h2>Set up your first warehouse</h2><p>Every item you track needs a home. You can add more warehouses anytime from Settings.</p></div>' +
+      '<div class="field-group"><label for="warehouseName">Warehouse name</label><input type="text" id="warehouseName" placeholder="e.g. Central Distribution Center" value="' + esc(state.warehouseName) + '"></div>' +
+      '<div class="field-row">' +
+        '<div class="field-group"><label for="warehouseLocation">Location</label><input type="text" id="warehouseLocation" placeholder="e.g. Bengaluru, India" value="' + esc(state.warehouseLocation) + '"></div>' +
+        '<div class="field-group"><label for="warehouseType">Type</label><select id="warehouseType">' +
+          ['Storage & Distribution', 'Manufacturing', 'Retail', 'Returns / 3PL'].map(function (v) {
+            return '<option value="' + esc(v) + '"' + (state.warehouseType === v ? ' selected' : '') + '>' + esc(v) + '</option>';
+          }).join('') +
+        '</select></div>' +
+      '</div>';
+
+    document.getElementById('warehouseName').addEventListener('input', function () { state.warehouseName = this.value; validateCurrent(); });
+    document.getElementById('warehouseLocation').addEventListener('input', function () { state.warehouseLocation = this.value; validateCurrent(); });
+    document.getElementById('warehouseType').addEventListener('change', function () { state.warehouseType = this.value; });
+  }
+
+  var INV_OPTIONS = [
+    { key: 'sample', title: 'Start with sample data', badge: 'Recommended', desc: 'Explore Stockhouse with 25 pre-loaded SKUs across 5 categories — swap in your real data anytime.', note: '' },
+    { key: 'import', title: 'Import a spreadsheet', badge: '', desc: 'Upload a CSV or Excel file of your existing inventory.', note: 'Bulk import isn’t available in this demo — we’ll load sample data instead so you can keep exploring.' },
+    { key: 'manual', title: 'Add items manually', badge: '', desc: 'Add products one at a time as you set things up.', note: 'Manual entry from onboarding isn’t available in this demo — we’ll load sample data, and you can add items anytime from Inventory.' }
+  ];
+
+  function renderInventory() {
+    stepForm.innerHTML =
+      '<div class="wiz-head"><span class="wiz-eyebrow">Inventory</span><h2>Add your inventory</h2><p>Choose how you’d like to get started — you can always add more later.</p></div>' +
+      '<div id="invOptions">' +
+      INV_OPTIONS.map(function (o) {
+        var sel = state.inventoryMethod === o.key;
+        return '<div class="opt-card' + (sel ? ' selected' : '') + '" data-key="' + o.key + '">' +
+          '<div class="opt-radio"><div class="dot"></div></div>' +
+          '<div class="opt-body"><div class="opt-title-row"><span class="opt-title">' + esc(o.title) + '</span>' + (o.badge ? '<span class="opt-badge">' + esc(o.badge) + '</span>' : '') + '</div>' +
+          '<div class="opt-desc">' + esc(o.desc) + '</div>' +
+          (o.note ? '<div class="opt-note' + (sel ? ' show' : '') + '">' + esc(o.note) + '</div>' : '') +
+          '</div></div>';
+      }).join('') +
+      '</div>';
+
+    document.getElementById('invOptions').addEventListener('click', function (e) {
+      var card = e.target.closest('.opt-card');
+      if (!card) return;
+      state.inventoryMethod = card.getAttribute('data-key');
+      renderInventory();
+      validateCurrent();
+    });
+  }
+
+  function renderBranding() {
+    stepForm.innerHTML =
+      '<div class="wiz-head"><span class="wiz-eyebrow">Branding</span><h2>Add your branding<span class="opt-pill">Optional</span></h2><p>Your logo and brand color will appear on Purchase Orders, Sales Orders and other documents you share with vendors and clients.</p></div>' +
+      '<div class="logo-drop" id="logoDrop"><div class="logo-drop-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="logo-drop-text"><b>' + (state.logoChosen ? 'logo-mark.svg selected' : 'Click to upload your logo') + '</b><span>PNG, SVG or JPG — not available in this demo</span></div></div>' +
+      '<label style="display:block; font-size:12.5px; font-weight:700; color:#384352; margin-bottom:10px;">Brand color</label>' +
+      '<div class="swatch-row" id="swatchRow">' +
+      COLORS.map(function (c) {
+        return '<div class="swatch' + (state.brandColor === c.hex ? ' selected' : '') + '" data-hex="' + c.hex + '" title="' + c.name + '" style="background:' + c.hex + ';"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>';
+      }).join('') +
+      '</div>' +
+      '<div class="po-preview"><div class="po-preview-bar" id="poPreviewBar" style="background:' + state.brandColor + ';"></div><div class="po-preview-body"><b>Purchase Order — PO-3089</b><span>Live preview</span></div></div>';
+
+    document.getElementById('logoDrop').addEventListener('click', function () {
+      state.logoChosen = true;
+      showToast('File uploads aren’t available in this demo');
+      renderBranding();
+    });
+    document.getElementById('swatchRow').addEventListener('click', function (e) {
+      var sw = e.target.closest('.swatch');
+      if (!sw) return;
+      state.brandColor = sw.getAttribute('data-hex');
+      renderBranding();
+    });
+  }
+
+  function renderTeam() {
+    stepForm.innerHTML =
+      '<div class="wiz-head"><span class="wiz-eyebrow">Team</span><h2>Invite your team<span class="opt-pill">Optional</span></h2><p>Add teammates who’ll help manage inventory, purchasing and sales.</p></div>' +
+      '<div class="invite-row"><input type="text" id="inviteEmail" placeholder="teammate@company.com"><select id="inviteRole"><option>Manager</option><option>Admin</option><option>Viewer</option></select><button type="button" class="invite-add-btn" id="inviteAddBtn">Add</button></div>' +
+      '<div class="invite-list" id="inviteList"></div>' +
+      '<div class="field-hint">Invites aren’t sent in this demo — added teammates will appear in Settings → Team once you finish.</div>';
+
+    renderInviteList();
+
+    document.getElementById('inviteAddBtn').addEventListener('click', addInvite);
+    document.getElementById('inviteEmail').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); addInvite(); }
+    });
+  }
+
+  function addInvite() {
+    var emailEl = document.getElementById('inviteEmail');
+    var roleEl = document.getElementById('inviteRole');
+    var email = emailEl.value.trim();
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!EMAIL_RE.test(email)) {
+      showToast('Enter a valid email to invite');
+      return;
+    }
+    state.invites.push({ email: email, role: roleEl.value });
+    emailEl.value = '';
+    renderInviteList();
+  }
+
+  function renderInviteList() {
+    var list = document.getElementById('inviteList');
+    if (!state.invites.length) {
+      list.innerHTML = '<p class="invite-empty">No teammates added yet.</p>';
+      return;
+    }
+    list.innerHTML = state.invites.map(function (inv, i) {
+      return '<div class="invite-item"><span class="who">' + esc(inv.email) + '<span class="role">' + esc(inv.role) + '</span></span><button type="button" class="rm" data-i="' + i + '" aria-label="Remove">×</button></div>';
+    }).join('');
+    list.querySelectorAll('.rm').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.invites.splice(Number(btn.getAttribute('data-i')), 1);
+        renderInviteList();
+      });
+    });
+  }
+
+  var RENDERERS = [renderCompany, renderWarehouse, renderInventory, renderBranding, renderTeam];
+
+  function validateCurrent() {
+    var ok = true;
+    if (step === 0) ok = state.companyName.trim().length >= 2 && state.industry !== '' && state.currency !== '';
+    else if (step === 1) ok = state.warehouseName.trim().length >= 2 && state.warehouseLocation.trim().length >= 2;
+    nextBtn.disabled = !ok;
+    return ok;
+  }
+
+  function updateChrome() {
+    stepLabel.textContent = 'Step ' + (step + 1) + ' of ' + STEPS.length;
+    renderStepper();
+    backBtn.textContent = step === 0 ? '← Back to login' : '← Back';
+    skipBtn.style.display = STEPS[step].optional ? '' : 'none';
+    nextBtn.textContent = step === STEPS.length - 1 ? 'Finish setup' : 'Continue →';
+    validateCurrent();
+  }
+
+  function goToStep(i) {
+    step = i;
+    RENDERERS[step]();
+    updateChrome();
+    window.scrollTo(0, 0);
+  }
+
+  backBtn.addEventListener('click', function () {
+    if (step === 0) { window.location.href = 'login.html'; return; }
+    goToStep(step - 1);
+  });
+
+  skipBtn.addEventListener('click', function () { advance(); });
+
+  stepForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validateCurrent()) return;
+    advance();
+  });
+
+  function advance() {
+    if (step === STEPS.length - 1) { finish(); return; }
+    goToStep(step + 1);
+  }
+
+  function finish() {
+    try {
+      localStorage.setItem('stockhouseOnboarding', JSON.stringify(state));
+      localStorage.setItem('stockhouseOnboardingComplete', '1');
+    } catch (e) {}
+    finishOverlay.classList.add('show');
+    setTimeout(function () {
+      var name = state.companyName.trim() || 'your team';
+      window.location.href = 'dashboard.html?welcome=1&company=' + encodeURIComponent(name);
+    }, 700);
+  }
+
+  var toastTimer = null;
+  function showToast(msg) {
+    var wrap = document.getElementById('toastWrap');
+    document.getElementById('toastMsg').textContent = msg;
+    wrap.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { wrap.classList.remove('show'); }, 2600);
+  }
+
+  goToStep(0);
+})();
+</script>
 
 </body>
 </html>
