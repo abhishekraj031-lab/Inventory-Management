@@ -7,60 +7,60 @@
 <title>Stockhouse — Set up your organization profile</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Quicksand:wght@400;500;600;700&display=swap">
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; min-height: 100%; background: #f4f7fa; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #151b23; }
+  html, body { margin: 0; min-height: 100%; font-family: 'Quicksand', system-ui, sans-serif; color: #16233a; }
   button, input, select { font-family: inherit; }
-  a { color: #1960bd; text-decoration: none; }
-  a:hover { color: #124287; }
+  a { color: #1851a0; text-decoration: none; }
+  a:hover { color: #123a72; }
 
-  .wiz-shell { min-height: 100vh; display: flex; flex-direction: column; }
+  .wiz-shell { min-height: 100vh; display: flex; flex-direction: column; background: linear-gradient(135deg, #cee6fc 0%, #f2e2ec 52%, #f9ddec 100%); }
 
   /* ---------- Top bar ---------- */
-  .wiz-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; background: #ffffff; border-bottom: 1px solid #e5eaf1; flex-shrink: 0; }
+  .wiz-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; background: rgba(255,255,255,0.72); backdrop-filter: blur(8px); flex-shrink: 0; }
   .wiz-brand { display: flex; align-items: center; gap: 9px; }
-  .wiz-brand .mark { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: #1960bd; flex-shrink: 0; }
-  .wiz-brand b { font-size: 14.5px; font-weight: 800; letter-spacing: -0.02em; }
-  .wiz-exit { font-size: 12.5px; font-weight: 700; color: #6e8aab; }
-  .wiz-exit:hover { color: #124287; }
+  .wiz-brand .mark { display: flex; align-items: center; justify-content: center; width: 26px; height: 25px; flex-shrink: 0; }
+  .wiz-brand b { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; color: #1851a0; letter-spacing: -0.01em; }
+  .wiz-exit { font-size: 12.5px; font-weight: 700; color: #5c7191; }
+  .wiz-exit:hover { color: #123a72; }
 
   /* ---------- Main card ---------- */
   .wiz-main { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 44px 24px; }
-  .wiz-card { width: 100%; max-width: 568px; background: #ffffff; border: 1px solid #e5eaf1; border-radius: 18px; box-shadow: 0 18px 48px rgba(21,27,35,0.06), 0 2px 8px rgba(21,27,35,0.03); padding: 40px 42px; }
+  .wiz-card { width: 100%; max-width: 568px; background: #ffffff; border-radius: 20px; box-shadow: 0 24px 64px rgba(24,58,114,0.14), 0 4px 14px rgba(24,58,114,0.08); padding: 40px 42px; }
 
-  .wiz-greet { font-size: 12.5px; font-weight: 700; color: #1960bd; margin: 0 0 6px; }
-  .wiz-head h2 { font-size: 23px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 8px; }
-  .wiz-head p { font-size: 13.5px; font-weight: 500; color: #6e8aab; line-height: 1.55; margin: 0 0 28px; }
+  .wiz-greet { font-size: 12.5px; font-weight: 700; color: #1851a0; margin: 0 0 6px; }
+  .wiz-head h2 { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 8px; color: #16233a; }
+  .wiz-head p { font-size: 13.5px; font-weight: 500; color: #7186a3; line-height: 1.55; margin: 0 0 28px; }
 
   .field-group { margin-bottom: 18px; }
-  .field-group label { display: block; font-size: 12.5px; font-weight: 700; color: #384352; margin-bottom: 6px; }
+  .field-group label { display: block; font-size: 12.5px; font-weight: 700; color: #384c66; margin-bottom: 6px; }
   .field-group input[type="text"], .field-group select {
-    width: 100%; font-size: 13.5px; font-weight: 500; color: #151b23;
-    border: 1.5px solid #dde5ef; border-radius: 10px; padding: 11px 13px;
-    background: #ffffff; outline: 0; transition: border-color .12s, box-shadow .12s; appearance: none;
+    width: 100%; font-size: 13.5px; font-weight: 500; color: #16233a;
+    border: 1.5px solid #dbe6f4; border-radius: 11px; padding: 11px 13px;
+    background: #fbfdff; outline: 0; transition: border-color .12s, box-shadow .12s; appearance: none;
   }
-  .field-group select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238da4be' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat: no-repeat; background-position: right 12px center; background-size: 15px; padding-right: 36px; }
-  .field-group input:focus, .field-group select:focus { border-color: #1960bd; box-shadow: 0 0 0 3.5px rgba(25,96,189,0.12); }
+  .field-group select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2393a8c2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat: no-repeat; background-position: right 12px center; background-size: 15px; padding-right: 36px; }
+  .field-group input:focus, .field-group select:focus { border-color: #1851a0; background: #ffffff; box-shadow: 0 0 0 3.5px rgba(24,81,160,0.12); }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .field-hint { font-size: 11.5px; font-weight: 600; color: #9aacc2; margin-top: 5px; }
+  .field-hint { font-size: 11.5px; font-weight: 600; color: #93a8c2; margin-top: 5px; }
 
   .wiz-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 30px; }
-  .wiz-btn-ghost { background: transparent; border: 0; font-size: 13px; font-weight: 700; color: #6e8aab; cursor: pointer; padding: 10px 4px; }
-  .wiz-btn-ghost:hover { color: #384352; }
-  .wiz-btn-primary { padding: 12px 26px; border-radius: 10px; border: 0; background: #1960bd; color: #ffffff; font-size: 13.5px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 2px rgba(25,96,189,0.25), 0 6px 16px rgba(25,96,189,0.16); transition: background .12s, opacity .12s; }
-  .wiz-btn-primary:hover { background: #124287; }
-  .wiz-btn-primary:disabled { background: #b9c7db; cursor: not-allowed; box-shadow: none; }
+  .wiz-btn-ghost { background: transparent; border: 0; font-size: 13px; font-weight: 700; color: #5c7191; cursor: pointer; padding: 10px 4px; font-family: 'Quicksand', sans-serif; }
+  .wiz-btn-ghost:hover { color: #384c66; }
+  .wiz-btn-primary { padding: 12px 26px; border-radius: 11px; border: 0; background: #1851a0; color: #ffffff; font-size: 13.5px; font-weight: 700; cursor: pointer; font-family: 'Quicksand', sans-serif; box-shadow: 0 1px 2px rgba(24,81,160,0.25), 0 6px 16px rgba(24,81,160,0.18); transition: background .12s, opacity .12s; }
+  .wiz-btn-primary:hover { background: #123a72; }
+  .wiz-btn-primary:disabled { background: #b7c6dd; cursor: not-allowed; box-shadow: none; }
 
   .toast-wrap { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(12px); z-index: 90; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
   .toast-wrap.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast { display: flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 10px; background: #151b23; color: #ffffff; font-size: 13px; font-weight: 600; box-shadow: 0 12px 28px rgba(21,27,35,0.28); white-space: nowrap; }
+  .toast { display: flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 10px; background: #16233a; color: #ffffff; font-size: 13px; font-weight: 600; box-shadow: 0 12px 28px rgba(22,35,58,0.28); white-space: nowrap; font-family: 'Quicksand', sans-serif; }
 
-  .wiz-finish-overlay { position: fixed; inset: 0; background: rgba(244,247,250,0.92); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; z-index: 100; }
+  .wiz-finish-overlay { position: fixed; inset: 0; background: rgba(226,236,248,0.92); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; z-index: 100; }
   .wiz-finish-overlay.show { display: flex; }
-  .wiz-spinner { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #dde5ef; border-top-color: #1960bd; animation: wizspin .7s linear infinite; }
+  .wiz-spinner { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #dbe6f4; border-top-color: #1851a0; animation: wizspin .7s linear infinite; }
   @keyframes wizspin { to { transform: rotate(360deg); } }
-  .wiz-finish-overlay span { font-size: 13.5px; font-weight: 700; color: #384352; }
+  .wiz-finish-overlay span { font-size: 13.5px; font-weight: 700; color: #384c66; font-family: 'Quicksand', sans-serif; }
 
   @media (max-width: 640px) {
     .wiz-top { padding: 14px 18px; }
@@ -78,7 +78,7 @@
 <div class="wiz-shell">
   <header class="wiz-top">
     <div class="wiz-brand">
-      <div class="mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg></div>
+      <div class="mark"><svg width="26" height="25" viewBox="0 0 24 23" fill="#1851a0" xmlns="http://www.w3.org/2000/svg"><path d="M12 0 24 3.5 12 7 0 3.5Z"/><path d="M12 8 24 11.5 12 15 0 11.5Z"/><path d="M12 16 24 19.5 12 23 0 19.5Z"/></svg></div>
       <b>Stockhouse</b>
     </div>
     <a href="dashboard.html" class="wiz-exit" id="exitLink">Skip setup, explore demo →</a>

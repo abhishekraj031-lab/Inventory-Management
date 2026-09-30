@@ -6,235 +6,169 @@
 <title>Stockhouse — Log in</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Quicksand:wght@400;500;600;700&display=swap">
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; background: #ffffff; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #151b23; }
+  html, body { margin: 0; min-height: 100%; font-family: 'Quicksand', system-ui, sans-serif; color: #1e2a3a; }
   button, input { font-family: inherit; }
-  a { color: #1960bd; text-decoration: none; }
-  a:hover { color: #124287; }
+  a { color: #1851a0; text-decoration: none; }
+  a:hover { color: #123a72; }
 
-  .auth-shell { display: flex; min-height: 100vh; width: 100%; }
-
-  /* ---------- Left brand panel ---------- */
-  .brand-panel {
-    position: relative;
-    flex: 0 0 44%;
-    max-width: 560px;
+  body {
     min-height: 100vh;
-    background: linear-gradient(160deg, #0d3a73 0%, #124287 46%, #1960bd 100%);
-    color: #ffffff;
-    padding: 48px 52px;
+    background: linear-gradient(135deg, #cee6fc 0%, #f2e2ec 52%, #f9ddec 100%);
     display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    position: relative;
   }
-  .brand-panel::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image:
-      repeating-linear-gradient(0deg, rgba(255,255,255,0.055) 0 1px, transparent 1px 64px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.055) 0 1px, transparent 1px 64px);
-    -webkit-mask-image: radial-gradient(circle at 30% 75%, #000 0%, rgba(0,0,0,0.55) 45%, transparent 78%);
-            mask-image: radial-gradient(circle at 30% 75%, #000 0%, rgba(0,0,0,0.55) 45%, transparent 78%);
-    pointer-events: none;
+
+  .page-logo { position: absolute; left: 48px; top: 40px; display: flex; align-items: center; gap: 10px; }
+  .page-logo svg { display: block; }
+  .page-logo b { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; color: #1851a0; letter-spacing: -0.01em; }
+
+  .auth-card {
+    width: 100%;
+    max-width: 440px;
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 44px 40px 40px;
+    box-shadow: 0 24px 64px rgba(24,58,114,0.14), 0 4px 14px rgba(24,58,114,0.08);
   }
-  .brand-panel::after {
-    content: '';
-    position: absolute; right: -120px; top: -120px; width: 420px; height: 420px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 70%);
-    pointer-events: none;
-  }
-  .crate-stack { position: absolute; left: 44px; bottom: 92px; display: grid; grid-template-columns: repeat(4, 30px); gap: 6px; z-index: 1; }
-  .crate-stack span { width: 30px; height: 30px; border-radius: 7px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16); }
-  .crate-stack span.on { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.4); }
 
-  .brand-top { position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; }
-  .brand-mark { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 11px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.22); flex-shrink: 0; }
-  .brand-name { display: flex; flex-direction: column; line-height: 1.2; }
-  .brand-name b { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
-  .brand-name span { font-size: 11.5px; font-weight: 500; color: rgba(255,255,255,0.62); }
+  .form-head h2 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 6px; color: #16233a; }
+  .form-head p { font-size: 13.5px; font-weight: 500; color: #7186a3; margin: 0 0 26px; }
 
-  .brand-mid { position: relative; z-index: 2; margin-top: auto; margin-bottom: auto; padding-top: 64px; max-width: 400px; }
-  .brand-mid h1 { font-size: 34px; line-height: 1.16; font-weight: 800; letter-spacing: -0.025em; margin: 0 0 16px; }
-  .brand-mid p { font-size: 15px; line-height: 1.6; font-weight: 500; color: rgba(255,255,255,0.78); margin: 0; }
-
-  .brand-stats { position: relative; z-index: 2; display: flex; gap: 10px; flex-wrap: wrap; margin-top: 40px; }
-  .brand-stats .chip { display: flex; flex-direction: column; gap: 2px; padding: 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.16); min-width: 108px; }
-  .brand-stats .chip b { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
-  .brand-stats .chip span { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.04em; }
-
-  .brand-foot { position: relative; z-index: 2; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.42); margin-top: 40px; }
-
-  /* ---------- Right form panel ---------- */
-  .form-panel { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 40px 24px; background: #ffffff; }
-  .form-wrap { width: 100%; max-width: 392px; }
-
-  .mobile-brand { display: none; align-items: center; gap: 9px; margin-bottom: 36px; }
-  .mobile-brand .brand-mark { background: #1960bd; border: none; }
-  .mobile-brand b { font-size: 15px; font-weight: 800; color: #151b23; }
-
-  .form-head h2 { font-size: 25px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 6px; }
-  .form-head p { font-size: 13.5px; font-weight: 500; color: #6e8aab; margin: 0 0 26px; }
-
-  .seg { display: flex; padding: 3px; background: #f0f3f7; border-radius: 11px; margin-bottom: 24px; }
-  .seg button { flex: 1; border: 0; background: transparent; padding: 9px 0; border-radius: 8px; font-size: 13px; font-weight: 700; color: #6e8aab; cursor: pointer; transition: background .15s, color .15s; }
-  .seg button.active { background: #ffffff; color: #151b23; box-shadow: 0 1px 3px rgba(21,27,35,0.1); }
-
-  .oauth-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 11px 0; border-radius: 10px; border: 1px solid #dde5ef; background: #ffffff; font-size: 13.5px; font-weight: 700; color: #151b23; cursor: pointer; margin-bottom: 18px; transition: background .12s, border-color .12s; }
-  .oauth-btn:hover { background: #f8fafc; border-color: #cbd6e6; }
-
-  .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-  .divider .line { flex: 1; height: 1px; background: #e9eef4; }
-  .divider span { font-size: 11px; font-weight: 700; color: #9aacc2; text-transform: uppercase; letter-spacing: 0.05em; }
+  .seg { display: flex; padding: 3px; background: #f0f4fa; border-radius: 12px; margin-bottom: 24px; }
+  .seg button { flex: 1; border: 0; background: transparent; padding: 10px 0; border-radius: 9px; font-size: 13px; font-weight: 700; color: #7186a3; cursor: pointer; transition: background .15s, color .15s; font-family: 'Quicksand', sans-serif; }
+  .seg button.active { background: #ffffff; color: #16233a; box-shadow: 0 1px 3px rgba(24,58,114,0.12); }
 
   .field-group { margin-bottom: 15px; }
-  .field-group label { display: block; font-size: 12.5px; font-weight: 700; color: #384352; margin-bottom: 6px; }
+  .field-group label { display: block; font-size: 12.5px; font-weight: 700; color: #384c66; margin-bottom: 6px; }
   .field-input { position: relative; }
   .field-input input {
-    width: 100%; font-size: 13.5px; font-weight: 500; color: #151b23;
-    border: 1.5px solid #dde5ef; border-radius: 10px; padding: 11px 13px;
-    background: #ffffff; outline: 0; transition: border-color .12s, box-shadow .12s;
+    width: 100%; font-size: 13.5px; font-weight: 500; color: #16233a;
+    border: 1.5px solid #dbe6f4; border-radius: 11px; padding: 11px 13px;
+    background: #fbfdff; outline: 0; transition: border-color .12s, box-shadow .12s, background .12s;
   }
-  .field-input input:focus { border-color: #1960bd; box-shadow: 0 0 0 3.5px rgba(25,96,189,0.12); }
+  .field-input input:focus { border-color: #1851a0; background: #ffffff; box-shadow: 0 0 0 3.5px rgba(24,81,160,0.12); }
   .field-input input.pw { padding-right: 40px; }
-  .pw-toggle { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; color: #8da4be; cursor: pointer; border-radius: 8px; }
-  .pw-toggle:hover { background: #f4f7fa; color: #576a84; }
-  .field-err { font-size: 11.5px; font-weight: 600; color: #d33a3a; margin-top: 5px; display: none; }
-  .field-group.invalid .field-input input { border-color: #d33a3a; }
+  .pw-toggle { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; color: #93a8c2; cursor: pointer; border-radius: 8px; }
+  .pw-toggle:hover { background: #f4f7fc; color: #5c7191; }
+  .field-err { font-size: 11.5px; font-weight: 600; color: #d3455a; margin-top: 5px; display: none; }
+  .field-group.invalid .field-input input { border-color: #d3455a; }
   .field-group.invalid .field-err { display: block; }
-  .field-hint { font-size: 11px; font-weight: 500; color: #9aacc2; margin-top: 5px; }
 
   .terms-row { display: flex; align-items: flex-start; gap: 9px; margin: 2px 0 20px; }
-  .terms-row input[type="checkbox"] { appearance: none; width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid #cbd6e6; background: #fff; flex-shrink: 0; margin-top: 1px; cursor: pointer; position: relative; transition: background .12s, border-color .12s; }
-  .terms-row input[type="checkbox"]:checked { background: #1960bd; border-color: #1960bd; }
+  .terms-row input[type="checkbox"] { appearance: none; width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid #c7d6ea; background: #fff; flex-shrink: 0; margin-top: 1px; cursor: pointer; position: relative; transition: background .12s, border-color .12s; }
+  .terms-row input[type="checkbox"]:checked { background: #1851a0; border-color: #1851a0; }
   .terms-row input[type="checkbox"]:checked::after { content: ''; position: absolute; left: 5px; top: 1.5px; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
-  .terms-row label { font-size: 12.5px; font-weight: 500; color: #576a84; line-height: 1.5; cursor: pointer; }
+  .terms-row label { font-size: 12.5px; font-weight: 500; color: #5c7191; line-height: 1.5; cursor: pointer; }
 
-  .row-between { display: flex; align-items: center; justify-content: space-between; margin: -3px 0 20px; }
+  .row-between { display: flex; align-items: center; justify-content: flex-end; margin: -3px 0 20px; }
   .row-between a { font-size: 12.5px; font-weight: 700; }
 
   .submit-btn {
-    width: 100%; padding: 12.5px 0; border-radius: 10px; border: 0; background: #1960bd; color: #ffffff;
-    font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 1px 2px rgba(25,96,189,0.25), 0 6px 16px rgba(25,96,189,0.16);
+    width: 100%; padding: 12.5px 0; border-radius: 11px; border: 0; background: #1851a0; color: #ffffff;
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Quicksand', sans-serif;
+    box-shadow: 0 1px 2px rgba(24,81,160,0.25), 0 6px 16px rgba(24,81,160,0.18);
     transition: background .12s, opacity .12s;
   }
-  .submit-btn:hover { background: #124287; }
-  .submit-btn:disabled { background: #b9c7db; cursor: not-allowed; box-shadow: none; }
+  .submit-btn:hover { background: #123a72; }
+  .submit-btn:disabled { background: #b7c6dd; cursor: not-allowed; box-shadow: none; }
 
-  .demo-note { text-align: center; font-size: 11.5px; font-weight: 500; color: #9aacc2; margin-top: 14px; }
+  .demo-note { text-align: center; font-size: 11.5px; font-weight: 500; color: #93a8c2; margin-top: 14px; }
 
-  .switch-foot { text-align: center; font-size: 13px; font-weight: 500; color: #6e8aab; margin-top: 26px; }
+  .switch-foot { text-align: center; font-size: 13px; font-weight: 500; color: #5c7191; margin-top: 22px; }
   .switch-foot a { font-weight: 700; }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 24px 0 20px; }
+  .divider .line { flex: 1; height: 1px; background: #e8eef7; }
+  .divider span { font-size: 11px; font-weight: 700; color: #93a8c2; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .oauth-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 11px 0; border-radius: 11px; border: 1px solid #dbe6f4; background: #ffffff; font-size: 13.5px; font-weight: 700; color: #16233a; cursor: pointer; transition: background .12s, border-color .12s; font-family: 'Quicksand', sans-serif; }
+  .oauth-btn:hover { background: #f7fafd; border-color: #cfdcee; }
 
   .toast-wrap { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(12px); z-index: 90; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
   .toast-wrap.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast { display: flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 10px; background: #151b23; color: #ffffff; font-size: 13px; font-weight: 600; box-shadow: 0 12px 28px rgba(21,27,35,0.28); white-space: nowrap; }
+  .toast { display: flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 10px; background: #16233a; color: #ffffff; font-size: 13px; font-weight: 600; box-shadow: 0 12px 28px rgba(22,35,58,0.28); white-space: nowrap; font-family: 'Quicksand', sans-serif; }
 
-  @media (max-width: 860px) {
-    .brand-panel { display: none; }
-    .mobile-brand { display: flex; }
-    .form-panel { padding: 32px 20px; }
+  @media (max-width: 560px) {
+    .page-logo { left: 22px; top: 22px; }
+    .auth-card { padding: 36px 24px 32px; margin-top: 56px; }
   }
 </style>
 </head>
 <body>
 
-<div class="auth-shell">
-  <aside class="brand-panel">
-    <div class="crate-stack" aria-hidden="true">
-      <span class="on"></span><span></span><span class="on"></span><span></span>
-      <span></span><span class="on"></span><span class="on"></span><span></span>
-      <span class="on"></span><span class="on"></span><span></span><span class="on"></span>
-    </div>
-    <div class="brand-top">
-      <div class="brand-mark">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg>
-      </div>
-      <div class="brand-name"><b>Stockhouse</b><span>Inventory Control</span></div>
-    </div>
-    <div class="brand-mid">
-      <h1>Inventory that thinks ahead.</h1>
-      <p>Stock levels, purchase orders and transfers — in one place, always up to date, with the reorder ahead of you instead of behind you.</p>
-      <div class="brand-stats">
-        <div class="chip"><b>25</b><span>SKUs tracked</span></div>
-        <div class="chip"><b>4</b><span>Warehouses</span></div>
-        <div class="chip"><b>₹81.5L</b><span>Inventory value</span></div>
-      </div>
-    </div>
-    <div class="brand-foot">© 2026 Stockhouse. All rights reserved.</div>
-  </aside>
-
-  <main class="form-panel">
-    <div class="form-wrap">
-      <div class="mobile-brand">
-        <div class="brand-mark">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5-9 4.5-9-4.5Z"/><path d="M3 7.5v9L12 21l9-4.5v-9"/><path d="M12 12v9"/></svg>
-        </div>
-        <b>Stockhouse</b>
-      </div>
-
-      <div class="form-head">
-        <h2 id="formTitle">Welcome back</h2>
-        <p id="formSubtitle">Log in to your Stockhouse workspace</p>
-      </div>
-
-      <div class="seg" role="tablist">
-        <button type="button" id="tabLogin" class="active" role="tab" aria-selected="true">Log in</button>
-        <button type="button" id="tabSignup" role="tab" aria-selected="false">Create account</button>
-      </div>
-
-      <button type="button" class="oauth-btn" id="googleBtn">
-        <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.3 29.3 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5 13.2 4.5 4.5 13.2 4.5 24S13.2 43.5 24 43.5 43.5 34.8 43.5 24c0-1.2-.1-2.4-.3-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.6 18.9 13 24 13c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5c-7.5 0-14 4.2-17.3 10.2z"/><path fill="#4CAF50" d="M24 43.5c5.2 0 9.8-1.9 13.4-5l-6.2-5.2C29.2 34.9 26.7 35.8 24 35.8c-5.2 0-9.6-3.5-11.2-8.3l-6.5 5C9.4 39.3 16.1 43.5 24 43.5z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.4l6.2 5.2C40.9 36 43.5 30.5 43.5 24c0-1.2-.1-2.4-.3-3.5z"/></svg>
-        <span>Continue with Google</span>
-      </button>
-
-      <div class="divider"><div class="line"></div><span>or continue with email</span><div class="line"></div></div>
-
-      <form id="authForm" novalidate>
-        <div class="field-group" id="fgEmail">
-          <label for="fEmail">Work email</label>
-          <div class="field-input"><input type="email" id="fEmail" autocomplete="email" placeholder="you@company.com"></div>
-          <div class="field-err">Enter a valid email address</div>
-        </div>
-
-        <div class="field-group" id="fgPhone" style="display:none;">
-          <label for="fPhone">Phone number</label>
-          <div class="field-input"><input type="tel" id="fPhone" autocomplete="tel" placeholder="+91 98765 43210"></div>
-          <div class="field-err">Enter a valid phone number</div>
-        </div>
-
-        <div class="field-group" id="fgPassword">
-          <label for="fPassword">Password</label>
-          <div class="field-input">
-            <input type="password" id="fPassword" class="pw" autocomplete="current-password" placeholder="••••••••">
-            <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-            </button>
-          </div>
-          <div class="field-err">Enter your password</div>
-        </div>
-
-        <div class="row-between" id="forgotRow">
-          <span></span>
-          <a href="#" id="forgotLink">Forgot password?</a>
-        </div>
-
-        <div class="terms-row" id="termsRow" style="display:none;">
-          <input type="checkbox" id="fTerms">
-          <label for="fTerms">I agree to the <a href="#" id="termsLink">Terms of Service</a> and <a href="#" id="privacyLink">Privacy Policy</a></label>
-        </div>
-
-        <button type="submit" class="submit-btn" id="submitBtn" disabled>Log in</button>
-        <div class="demo-note" id="demoNote">Demo mode — any email &amp; password will log you in.</div>
-      </form>
-
-      <div class="switch-foot" id="switchFoot">
-        New to Stockhouse? <a href="#" id="switchToSignup">Create an account</a>
-      </div>
-    </div>
-  </main>
+<div class="page-logo" aria-hidden="true">
+  <svg width="26" height="25" viewBox="0 0 24 23" fill="#1851a0" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 0 24 3.5 12 7 0 3.5Z"></path>
+    <path d="M12 8 24 11.5 12 15 0 11.5Z"></path>
+    <path d="M12 16 24 19.5 12 23 0 19.5Z"></path>
+  </svg>
 </div>
+
+<main class="auth-card">
+  <div class="form-head">
+    <h2 id="formTitle">Welcome back</h2>
+    <p id="formSubtitle">Log in to your Stockhouse workspace</p>
+  </div>
+
+  <div class="seg" role="tablist">
+    <button type="button" id="tabLogin" class="active" role="tab" aria-selected="true">Log In</button>
+    <button type="button" id="tabSignup" role="tab" aria-selected="false">Create Account</button>
+  </div>
+
+  <form id="authForm" novalidate>
+    <div class="field-group" id="fgEmail">
+      <label for="fEmail">Work Email</label>
+      <div class="field-input"><input type="email" id="fEmail" autocomplete="email" placeholder="your@company.com"></div>
+      <div class="field-err">Enter a valid email address</div>
+    </div>
+
+    <div class="field-group" id="fgPhone" style="display:none;">
+      <label for="fPhone">Phone number</label>
+      <div class="field-input"><input type="tel" id="fPhone" autocomplete="tel" placeholder="+91 98765 43210"></div>
+      <div class="field-err">Enter a valid phone number</div>
+    </div>
+
+    <div class="field-group" id="fgPassword">
+      <label for="fPassword">Password</label>
+      <div class="field-input">
+        <input type="password" id="fPassword" class="pw" autocomplete="current-password" placeholder="••••••••">
+        <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="field-err">Enter your password</div>
+    </div>
+
+    <div class="row-between" id="forgotRow">
+      <a href="#" id="forgotLink">Forgot Password?</a>
+    </div>
+
+    <div class="terms-row" id="termsRow" style="display:none;">
+      <input type="checkbox" id="fTerms">
+      <label for="fTerms">I agree to the <a href="#" id="termsLink">Terms of Service</a> and <a href="#" id="privacyLink">Privacy Policy</a></label>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn" disabled>Login</button>
+    <div class="demo-note" id="demoNote">Demo mode — any email &amp; password will log you in.</div>
+  </form>
+
+  <div class="switch-foot" id="switchFoot">
+    New to Stockhouse? <a href="#" id="switchToSignup">Create an account</a>
+  </div>
+
+  <div class="divider"><div class="line"></div><span>Or continue with</span><div class="line"></div></div>
+
+  <button type="button" class="oauth-btn" id="googleBtn">
+    <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.3 29.3 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5 13.2 4.5 4.5 13.2 4.5 24S13.2 43.5 24 43.5 43.5 34.8 43.5 24c0-1.2-.1-2.4-.3-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.6 18.9 13 24 13c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5c-7.5 0-14 4.2-17.3 10.2z"/><path fill="#4CAF50" d="M24 43.5c5.2 0 9.8-1.9 13.4-5l-6.2-5.2C29.2 34.9 26.7 35.8 24 35.8c-5.2 0-9.6-3.5-11.2-8.3l-6.5 5C9.4 39.3 16.1 43.5 24 43.5z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.4l6.2 5.2C40.9 36 43.5 30.5 43.5 24c0-1.2-.1-2.4-.3-3.5z"/></svg>
+    <span>Continue with Google</span>
+  </button>
+</main>
 
 <div class="toast-wrap" id="toastWrap"><div class="toast" id="toastMsg"></div></div>
 
@@ -280,7 +214,7 @@
     } else {
       formTitle.textContent = 'Welcome back';
       formSubtitle.textContent = 'Log in to your Stockhouse workspace';
-      submitBtn.textContent = 'Log in';
+      submitBtn.textContent = 'Login';
       demoNote.textContent = 'Demo mode — any email & password will log you in.';
       switchFoot.innerHTML = 'New to Stockhouse? <a href="#" id="switchToSignup">Create an account</a>';
     }
