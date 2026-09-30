@@ -15,18 +15,16 @@
   a { color: #1851a0; text-decoration: none; }
   a:hover { color: #123a72; }
 
-  .wiz-shell { min-height: 100vh; display: flex; flex-direction: column; background: linear-gradient(135deg, #cee6fc 0%, #f2e2ec 52%, #f9ddec 100%); }
+  .wiz-shell { min-height: 100vh; position: relative; background: linear-gradient(135deg, #cee6fc 0%, #f2e2ec 52%, #f9ddec 100%); }
 
-  /* ---------- Top bar ---------- */
-  .wiz-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; background: rgba(255,255,255,0.72); backdrop-filter: blur(8px); flex-shrink: 0; }
-  .wiz-brand { display: flex; align-items: center; gap: 9px; }
-  .wiz-brand .mark { display: flex; align-items: center; justify-content: center; width: 26px; height: 25px; flex-shrink: 0; }
-  .wiz-brand b { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; color: #1851a0; letter-spacing: -0.01em; }
-  .wiz-exit { font-size: 12.5px; font-weight: 700; color: #5c7191; }
+  /* ---------- Corner logo + exit link (matches login.html / otp-verify.html) ---------- */
+  .page-logo { position: absolute; left: 48px; top: 40px; display: flex; align-items: center; gap: 10px; }
+  .page-logo svg { display: block; }
+  .wiz-exit { position: absolute; right: 48px; top: 44px; font-size: 12.5px; font-weight: 700; color: #5c7191; }
   .wiz-exit:hover { color: #123a72; }
 
   /* ---------- Main card ---------- */
-  .wiz-main { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 44px 24px; }
+  .wiz-main { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 44px 24px; }
   .wiz-card { width: 100%; max-width: 568px; background: #ffffff; border-radius: 20px; box-shadow: 0 24px 64px rgba(24,58,114,0.14), 0 4px 14px rgba(24,58,114,0.08); padding: 40px 42px; }
 
   .wiz-greet { font-size: 12.5px; font-weight: 700; color: #1851a0; margin: 0 0 6px; }
@@ -63,9 +61,10 @@
   .wiz-finish-overlay span { font-size: 13.5px; font-weight: 700; color: #384c66; font-family: 'Quicksand', sans-serif; }
 
   @media (max-width: 640px) {
-    .wiz-top { padding: 14px 18px; }
+    .page-logo { left: 22px; top: 22px; }
+    .wiz-exit { right: 22px; top: 26px; }
     .wiz-main { padding: 28px 16px; }
-    .wiz-card { padding: 28px 22px; }
+    .wiz-card { padding: 28px 22px; margin-top: 56px; }
     .field-row { grid-template-columns: 1fr; }
     .wiz-actions { flex-direction: column-reverse; align-items: stretch; gap: 12px; }
     .wiz-actions .wiz-btn-primary { width: 100%; }
@@ -76,13 +75,14 @@
 <body>
 
 <div class="wiz-shell">
-  <header class="wiz-top">
-    <div class="wiz-brand">
-      <div class="mark"><svg width="26" height="25" viewBox="0 0 24 23" fill="#1851a0" xmlns="http://www.w3.org/2000/svg"><path d="M12 0 24 3.5 12 7 0 3.5Z"/><path d="M12 8 24 11.5 12 15 0 11.5Z"/><path d="M12 16 24 19.5 12 23 0 19.5Z"/></svg></div>
-      <b>Stockhouse</b>
-    </div>
-    <a href="dashboard.html" class="wiz-exit" id="exitLink">Skip setup, explore demo →</a>
-  </header>
+  <div class="page-logo" aria-hidden="true">
+    <svg width="26" height="25" viewBox="0 0 24 23" fill="#1851a0" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0 24 3.5 12 7 0 3.5Z"></path>
+      <path d="M12 8 24 11.5 12 15 0 11.5Z"></path>
+      <path d="M12 16 24 19.5 12 23 0 19.5Z"></path>
+    </svg>
+  </div>
+  <a href="dashboard.html" class="wiz-exit" id="exitLink">Skip setup, explore demo →</a>
 
   <main class="wiz-main">
     <form class="wiz-card" id="profileForm" novalidate>
