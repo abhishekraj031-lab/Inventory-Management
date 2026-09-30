@@ -43,8 +43,6 @@
 
   /* main */
   main { position: relative; display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 28px 36px 48px; gap: 22px; }
-  .crumb { display: flex; align-items: center; gap: 8px; align-self: flex-start; padding: 6px 12px; border-radius: 8px; background: #ffffff; border: 1px solid rgba(21,27,35,0.08); }
-  .crumb span { font-size: 13px; font-weight: 600; color: #576a84; }
   .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
   .page-head h1 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.2; color: #1e2530; }
   .page-head p { margin: 0; font-size: 12.5px; font-weight: 500; color: #6e8aab; }
@@ -73,7 +71,7 @@
 
   .two-col { display: grid; grid-template-columns: 2fr 0.85fr; gap: 16px; align-items: start; }
   .col { display: flex; flex-direction: column; gap: 16px; }
-  .crit-col { position: sticky; top: 24px; align-self: start; max-height: calc(100vh - 48px); overflow-y: auto; }
+  .crit-col { position: sticky; top: 24px; align-self: start; max-height: calc(100vh - 110px); overflow-y: auto; }
   .pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
   .card { background: #ffffff; border: 1px solid rgba(21,27,35,0.08); border-radius: 16px; box-shadow: 0 1px 3px rgba(21,27,35,0.05), 0 1px 2px rgba(21,27,35,0.03); }
@@ -239,7 +237,6 @@
   </aside>
 
   <main>
-    <div class="crumb"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6e8aab" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></div>
 
     <div class="page-head">
       <div><h1>Dashboard</h1><p>Your inventory command center — what needs attention today, Sep 16.</p></div>
