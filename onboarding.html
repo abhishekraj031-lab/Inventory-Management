@@ -172,9 +172,13 @@
     return words.map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
   }
 
+  var signupName = '';
   var signupEmail = '';
-  try { signupEmail = localStorage.getItem('stockhouseSignupEmail') || ''; } catch (e) {}
-  var displayName = deriveDisplayName(signupEmail);
+  try {
+    signupName = localStorage.getItem('stockhouseSignupName') || '';
+    signupEmail = localStorage.getItem('stockhouseSignupEmail') || '';
+  } catch (e) {}
+  var displayName = signupName || deriveDisplayName(signupEmail);
   if (displayName) {
     document.getElementById('greetSlot').innerHTML = '<p class="wiz-greet">Welcome, ' + esc(displayName) + ' 👋</p>';
   }

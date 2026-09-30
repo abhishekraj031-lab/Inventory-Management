@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+(function () {
+  try {
+    if (localStorage.getItem('stockhouseAuthed') === '1') { window.location.replace('dashboard.html'); return; }
+    if (!localStorage.getItem('stockhouseSignupEmail')) { window.location.replace('login.html?tab=signup'); return; }
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockhouse — Verify your email</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Quicksand:wght@400;500;600;700&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; font-family: 'Quicksand', system-ui, sans-serif; color: #1e2a3a; }
+  button, input { font-family: inherit; }
+  a { color: #1851a0; text-decoration: none; }
+  a:hover { color: #123a72; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #cee6fc 0%, #f2e2ec 52%, #f9ddec 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    position: relative;
+  }
+
+  .page-logo { position: absolute; left: 48px; top: 40px; display: flex; align-items: center; gap: 10px; }
+  .page-logo svg { display: block; }
+
+  .auth-card {
+    width: 100%;
+    max-width: 440px;
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 44px 40px 40px;
+    box-shadow: 0 24px 64px rgba(24,58,114,0.14), 0 4px 14px rgba(24,58,114,0.08);
+    text-align: center;
+  }
+
+  .form-head h2 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 8px; color: #16233a; }
+  .form-head p { font-size: 13.5px; font-weight: 500; color: #7186a3; margin: 0; line-height: 1.5; }
+  .form-head p b { color: #16233a; font-weight: 700; }
+  .change-email { font-size: 12.5px; font-weight: 700; margin: 10px 0 0; }
+
+  .otp-row { display: flex; gap: 10px; justify-content: center; margin: 26px 0 0; }
+  .otp-row input {
+    width: 46px; height: 54px; text-align: center; font-size: 21px; font-weight: 700; color: #16233a;
+    border: 1.5px solid #dbe6f4; border-radius: 11px; background: #fbfdff; outline: 0;
+    transition: border-color .12s, box-shadow .12s, background .12s;
+  }
+  .otp-row input:focus { border-color: #1851a0; background: #ffffff; box-shadow: 0 0 0 3.5px rgba(24,81,160,0.12); }
+  .otp-row.invalid input { border-color: #d3455a; }
+
+  .otp-err { font-size: 11.5px; font-weight: 600; color: #d3455a; margin: 10px 0 0; display: none; }
+  .otp-err.show { display: block; }
+
+  .resend-row { font-size: 12.5px; font-weight: 600; color: #7186a3; margin: 18px 0 26px; }
+  .resend-row a { font-weight: 700; transition: opacity .15s; }
+
+  .submit-btn {
+    width: 100%; padding: 12.5px 0; border-radius: 11px; border: 0; background: #1851a0; color: #ffffff;
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Quicksand', sans-serif;
+    box-shadow: 0 1px 2px rgba(24,81,160,0.25), 0 6px 16px rgba(24,81,160,0.18);
+    transition: background .12s, opacity .12s;
+  }
+  .submit-btn:hover { background: #123a72; }
+  .submit-btn:disabled { background: #b7c6dd; cursor: not-allowed; box-shadow: none; }
+
+  .demo-note { text-align: center; font-size: 11.5px; font-weight: 500; color: #93a8c2; margin-top: 14px; }
+
+  .toast-wrap { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(12px); z-index: 90; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+  .toast-wrap.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast { display: flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 10px; background: #16233a; color: #ffffff; font-size: 13px; font-weight: 600; box-shadow: 0 12px 28px rgba(22,35,58,0.28); white-space: nowrap; font-family: 'Quicksand', sans-serif; }
+
+  @media (max-width: 560px) {
+    .page-logo { left: 22px; top: 22px; }
+    .auth-card { padding: 36px 24px 32px; margin-top: 56px; }
+    .otp-row { gap: 8px; }
+    .otp-row input { width: 40px; height: 48px; font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-logo" aria-hidden="true">
+  <svg width="26" height="25" viewBox="0 0 24 23" fill="#1851a0" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 0 24 3.5 12 7 0 3.5Z"></path>
+    <path d="M12 8 24 11.5 12 15 0 11.5Z"></path>
+    <path d="M12 16 24 19.5 12 23 0 19.5Z"></path>
+  </svg>
+</div>
+
+<main class="auth-card">
+  <div class="form-head">
+    <h2>Verify your Email</h2>
+    <p>Enter the 6-digit code sent to <b id="otpEmailSlot">your email</b></p>
+    <p class="change-email">Wrong email? <a href="login.html?tab=signup" id="changeEmailLink">change it</a></p>
+  </div>
+
+  <form id="otpForm" novalidate>
+    <div class="otp-row" id="otpRow">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 2">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 3">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 4">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 5">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 6">
+    </div>
+    <div class="otp-err" id="otpErr">Enter all 6 digits</div>
+
+    <div class="resend-row">Didn't get a code? <a href="#" id="resendLink">Resend OTP</a></div>
+
+    <button type="submit" class="submit-btn" id="verifyBtn" disabled>Verify &amp; Continue</button>
+    <div class="demo-note">Demo mode — enter any 6 digits to verify.</div>
+  </form>
+</main>
+
+<div class="toast-wrap" id="toastWrap"><div class="toast" id="toastMsg"></div></div>
+
+<script>
+(function () {
+  var email = '';
+  try { email = localStorage.getItem('stockhouseSignupEmail') || ''; } catch (e) {}
+  if (email) document.getElementById('otpEmailSlot').textContent = email;
+
+  var otpRow = document.getElementById('otpRow');
+  var otpInputs = Array.prototype.slice.call(otpRow.querySelectorAll('input'));
+  var otpErr = document.getElementById('otpErr');
+  var verifyBtn = document.getElementById('verifyBtn');
+  var otpForm = document.getElementById('otpForm');
+
+  function validate() {
+    var ok = otpInputs.every(function (inp) { return /^[0-9]$/.test(inp.value); });
+    verifyBtn.disabled = !ok;
+    return ok;
+  }
+
+  otpInputs.forEach(function (inp, idx) {
+    inp.addEventListener('input', function () {
+      inp.value = inp.value.replace(/[^0-9]/g, '').slice(0, 1);
+      otpRow.classList.remove('invalid');
+      otpErr.classList.remove('show');
+      if (inp.value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+      validate();
+    });
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && !inp.value && idx > 0) {
+        otpInputs[idx - 1].focus();
+      }
+    });
+    inp.addEventListener('paste', function (e) {
+      var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+      if (!text) return;
+      e.preventDefault();
+      for (var i = 0; i < text.length && idx + i < otpInputs.length; i++) {
+        otpInputs[idx + i].value = text[i];
+      }
+      var next = Math.min(idx + text.length, otpInputs.length - 1);
+      otpInputs[next].focus();
+      validate();
+    });
+  });
+
+  var toastTimer = null;
+  function showToast(msg) {
+    var wrap = document.getElementById('toastWrap');
+    document.getElementById('toastMsg').textContent = msg;
+    wrap.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { wrap.classList.remove('show'); }, 2600);
+  }
+
+  var resendLink = document.getElementById('resendLink');
+  var resendLocked = false;
+  resendLink.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (resendLocked) return;
+    resendLocked = true;
+    showToast('A new code has been sent (demo)');
+    resendLink.style.pointerEvents = 'none';
+    resendLink.style.opacity = '0.5';
+    setTimeout(function () {
+      resendLocked = false;
+      resendLink.style.pointerEvents = '';
+      resendLink.style.opacity = '';
+    }, 3000);
+  });
+
+  otpForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validate()) {
+      otpRow.classList.add('invalid');
+      otpErr.classList.add('show');
+      return;
+    }
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = 'Verifying…';
+    try { localStorage.setItem('stockhouseAuthed', '1'); } catch (e) {}
+    setTimeout(function () {
+      window.location.href = 'onboarding.html';
+    }, 450);
+  });
+
+  if (otpInputs[0]) otpInputs[0].focus();
+})();
+</script>
+
+</body>
+</html>
