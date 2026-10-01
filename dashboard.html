@@ -68,7 +68,7 @@
   .kpi-label { font-size: 12px; font-weight: 600; color: #4a5568; }
   .kpi-caption { font-size: 11px; font-weight: 500; color: #94a3b8; }
 
-  .two-col { display: grid; grid-template-columns: 2fr 0.85fr; gap: 16px; align-items: stretch; }
+  .two-col { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 0.85fr); gap: 16px; align-items: stretch; }
   .col { display: flex; flex-direction: column; gap: 16px; }
   .crit-col { align-self: stretch; }
   .crit-col .card { height: 100%; box-sizing: border-box; }
