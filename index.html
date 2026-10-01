@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assistant.css">
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: #f4f7fa; font-family: 'Inter', system-ui, sans-serif; color: #151b23; }
+  html, body { margin: 0; background: #f4f7fa; font-family: 'Inter', system-ui, sans-serif; color: #334155; }
   a { color: #1960bd; text-decoration: none; }
   a:hover { color: #124287; }
   ::placeholder { color: #8da4be; }
@@ -45,8 +45,8 @@
   /* main */
   main { position: relative; display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 28px 36px 36px; gap: 20px; }
   .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-  .page-head h1 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.2; color: #1e2530; }
-  .page-head p { margin: 0; font-size: 12.5px; font-weight: 500; color: #6e8aab; }
+  .page-head h1 { margin: 0; font-size: 28px; font-weight: 650; letter-spacing: -0.3px; line-height: 1.2; color: #334155; }
+  .page-head p { margin: 0; font-size: 14px; font-weight: 400; color: #6e8aab; }
   .head-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .btn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; font-size: 12.5px; font-weight: 600; border: 1px solid #cbd6e6; background: #ffffff; color: #4a5568; }
   .btn.primary { background: #1960bd; border-color: #1960bd; color: #ffffff; box-shadow: 0 1px 2px rgba(25,96,189,0.25); }
@@ -63,7 +63,7 @@
   .kpi-delta.down { color: #b91c1c; background: #feecec; }
   .kpi-delta.warn { color: #b84509; background: #fff7ed; }
   .kpi-body { display: flex; flex-direction: column; gap: 2px; }
-  .kpi-num { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #232a36; font-variant-numeric: tabular-nums; }
+  .kpi-num { font-size: 28px; font-weight: 650; letter-spacing: -0.3px; color: #334155; font-variant-numeric: tabular-nums; }
   .kpi-num.warn { color: #b91c1c; }
   .kpi-num.caution { color: #b84509; }
   .kpi-label { font-size: 12px; font-weight: 600; color: #4a5568; }
@@ -84,7 +84,7 @@
   .chip .n { opacity: 0.85; font-weight: 600; }
   .toolbar-right { display: flex; align-items: center; gap: 10px; }
   .search-box { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 10px; background: #ffffff; border: 1px solid #cbd6e6; width: 240px; }
-  .search-box input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 13px; font-weight: 500; color: #151b23; }
+  .search-box input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 13px; font-weight: 500; color: #334155; }
   .dd { position: relative; }
   .dd-trigger { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; background: #ffffff; border: 1px solid #cbd6e6; }
   .dd-trigger span { font-size: 13px; font-weight: 600; color: #384352; }
@@ -103,7 +103,7 @@
   .table-card { position: relative; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #eef1f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(21,27,35,0.03); overflow: visible; }
   .row { display: grid; grid-template-columns: 40px 2.1fr 1.1fr 0.9fr 0.6fr 0.9fr 1.1fr 1fr 52px; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f2f4f7; position: relative; }
   .row.head { background: #fafbfd; border-radius: 14px 14px 0 0; }
-  .row.head span { font-size: 11px; font-weight: 700; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
+  .row.head span { font-size: 12px; font-weight: 600; color: #6e8aab; letter-spacing: 0.06em; text-transform: uppercase; }
   .row.stockout { background: #fffbfb; }
   .row:not(.head) { cursor: pointer; }
   .row:not(.head):hover { background: #f7f9fc; }
@@ -112,7 +112,7 @@
   .cb svg { opacity: 0; }
   .cb.checked svg { opacity: 1; }
   .item-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .item-cell .nm { font-size: 14px; font-weight: 700; }
+  .item-cell .nm { font-size: 16px; font-weight: 600; }
   .item-cell .meta { font-size: 12px; font-weight: 500; color: #8da4be; }
   .item-cell .risk { display: inline-flex; align-items: center; gap: 4px; width: fit-content; font-size: 11px; font-weight: 700; }
   .item-cell .risk.red { color: #b91c1c; }
@@ -122,7 +122,7 @@
   .onhand { font-size: 14px; font-weight: 700; }
   .reorder { font-size: 14px; font-weight: 600; color: #576a84; }
   .uom { font-size: 13px; font-weight: 600; color: #8da4be; }
-  .status-pill { display: inline-flex; align-items: center; gap: 5px; width: fit-content; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .status-pill { display: inline-flex; align-items: center; gap: 5px; width: fit-content; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 500; }
   .cover { display: flex; align-items: center; gap: 8px; }
   .cover-track { flex: 1; height: 5px; border-radius: 999px; background: #eef1f5; overflow: hidden; }
   .cover-fill { height: 100%; border-radius: 999px; }
@@ -167,7 +167,7 @@
   /* form fields (shared by drawer & modal) */
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field label { font-size: 12px; font-weight: 700; color: #384352; }
-  .field input, .field select, .field textarea { font-family: inherit; font-size: 13px; font-weight: 500; color: #151b23; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; width: 100%; }
+  .field input, .field select, .field textarea { font-family: inherit; font-size: 13px; font-weight: 500; color: #334155; border: 1px solid #cbd6e6; border-radius: 10px; padding: 10px 12px; background: #ffffff; outline: 0; width: 100%; }
   .field input:focus, .field select:focus, .field textarea:focus { border-color: #1960bd; }
   .field textarea { resize: vertical; min-height: 80px; font-family: inherit; }
   .field.disabled input { background: #f4f7fa; color: #8da4be; }
@@ -520,7 +520,7 @@
         return '' +
           '<div class="row' + (it.status === 'stockout' ? ' stockout' : '') + '" data-itemid="' + it.id + '">' +
             '<button class="cb' + (isChecked ? ' checked' : '') + '" type="button" data-action="check" data-key="' + it.id + '"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5 L5 9 L9.5 3.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
-            '<div class="item-cell"><a class="nm" href="item-detail.html?id=' + it.id + '" style="color:#151b23;">' + esc(it.name) + '</a><span class="meta">' + esc(it.sku) + ' · ' + esc(it.vendor) + '</span>' + riskHtml + '</div>' +
+            '<div class="item-cell"><a class="nm" href="item-detail.html?id=' + it.id + '" style="color:#334155;">' + esc(it.name) + '</a><span class="meta">' + esc(it.sku) + ' · ' + esc(it.vendor) + '</span>' + riskHtml + '</div>' +
             '<span class="cat-pill">' + esc(it.category) + '</span>' +
             '<span class="onhand">' + it.onHand + '</span>' +
             '<span class="uom">' + esc(it.uom || '—') + '</span>' +
